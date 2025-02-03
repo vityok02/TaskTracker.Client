@@ -1,0 +1,28 @@
+﻿@page "/users"
+@using Domain.Dtos.User
+@using Refit
+@using Services.Interfaces
+@inject IUserService UserService
+
+<h3>List</h3>
+
+@foreach(var user in Users)
+{
+    <p>
+        @user.Id<br />
+        @user.Username, @user.Email
+    </p>
+}
+
+@code {
+    public IEnumerable<UserDto> Users { get; set; } = [];
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+
+        Users = await UserService.GetUsersAsync();
+
+        int a = 1;
+    }
+}

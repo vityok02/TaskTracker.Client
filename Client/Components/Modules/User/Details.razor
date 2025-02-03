@@ -1,0 +1,24 @@
+﻿@using Domain.Dtos.User
+@using Services.Interfaces
+@inject IUserService UserService
+
+@page "/users/{id:guid}"
+
+<h3>Details</h3>
+
+<p>
+    @User.Id<br />
+    @User.Username, @User.Email
+</p>
+
+@code {
+    [Parameter]
+    public Guid Id { get; set; }
+
+    public UserDto User { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        User = await UserService.GetUserAsync(Id);
+    }
+}
