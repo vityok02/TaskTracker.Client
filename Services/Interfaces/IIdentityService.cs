@@ -10,5 +10,5 @@ public interface IIdentityService : ITaskTrackerApi
     Task<ApiResponse<RegisterResponse>> RegisterAsync(RegisterModel model);
 
     [Post("/users/login")]
-    Task<LoginResponse> LoginAsync(LoginModel model);
+    Task<TokenResponse> LoginAsync(LoginModel model);
 }
