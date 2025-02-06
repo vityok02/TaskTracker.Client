@@ -1,0 +1,20 @@
+﻿@page "/login"
+
+@rendermode InteractiveServer
+
+<h3>Login</h3>
+
+<EditForm Model="LoginModel" OnValidSubmit="Submit" FormName="Login">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+    <label>
+        Email
+        <InputText @bind-Value="LoginModel.Email" />
+    </label>
+    <label>
+        Password
+        <InputText type="password" @bind-Value="LoginModel.Password" />
+    </label>
+    <p>@ErrorMessage</p>
+    <button type="submit">Login</button>
+</EditForm>

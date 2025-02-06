@@ -1,7 +1,4 @@
-﻿using Domain.Dtos.User;
-using Services.Interfaces;
-
-namespace Services;
+﻿namespace Services.Services.Components;
 
 public class UserService
 {
