@@ -1,14 +1,6 @@
-﻿@using Domain.Dtos
-@using Domain.Models.Identity
-@using Refit
-@using Services.ExternalApi
-
-@inject NavigationManager NavManager
-@inject IIdentityApi IdentityService
+﻿@page "/register"
 
 @rendermode InteractiveServer
-
-@page "/register"
 
 <h3>Register</h3>
 
@@ -34,31 +26,3 @@
     <p>@ErrorMessage</p>
     <button type="submit">Register</button>
 </EditForm>
-
-
-@code {
-    public RegisterModel RegisterModel { get; set; } = new RegisterModel();
-    public string ErrorMessage { get; set; } = string.Empty;
-
-    public async Task Submit() 
-    {
-        if (RegisterModel.Password != RegisterModel.ConfirmedPassword)
-        {
-            ErrorMessage = "Passwords do not match";
-            return;
-        }
-
-        var result = await IdentityService.RegisterAsync(RegisterModel);
-
-        if (result.IsSuccessStatusCode)
-        {   
-            var location = result.Headers.Location;
-            NavManager.NavigateTo(location!.OriginalString);
-        }
-        else
-        {
-            var error = await result.Error.GetContentAsAsync<ErrorDto>();
-            ErrorMessage = error!.Description;
-        }
-    }
-}

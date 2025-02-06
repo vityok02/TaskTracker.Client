@@ -5,9 +5,9 @@ namespace Services.Interfaces;
 
 public interface IIdentityService
 {
-    Task LoginAsync(LoginModel model);
+    Task<Result> LoginAsync(LoginModel model);
 
-    Task RegisterAsync(RegisterModel model);
+    Task<Result> RegisterAsync(RegisterModel model);
 
     void Logout();
 }

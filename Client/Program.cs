@@ -1,7 +1,9 @@
 using Client;
 using Client.Components;
 using Client.Extensions;
+using Microsoft.AspNetCore.Components.Authorization;
 using Services.Extensions;
+using Services.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 

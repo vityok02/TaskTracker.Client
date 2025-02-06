@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.Components;
 using Services.Interfaces;
 
-
 namespace Client.Components.Modules.Identity;
 
 public partial class Login
@@ -30,7 +29,7 @@ public partial class Login
 
         if (result.IsFailure)
         {
-
+            return;
         }
 
         NavigationManager.NavigateTo("/");

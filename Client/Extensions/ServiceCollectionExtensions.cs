@@ -21,7 +21,6 @@ public static class ServiceCollectionExtensions
           });
 
         services.AddTransient<AuthHttpClientHandler>();
-        services.AddScoped<ITokenStorage, TokenStorage>();
 
         var settings = configuration.GetSection(TaskTrackerSettings.ConfigurationSection)
             .Get<TaskTrackerSettings>();
@@ -36,10 +35,8 @@ public static class ServiceCollectionExtensions
                 .AddHttpMessageHandler<AuthHttpClientHandler>();
         }
 
-        services.AddScoped<AuthenticationStateProvider, CustomAuthStateProvider>();
-        services.AddScoped<ProtectedSessionStorage>();
-        services.AddHttpContextAccessor();
         services.AddMemoryCache();
+        services.AddHttpContextAccessor();
         //services.AddAuthorizationCore();
 
         return services;
