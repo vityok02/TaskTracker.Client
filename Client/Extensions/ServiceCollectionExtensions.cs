@@ -1,10 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.Components.Authorization;
-using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage;
 using Refit;
 using Services.ExternalApi;
-using Services.Interfaces;
-using Services.Services;
 
 namespace Client.Extensions;
 
@@ -25,7 +21,7 @@ public static class ServiceCollectionExtensions
         var settings = configuration.GetSection(TaskTrackerSettings.ConfigurationSection)
             .Get<TaskTrackerSettings>();
 
-        var types = new[] { typeof(IUserService), typeof(IIdentityApi) };
+        var types = new[] { typeof(IUserApi), typeof(IIdentityApi) };
 
         foreach(var type in types)
         {
@@ -38,6 +34,7 @@ public static class ServiceCollectionExtensions
         services.AddMemoryCache();
         services.AddHttpContextAccessor();
         //services.AddAuthorizationCore();
+        services.AddCascadingAuthenticationState();
 
         return services;
     }

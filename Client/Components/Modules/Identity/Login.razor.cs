@@ -4,14 +4,14 @@ using Services.Interfaces;
 
 namespace Client.Components.Modules.Identity;
 
-public partial class Login
+public sealed partial class Login : ComponentBase
 {
     private readonly IIdentityService IdentityService;
     private readonly NavigationManager NavigationManager;
 
-    protected LoginModel LoginModel = new();
+    private LoginModel LoginModel = new();
 
-    protected string ErrorMessage { get; set; } = string.Empty;
+    private string ErrorMessage { get; set; } = string.Empty;
 
     public Login(
         IIdentityService identityService,

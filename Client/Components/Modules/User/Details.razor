@@ -1,33 +1,23 @@
 ﻿@page "/users/{id:guid}"
-@using Domain.Dtos.User
-@using Microsoft.AspNetCore.Authorization
-@using Services.ExternalApi
-@inject IUserService UserService
 
-<h3>Details</h3>
+<PageTitle>@(User?.Username ?? "Not found")</PageTitle>
 
-@if(User is null)
-{
-    <p>User not found</p>
-}
-else
-{
-    <p>
-        @User.Id<br />
-        @User.Username, @User.Email
-    </p>
-}
-
-
-@code {
-    [Parameter]
-    public Guid Id { get; set; }
-
-    public UserDto User { get; set; }
-
-    protected override async Task OnInitializedAsync()
-    {
-        var response = await UserService.GetUserAsync(Id);
-        User = response.Content;
-    }
-}
+<AuthorizeView>
+    <Authorized>
+        <h3>Details</h3>
+        @if (User is null)
+        {
+            <p>User not found</p>
+        }
+        else
+        {
+            <p>
+                @User.Id<br />
+                @User.Username, @User.Email
+            </p>
+        }
+    </Authorized>
+    <NotAuthorized>
+        <p>You are not authorized to view this page</p>
+    </NotAuthorized>
+</AuthorizeView>

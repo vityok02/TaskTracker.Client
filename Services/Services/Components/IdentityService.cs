@@ -25,10 +25,8 @@ public class IdentityService : IIdentityService
         
         var tokenResponse = response.Content;
 
-        if (_authStateProvider is CustomAuthStateProvider customProvider)
-        {
-            customProvider.MarkUserAsAuthenticated(tokenResponse.Token);
-        }
+        (_authStateProvider as CustomAuthStateProvider)!
+            .MarkUserAsAuthenticated(tokenResponse.Token);
 
         return Result.Success();
     }
@@ -39,15 +37,15 @@ public class IdentityService : IIdentityService
 
         var tokenResponse = response.Content.Token;
 
-        //_authStateProvider
-        //    .MarkUserAsAuthenticated(tokenResponse.Token);
+        (_authStateProvider as CustomAuthStateProvider)!
+            .MarkUserAsAuthenticated(tokenResponse.Token);
 
         return Result.Success();
     }
 
     public void Logout()
     {
-        //_authStateProvider
-        //    .MarkUserAsLoggedOut();
+        (_authStateProvider as CustomAuthStateProvider)!
+            .MarkUserAsLoggedOut();
     }
 }
