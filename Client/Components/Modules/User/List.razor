@@ -1,7 +1,7 @@
 ﻿@page "/users"
 @using Domain.Dtos.User
 @using Refit
-@using Services.Interfaces
+@using Services.ExternalApi
 @inject IUserService UserService
 
 <h3>List</h3>
@@ -21,7 +21,9 @@
     {
         await base.OnInitializedAsync();
 
-        Users = await UserService.GetUsersAsync();
+        var response = await UserService.GetUsersAsync();
+
+        Users = response.Content;
 
         int a = 1;
     }

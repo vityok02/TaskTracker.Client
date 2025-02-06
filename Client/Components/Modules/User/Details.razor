@@ -1,15 +1,23 @@
-﻿@using Domain.Dtos.User
-@using Services.Interfaces
+﻿@page "/users/{id:guid}"
+@using Domain.Dtos.User
+@using Microsoft.AspNetCore.Authorization
+@using Services.ExternalApi
 @inject IUserService UserService
-
-@page "/users/{id:guid}"
 
 <h3>Details</h3>
 
-<p>
-    @User.Id<br />
-    @User.Username, @User.Email
-</p>
+@if(User is null)
+{
+    <p>User not found</p>
+}
+else
+{
+    <p>
+        @User.Id<br />
+        @User.Username, @User.Email
+    </p>
+}
+
 
 @code {
     [Parameter]
@@ -19,6 +27,7 @@
 
     protected override async Task OnInitializedAsync()
     {
-        User = await UserService.GetUserAsync(Id);
+        var response = await UserService.GetUserAsync(Id);
+        User = response.Content;
     }
 }

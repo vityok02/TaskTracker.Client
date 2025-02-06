@@ -1,12 +1,12 @@
 using Client;
 using Client.Components;
-using Services;
-using Services.Interfaces;
-using Refit;
-using Microsoft.Extensions.Options;
 using Client.Extensions;
+using Services.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddAuthenticationCore();
+builder.Services.AddAuthorization();
 
 builder.Services.AddOptions<TaskTrackerSettings>()
     .BindConfiguration(TaskTrackerSettings.ConfigurationSection)
@@ -15,9 +15,11 @@ builder.Services.AddOptions<TaskTrackerSettings>()
 
 builder.Services.AddApi(builder.Configuration);
 
-// Add services to the container.
+builder.Services.AddServices();
+
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
+
 
 var app = builder.Build();
 
@@ -31,6 +33,8 @@ if (!app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+app.UseAuthentication();
+app.UseAuthorization();
 
 app.UseAntiforgery();
 
@@ -38,4 +42,4 @@ app.MapStaticAssets();
 app.MapRazorComponents<App>()
     .AddInteractiveServerRenderMode();
 
-app.Run();
+await app.RunAsync();

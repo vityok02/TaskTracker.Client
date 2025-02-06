@@ -1,14 +1,13 @@
-﻿using Domain.Models.Identity;
-using Domain.Responses;
-using Refit;
+﻿using Domain.Abstract;
+using Domain.Models.Identity;
 
 namespace Services.Interfaces;
 
-public interface IIdentityService : ITaskTrackerApi
+public interface IIdentityService
 {
-    [Post("/users/register")]
-    Task<ApiResponse<RegisterResponse>> RegisterAsync(RegisterModel model);
+    Task LoginAsync(LoginModel model);
 
-    [Post("/users/login")]
-    Task<TokenResponse> LoginAsync(LoginModel model);
+    Task RegisterAsync(RegisterModel model);
+
+    void Logout();
 }
