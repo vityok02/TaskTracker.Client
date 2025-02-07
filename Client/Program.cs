@@ -1,27 +1,16 @@
 using Client;
 using Client.Components;
 using Client.Extensions;
-using Microsoft.AspNetCore.Components.Authorization;
 using Services.Extensions;
-using Services.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddAuthenticationCore();
-builder.Services.AddAuthorization();
-
-builder.Services.AddOptions<TaskTrackerSettings>()
-    .BindConfiguration(TaskTrackerSettings.ConfigurationSection)
-    .ValidateDataAnnotations()
-    .ValidateOnStart();
+builder.Services.AddServices();
 
 builder.Services.AddApi(builder.Configuration);
 
-builder.Services.AddServices();
-
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
-
 
 var app = builder.Build();
 
