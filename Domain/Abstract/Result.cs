@@ -2,7 +2,7 @@
 
 public class Result
 {
-    public bool IsSuccess { get; protected set; }
+    public bool IsSuccess { get; protected set; } = true;
 
     public bool IsFailure => !IsSuccess;
 
@@ -13,7 +13,7 @@ public class Result
         IsSuccess = true;
     }
 
-    protected Result(string code, string? description = null)
+    protected Result(string code, string description)
     {
         IsSuccess = false;
         Error = new Error(code, description);
@@ -29,6 +29,6 @@ public class Result
 
     public static Result Failure(Error error) => new(error);
 
-    public static Result Failure(string code, string? description = null)
+    public static Result Failure(string code, string description)
         => new(code, description);
 }

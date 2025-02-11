@@ -14,7 +14,7 @@ namespace Services.Services
             _tokenService = cookieManager;
         }
 
-        public override Task<AuthenticationState> GetAuthenticationStateAsync()
+        public override async Task<AuthenticationState> GetAuthenticationStateAsync()
         {
             var token = _tokenService.GetToken();
 
@@ -24,10 +24,10 @@ namespace Services.Services
 
             var user = new ClaimsPrincipal(identity);
 
-            return Task.FromResult(new AuthenticationState(user));
+            return new AuthenticationState(user);
         }
 
-        public void MarkUserAsAuthenticated(string token)
+        public async Task MarkUserAsAuthenticatedAsync(string token)
         {
             _tokenService.SetToken(token);
             var identity = GetClaimsIdentity(token);
@@ -36,7 +36,7 @@ namespace Services.Services
             NotifyAuthenticationStateChanged(Task.FromResult(new AuthenticationState(user)));
         }
 
-        public void MarkUserAsLoggedOut()
+        public async Task MarkUserAsLoggedOutAsync()
         {
             _tokenService.RemoveToken();
             var user = new ClaimsPrincipal(new ClaimsIdentity());

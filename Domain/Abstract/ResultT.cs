@@ -16,7 +16,7 @@ public class Result<TValue> : Result
         Error = error;
     }
 
-    private Result(string code, string? description = null)
+    private Result(string code, string description)
     {
         IsSuccess = false;
         Error = new Error(code, description);
@@ -26,7 +26,7 @@ public class Result<TValue> : Result
 
     public new static Result<TValue> Failure(Error error) => new(error);
 
-    public new static Result<TValue> Failure(string code, string? description = null)
+    public new static Result<TValue> Failure(string code, string description)
         => new(code, description);
 
     public static implicit operator Result<TValue>(TValue value) => Success(value);

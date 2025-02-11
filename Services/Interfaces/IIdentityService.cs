@@ -9,5 +9,5 @@ public interface IIdentityService
 
     Task<Result> RegisterAsync(RegisterModel model);
 
-    void Logout();
+    Task Logout();
 }

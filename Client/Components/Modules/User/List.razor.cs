@@ -1,4 +1,4 @@
-using Domain.Dtos.User;
+using Domain.Dtos;
 using Services.ExternalApi;
 
 namespace Client.Components.Modules.User;

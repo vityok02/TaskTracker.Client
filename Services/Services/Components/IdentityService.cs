@@ -1,6 +1,8 @@
 ﻿using Domain.Abstract;
 using Domain.Models.Identity;
 using Microsoft.AspNetCore.Components.Authorization;
+using Refit;
+using Services.Extensions;
 using Services.ExternalApi;
 using Services.Interfaces;
 
@@ -11,8 +13,14 @@ public class IdentityService : IIdentityService
     private readonly AuthenticationStateProvider _authStateProvider;
     private readonly IIdentityApi _identityApi;
 
+    private readonly string _errorMessage
+        = "Authentication failed. Please try again.";
+    private readonly string _authProviderError
+        = "Authentication failed. Please try again later.";
+
     public IdentityService(
-        AuthenticationStateProvider authStateProvider, IIdentityApi identityApi)
+        AuthenticationStateProvider authStateProvider,
+        IIdentityApi identityApi)
     {
         _authStateProvider = authStateProvider;
         _identityApi = identityApi;
@@ -22,30 +30,67 @@ public class IdentityService : IIdentityService
     {
         var response = await _identityApi
             .LoginAsync(model);
-        
-        var tokenResponse = response.Content;
 
-        (_authStateProvider as CustomAuthStateProvider)!
-            .MarkUserAsAuthenticated(tokenResponse.Token);
-
-        return Result.Success();
+        return await HandleAuthResponseAsync(
+            response,
+            response.Content?.Token);
     }
 
     public async Task<Result> RegisterAsync(RegisterModel model)
     {
         var response = await _identityApi.RegisterAsync(model);
 
-        var tokenResponse = response.Content.Token;
-
-        (_authStateProvider as CustomAuthStateProvider)!
-            .MarkUserAsAuthenticated(tokenResponse.Token);
-
-        return Result.Success();
+        return await HandleAuthResponseAsync(
+            response,
+            response.Content?.Token?.Token);
     }
 
-    public void Logout()
+    public async Task Logout()
     {
-        (_authStateProvider as CustomAuthStateProvider)!
-            .MarkUserAsLoggedOut();
+        if (_authStateProvider is CustomAuthStateProvider provider)
+        {
+            await provider.MarkUserAsLoggedOutAsync();
+        }
+    }
+
+    private async Task<Result> HandleAuthResponseAsync(
+        IApiResponse response,
+        string? token)
+    {
+        if (!response.IsSuccessStatusCode)
+        {
+            var problemDetails = response.GetProblemDetails();
+
+            var errorType = problemDetails.Type
+                ?? "AuthenticationError";
+            var errorDetail = problemDetails.Detail
+                ?? _errorMessage;
+
+            return Result.Failure(problemDetails.Errors is null
+                ? new Error(errorType, errorDetail)
+                : new ValidationError(errorType, errorDetail, problemDetails.Errors));
+        }
+
+        if (string.IsNullOrWhiteSpace(token))
+        {
+            return Result
+                .Failure(new Error("InvalidToken", _errorMessage));
+        }
+
+        return await AuthenticateUserAsync(token);
+    }
+
+    private async Task<Result> AuthenticateUserAsync(string token)
+    {
+        if (_authStateProvider is not CustomAuthStateProvider provider)
+        {
+            return Result
+                .Failure("AuthProviderError", _authProviderError);
+        }
+
+        await provider
+            .MarkUserAsAuthenticatedAsync(token);
+
+        return Result.Success();
     }
 }

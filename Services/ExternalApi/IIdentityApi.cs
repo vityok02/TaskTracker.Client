@@ -1,5 +1,5 @@
-﻿using Domain.Models.Identity;
-using Domain.Responses;
+﻿using Domain.Dtos;
+using Domain.Models.Identity;
 using Refit;
 
 namespace Services.ExternalApi;
@@ -7,8 +7,8 @@ namespace Services.ExternalApi;
 public interface IIdentityApi : ITaskTrackerApi
 {
     [Post("/users/register")]
-    Task<IApiResponse<RegisterResponse>> RegisterAsync(RegisterModel model);
+    Task<IApiResponse<RegisterDto>> RegisterAsync(RegisterModel model);
 
     [Post("/users/login")]
-    Task<IApiResponse<TokenResponse>> LoginAsync(LoginModel model);
+    Task<IApiResponse<TokenDto>> LoginAsync(LoginModel model);
 }

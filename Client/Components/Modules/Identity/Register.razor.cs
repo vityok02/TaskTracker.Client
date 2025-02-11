@@ -1,4 +1,5 @@
-﻿using Domain.Models.Identity;
+﻿using Domain.Abstract;
+using Domain.Models.Identity;
 using Microsoft.AspNetCore.Components;
 using Services.Interfaces;
 
@@ -33,6 +34,18 @@ public sealed partial class Register : ComponentBase
 
         if (result.IsFailure)
         {
+            if (result.Error is ValidationError validationError)
+            {
+                ErrorMessage = validationError.Errors
+                    .FirstOrDefault()?.Message
+                        ?? "Unknown validation error";
+
+                return;
+            }
+
+            ErrorMessage = result.Error?.Message
+                ?? string.Empty;
+
             return;
         }
 

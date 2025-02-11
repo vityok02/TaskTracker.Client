@@ -1,4 +1,4 @@
-﻿using Domain.Dtos.User;
+﻿using Domain.Dtos;
 using Refit;
 
 namespace Services.ExternalApi;

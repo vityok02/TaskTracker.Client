@@ -1,4 +1,4 @@
-using Domain.Dtos.User;
+using Domain.Dtos;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Components;
 using Services.ExternalApi;
