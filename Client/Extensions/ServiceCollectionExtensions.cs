@@ -76,7 +76,11 @@ public static class ServiceCollectionExtensions
         var settings = configuration.GetSection(TaskTrackerSettings.ConfigurationSection)
             .Get<TaskTrackerSettings>();
 
-        var types = new[] { typeof(IUserApi), typeof(IIdentityApi) };
+        var baseInterface = typeof(ITaskTrackerApi);
+
+        var types = typeof(ITaskTrackerApi).Assembly
+            .GetTypes()
+            .Where(t => t.IsInterface && baseInterface.IsAssignableFrom(t) && t != baseInterface);
 
         foreach (var type in types)
         {

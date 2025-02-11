@@ -1,0 +1,13 @@
+﻿@page "/projects"
+
+<h3>List</h3>
+
+<ul>
+    @foreach (var project in Projects)
+    {
+        <li>
+            @project.Name @(project.Description ?? "No description")<br />
+            Created: @project.CreatedAt by @project.CreatedBy<br />
+        </li>
+    }
+</ul>
