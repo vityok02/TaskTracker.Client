@@ -1,24 +1,29 @@
 ﻿using Domain.Dtos;
 using Microsoft.AspNetCore.Authorization;
-using Services.ExternalApi;
+using Services.Services.Components;
 
 namespace Client.Components.Modules.Projects;
 
 [Authorize]
 public sealed partial class List
 {
-    private readonly IProjectApi _api;
+    private readonly IProjectService _projectService;
     private IEnumerable<ProjectDto> Projects = [];
 
-    public List(IProjectApi api)
+    public List(IProjectService projectService)
     {
-        _api = api;
+        _projectService = projectService;
     }
 
     protected override async Task OnInitializedAsync()
     {
-        var response = await _api.GetProjectsAsync();
+        var result = await _projectService.GetAllProjectsAsync();
 
-        Projects = response.Content ?? [];
+        if (result.IsFailure)
+        {
+            return;
+        }
+
+        Projects = result.Value;
     }
 }
