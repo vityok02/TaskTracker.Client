@@ -1,0 +1,30 @@
+﻿using Domain.Models.Identity;
+using FluentValidation;
+using Services.Extensions;
+
+namespace Services.Validators;
+
+internal sealed class RegisterModelValidator
+    : AbstractValidator<RegisterModel>
+{
+    public RegisterModelValidator()
+    {
+        RuleLevelCascadeMode = CascadeMode.Stop;
+
+        RuleFor(x => x.Username)
+            .NotEmpty()
+                .WithMessage("The field must not be empty ")
+            .MinimumLength(3)
+                .WithMessage("The username must be at least 5 charaters long")
+            .MaximumLength(20)
+                .WithMessage("The username must be less then 20 characters long");
+
+        RuleFor(x => x.Email)
+            .ApplyEmailRules();
+
+        RuleFor(x => x.Password)
+            .ApplyPasswordRules()
+            .Equal(x => x.ConfirmedPassword)
+                .WithMessage("Passwords must match");
+    }
+}

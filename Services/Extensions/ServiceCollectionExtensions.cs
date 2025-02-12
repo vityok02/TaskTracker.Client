@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Components.Authorization;
+﻿using FluentValidation;
+using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.Extensions.DependencyInjection;
 using Services.Interfaces;
 using Services.Interfaces.Components;
@@ -18,6 +19,7 @@ public static class ServiceCollectionExtensions
         services.AddScoped<ITokenStorage, TokenStorage>();
         services.AddScoped<IProjectService, ProjectService>();
         services.AddScoped<IResponseErrorHandler, ResponseErrorHandler>();
+        services.AddValidatorsFromAssembly(AssemblyReference.Assembly, includeInternalTypes: true);
 
         return services;
     }

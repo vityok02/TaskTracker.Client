@@ -4,25 +4,24 @@
 
 <h3>Register</h3>
 
-<EditForm Model="@RegisterModel" OnValidSubmit="Submit" FormName="RegisterForm">
-    <DataAnnotationsValidator></DataAnnotationsValidator>
-    <ValidationSummary></ValidationSummary>
-    <label>
-        Username
-        <InputText @bind-Value="RegisterModel.Username"></InputText>
-    </label>
-    <label>
-        Email
-        <InputText @bind-Value="RegisterModel.Email"></InputText>
-    </label>
-    <label>
-        Password
-        <InputText type="password" @bind-Value="RegisterModel.Password"></InputText>
-    </label>
-    <label>
-        Confirm password
-        <InputText type="password" @bind-Value="RegisterModel.ConfirmedPassword"></InputText>
-    </label>
-    <p>@ErrorMessage</p>
-    <button type="submit">Register</button>
-</EditForm>
+<Form Model="@RegisterModel" OnFinish="Submit" Layout="FormLayout.Vertical" ValidateOnChange>
+    <FluentValidationValidator />
+
+    <FormItem Label="Username">
+        <Input @bind-Value="RegisterModel.Username" Placeholder="Enter your username" />
+    </FormItem>
+
+    <FormItem Label="Email">
+        <Input @bind-Value="RegisterModel.Email" Placeholder="Enter your email" />
+    </FormItem>
+
+    <FormItem Label="Password">
+        <InputPassword @bind-Value="RegisterModel.Password" Placeholder="Enter password"/>
+    </FormItem>
+
+    <FormItem Label="Confirm password">
+        <InputPassword @bind-Value="RegisterModel.ConfirmedPassword" Placeholder="Confirm password"/>
+    </FormItem>
+
+    <Button Type="ButtonType.Primary" HtmlType="submit">Register</Button>
+</Form>

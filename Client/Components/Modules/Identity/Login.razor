@@ -4,19 +4,22 @@
 
 <h3>Login</h3>
 
-<EditForm Model="LoginModel" OnValidSubmit="Submit" FormName="Login">
-    <DataAnnotationsValidator />
-    <ValidationSummary />
-    <label>
-        Email
-        <InputText @bind-Value="LoginModel.Email" />
-    </label>
-    <label>
-        Password
-        <InputText type="password" @bind-Value="LoginModel.Password" />
-    </label>
-    <p>@ErrorMessage</p>
-    <button type="submit">Login</button>
-</EditForm>
+<Form Model="@LoginModel" OnFinishFailed="OnInitializedAsync" OnFinish="Submit" Layout="FormLayout.Vertical"
+    ValidateOnChange>
+    <FluentValidationValidator />
 
-<a href="/register">Create account</a>
+    <FormItem Label="Email">
+        <Input @bind-Value="LoginModel.Email" Placeholder="Enter your email" />
+    </FormItem>
+
+    <FormItem Label="Password">
+        <InputPassword @bind-Value="LoginModel.Password" Placeholder="Enter your password" />
+    </FormItem>
+
+    <ButtonGroup>
+        <Button Type="ButtonType.Primary" HtmlType="submit">Login</Button>
+    </ButtonGroup>
+</Form>
+
+Don't have an account?
+<NavLink href="/register">Create</NavLink>
