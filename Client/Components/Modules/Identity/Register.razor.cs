@@ -1,7 +1,7 @@
 ﻿using Domain.Abstract;
 using Domain.Models.Identity;
 using Microsoft.AspNetCore.Components;
-using Services.Interfaces;
+using Services.Interfaces.Components;
 
 namespace Client.Components.Modules.Identity;
 

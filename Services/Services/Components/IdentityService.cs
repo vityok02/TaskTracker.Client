@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Components.Authorization;
 using Refit;
 using Services.Extensions;
 using Services.ExternalApi;
-using Services.Interfaces;
+using Services.Interfaces.Components;
 
 namespace Services.Services.Components;
 
