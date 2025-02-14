@@ -31,4 +31,32 @@ public static class RuleBuilderExtensions
             .EmailAddress()
                 .WithMessage("Please enter a valid email address");
     }
+
+    public static IRuleBuilder<T, string> ApplyNameRules<T>(
+        this IRuleBuilder<T, string> ruleBuilder)
+    {
+        int minimumLength = 3;
+        int maximumLength = 50;
+
+        return ruleBuilder
+            .NotEmpty()
+                .WithMessage("Please enter a value")
+            .MinimumLength(minimumLength)
+                .WithMessage($"The field must contain at least {minimumLength} symbols")
+            .MaximumLength(maximumLength)
+                .WithMessage($"The field must contain no more than {maximumLength} symbols");
+    }
+
+    public static IRuleBuilder<T, string> ApplyDescriptionRules<T>(
+        this IRuleBuilder<T, string> ruleBuilder)
+    {
+        int minimumLength = 3;
+        int maximumLength = 500;
+
+        return ruleBuilder
+            .MinimumLength(minimumLength)
+                .WithMessage($"The field must contain at least {minimumLength} symbols")
+            .MaximumLength(maximumLength)
+                .WithMessage($"The field must contain no more than {maximumLength} symbols");
+    }
 }

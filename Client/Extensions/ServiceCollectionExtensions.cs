@@ -22,6 +22,8 @@ public static class ServiceCollectionExtensions
         services.AddMemoryCache();
         services.AddHttpContextAccessor();
 
+        services.AddAntDesign();
+
         return services;
     }
 
@@ -49,6 +51,8 @@ public static class ServiceCollectionExtensions
                 OnMessageReceived = context =>
                 {
                     var cache = context.HttpContext.RequestServices.GetService<ITokenStorage>();
+
+                    //var token = context.HttpContext.User.Identities.First(i => i.Name == "");
 
                     context.Token = cache!.GetToken() ?? string.Empty;
 

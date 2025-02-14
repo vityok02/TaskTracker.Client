@@ -7,20 +7,14 @@ namespace Client.Components.Modules.Identity;
 
 public sealed partial class Register : ComponentBase
 {
-    private readonly IIdentityService _identityService;
-    private readonly NavigationManager _navManager;
+    [Inject]
+    public required IIdentityService IdentityService { get; set; }
+    [Inject]
+    public required NavigationManager NavManager { get; set; }
 
     private RegisterModel RegisterModel { get; set; } = new RegisterModel();
 
     private string ErrorMessage { get; set; } = string.Empty;
-
-    public Register(
-        IIdentityService identityService,
-        NavigationManager navManager)
-    {
-        _identityService = identityService;
-        _navManager = navManager;
-    }
 
     public async Task Submit()
     {
@@ -30,7 +24,7 @@ public sealed partial class Register : ComponentBase
             return;
         }
 
-        var result = await _identityService.RegisterAsync(RegisterModel);
+        var result = await IdentityService.RegisterAsync(RegisterModel);
 
         if (result.IsFailure)
         {
@@ -49,6 +43,6 @@ public sealed partial class Register : ComponentBase
             return;
         }
 
-        _navManager.NavigateTo("/");
+        NavManager.NavigateTo("/");
     }
 }

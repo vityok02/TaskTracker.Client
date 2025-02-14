@@ -6,9 +6,9 @@ namespace Client.Components.Layout;
 public sealed partial class Header : ComponentBase
 {
     [CascadingParameter]
-    private Task<AuthenticationState> AuthenticationStateTask { get; set; }
+    public required Task<AuthenticationState> AuthenticationStateTask { get; set; }
 
-    protected string UserName { get; set; } = "Guest";
+    private string UserName { get; set; } = "Guest";
 
     protected override async Task OnInitializedAsync()
     {

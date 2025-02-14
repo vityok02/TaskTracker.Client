@@ -14,45 +14,45 @@ public class ResponseErrorHandler : IResponseErrorHandler
 
     public Result HandleResponse(IApiResponse response)
     {
-        if (!response.IsSuccessStatusCode)
+        if (response.IsSuccessStatusCode)
         {
-            var problemDetails = response.GetProblemDetails();
-
-            var errorType = problemDetails.Type
-                ?? _defaultError.Code;
-            var errorDetail = problemDetails.Detail
-                ?? _defaultError.Message;
-
-            return Result.Failure(problemDetails.Errors is null
-                ? new Error(errorType, errorDetail)
-                : new ValidationError(errorType, errorDetail, problemDetails.Errors));
+            return Result.Success();
         }
 
-        return Result.Success();
+        var problemDetails = response.GetProblemDetails();
+
+        var errorType = problemDetails.Type
+            ?? _defaultError.Code;
+        var errorDetail = problemDetails.Detail
+            ?? _defaultError.Message;
+
+        return Result.Failure(problemDetails.Errors is null
+            ? new Error(errorType, errorDetail)
+            : new ValidationError(errorType, errorDetail, problemDetails.Errors));
     }
 
     public Result<T> HandleResponse<T>(IApiResponse<T> response)
     {
-        if (!response.IsSuccessStatusCode)
+        if (response.IsSuccessStatusCode)
         {
-            var problemDetails = response.GetProblemDetails();
+            if (response.Content is null)
+            {
+                return Result<T>
+                    .Failure(_nullResponse);
+            }
 
-            var errorType = problemDetails.Type
-                ?? _defaultError.Code;
-            var errorDetail = problemDetails.Detail
-                ?? _defaultError.Message;
-
-            return Result<T>.Failure(problemDetails.Errors is null
-                ? new Error(errorType, errorDetail)
-                : new ValidationError(errorType, errorDetail, problemDetails.Errors));
+            return Result<T>.Success(response.Content);
         }
 
-        if (response.Content is null)
-        {
-            return Result<T>
-                .Failure(_nullResponse);
-        }
+        var problemDetails = response.GetProblemDetails();
 
-        return Result<T>.Success(response.Content);
+        var errorType = problemDetails.Type
+            ?? _defaultError.Code;
+        var errorDetail = problemDetails.Detail
+            ?? _defaultError.Message;
+
+        return Result<T>.Failure(problemDetails.Errors is null
+            ? new Error(errorType, errorDetail)
+            : new ValidationError(errorType, errorDetail, problemDetails.Errors));
     }
 }

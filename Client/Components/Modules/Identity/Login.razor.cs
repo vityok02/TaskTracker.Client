@@ -5,25 +5,18 @@ using Services.Interfaces.Components;
 
 namespace Client.Components.Modules.Identity;
 
-public sealed partial class Login : ComponentBase
+public partial class Login
 {
-    private readonly IIdentityService IdentityService;
-    private readonly NavigationManager NavigationManager;
+    [Inject]
+    public required IIdentityService IdentityService { get; set; }
+    [Inject]
+    public required NavigationManager NavigationManager { get; set; }
 
-    private LoginModel LoginModel = new();
+    private LoginModel LoginModel { get; set; } = new LoginModel();
 
     private string ErrorMessage { get; set; } = string.Empty;
 
-    public Login(
-        IIdentityService identityService,
-        NavigationManager navigationManager)
-    {
-        IdentityService = identityService;
-        NavigationManager = navigationManager;
-    }
-
-
-    public async Task Submit()
+    protected async Task Submit()
     {
         var result = await IdentityService
            .LoginAsync(LoginModel);
