@@ -1,15 +1,27 @@
 ﻿@page "/projects"
+@using Domain.Dtos
+@rendermode InteractiveServer
 
 <h3>List</h3>
 
-<CreateComponent />
+<Button Type="ButtonType.Primary" OnClick="@(() => _visible = true)">Create new</Button>
 
-<ul>
-    @foreach (var project in Projects)
-    {
-        <li>
-            @project.Name @(project.Description ?? "No description")<br />
-            Created: @project.CreatedAt by @project.CreatedBy<br />
-        </li>
-    }
-</ul>
+<CreateProject Visible="_visible" OnProjectCreated="LoadDataAsync" />
+
+<Divider />
+
+<Table TItem="ProjectDto" DataSource="Projects" HidePagination>
+    <Column @bind-Field=@context.Name Title="Name" />
+
+    <Column @bind-Field=@context.CreatedBy Title="Created by" />
+
+    <Column  @bind-Field=@context.CreatedAt Title="Created at">
+        <Template>
+            @context.CreatedAt.ToShortDateString()
+        </Template>
+    </Column>
+</Table>
+
+@code {
+    bool _visible = false;
+}

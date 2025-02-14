@@ -1,5 +1,6 @@
 ﻿using Domain.Dtos;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Components;
 using Services.Services.Components;
 
 namespace Client.Components.Modules.Projects;
@@ -7,17 +8,24 @@ namespace Client.Components.Modules.Projects;
 [Authorize]
 public sealed partial class List
 {
-    private readonly IProjectService _projectService;
-    private IEnumerable<ProjectDto> Projects = [];
+    [Inject]
+    public required IProjectService ProjectService { get; set; }
 
-    public List(IProjectService projectService)
-    {
-        _projectService = projectService;
-    }
+    [Inject]
+    public required NavigationManager NavigationManager { get; set; }
 
+    private IEnumerable<ProjectDto> Projects { get; set; } = [];
+
+    private string ErrorMessage { get; set; } = string.Empty;
+    
     protected override async Task OnInitializedAsync()
     {
-        var result = await _projectService.GetAllProjectsAsync();
+        await LoadDataAsync();
+    }
+
+    private async Task LoadDataAsync()
+    {
+        var result = await ProjectService.GetAllProjectsAsync();
 
         if (result.IsFailure)
         {

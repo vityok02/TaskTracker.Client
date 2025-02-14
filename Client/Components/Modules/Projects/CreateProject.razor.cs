@@ -2,27 +2,27 @@
 using Domain.Models;
 using Microsoft.AspNetCore.Components;
 using Services.Services.Components;
+
 namespace Client.Components.Modules.Projects;
 
-public sealed partial class CreateComponent : ComponentBase
+public partial class CreateProject
 {
-    private readonly IProjectService _projectService;
-    private readonly NavigationManager NavigationManager;
+    [Inject]
+    public required IProjectService ProjectService { get; set; }
 
-    private ProjectModel ProjectModel { get; set; } = new ProjectModel();
+    [Parameter]
+    public bool Visible { get; set; }
+
+    [Parameter]
+    public EventCallback OnProjectCreated { get; set; }
+
+    public ProjectModel ProjectModel { get; set; } = new ProjectModel();
+
     private string ErrorMessage { get; set; } = string.Empty;
 
-    public CreateComponent(
-        IProjectService projectService,
-        NavigationManager navigationManager)
+    private async Task Submit()
     {
-        _projectService = projectService;
-        NavigationManager = navigationManager;
-    }
-
-    public async Task Submit()
-    {
-        var result = await _projectService
+        var result = await ProjectService
             .CreateProjectAsync(ProjectModel);
 
         if (result.IsFailure)
@@ -42,7 +42,13 @@ public sealed partial class CreateComponent : ComponentBase
             return;
         }
 
-        NavigationManager
-            .NavigateTo("/projects");
+        await OnProjectCreated.InvokeAsync();
+
+        Visible = false;
+    }
+
+    private void Cancel()
+    {
+        Visible = false;
     }
 }

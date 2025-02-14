@@ -1,0 +1,18 @@
+﻿@rendermode InteractiveServer
+
+<Form Model="ProjectModel"
+      OnFinish="Submit"
+      Layout="FormLayout.Vertical">
+    <FluentValidationValidator />
+    
+    <FormItem Label="Name">
+        <Input @bind-Value="ProjectModel.Name" Placeholder="Name"/>
+    </FormItem>
+
+    <FormItem Label="Description">
+        <Input @bind-Value="ProjectModel.Description"></Input>
+    </FormItem>
+
+    <Button Type=@ButtonType.Primary HtmlType="submit">Create</Button>
+    <Button Type=@ButtonType.Default OnClick=@Cancel>Cancel</Button>
+</Form>
