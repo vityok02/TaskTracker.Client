@@ -2,24 +2,34 @@
 @using Domain.Dtos
 @rendermode InteractiveServer
 
-<h3>List</h3>
+<PageTitle>Projects</PageTitle>
 
-<Button Type="ButtonType.Primary" OnClick="@(() => _visible = true)">Create new</Button>
+<Title Level="3">Projects</Title>
 
-<CreateProject Visible="_visible" OnProjectCreated="LoadDataAsync" />
+<Button Type=@ButtonType.Primary
+        OnClick=@(() => _visible = true)>
+    Create new
+</Button>
+
+<CreateProject Visible=@_visible
+               OnProjectCreated=@LoadDataAsync />
 
 <Divider />
 
-<Table TItem="ProjectDto" DataSource="Projects" HidePagination>
+<Table TItem="ProjectDto"
+       DataSource="Projects"
+       HidePagination>
+
     <Column @bind-Field=@context.Name Title="Name" />
 
     <Column @bind-Field=@context.CreatedBy Title="Created by" />
 
-    <Column  @bind-Field=@context.CreatedAt Title="Created at">
+    <Column @bind-Field=@context.CreatedAt Title="Created at">
         <Template>
             @context.CreatedAt.ToShortDateString()
         </Template>
     </Column>
+
 </Table>
 
 @code {

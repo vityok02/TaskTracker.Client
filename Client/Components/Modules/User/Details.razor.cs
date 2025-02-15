@@ -8,12 +8,8 @@ namespace Client.Components.Modules.User;
 [Authorize]
 public sealed partial class Details : ComponentBase
 {
-    private readonly IUserApi _userApi;
-
-    public Details(IUserApi userApi)
-    {
-        _userApi = userApi;
-    }
+    [Inject]
+    public required IUserApi UserApi { get; init; }
 
     [Parameter]
     public Guid Id { get; set; }
@@ -22,7 +18,8 @@ public sealed partial class Details : ComponentBase
 
     protected override async Task OnInitializedAsync()
     {
-        var response = await _userApi.GetUserAsync(Id);
+        var response = await UserApi.GetUserAsync(Id);
+        // TODO: Handle response
         User = response.Content;
     }
 }

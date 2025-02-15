@@ -4,9 +4,9 @@ public class AuditableDto
 {
     public DateTime CreatedAt { get; set; }
 
-    public Guid CreatedBy { get; set; }
+    public string CreatedBy { get; set; } = string.Empty;
 
     public DateTime? UpdatedAt { get; set; }
 
-    public Guid? UpdateBy { get; set; }
+    public string? UpdateBy { get; set; }
 }

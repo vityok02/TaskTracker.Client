@@ -1,18 +1,32 @@
 ﻿@rendermode InteractiveServer
 
-<Form Model="ProjectModel"
-      OnFinish="Submit"
-      Layout="FormLayout.Vertical">
+<Form Model=@ProjectModel
+      OnFinish=@Submit
+      Layout=@FormLayout.Vertical
+      Autocomplete="off">
+
     <FluentValidationValidator />
-    
+
     <FormItem Label="Name">
-        <Input @bind-Value="ProjectModel.Name" Placeholder="Name"/>
+        <Input @bind-Value=@ProjectModel.Name />
     </FormItem>
 
     <FormItem Label="Description">
-        <Input @bind-Value="ProjectModel.Description"></Input>
+        <Input @bind-Value=@ProjectModel.Description />
     </FormItem>
 
-    <Button Type=@ButtonType.Primary HtmlType="submit">Create</Button>
-    <Button Type=@ButtonType.Default OnClick=@Cancel>Cancel</Button>
+    <Divider />
+
+    <div>
+        <Button Type=@ButtonType.Primary
+                HtmlType="submit">
+            Create
+        </Button>
+
+        <Button Type=@ButtonType.Default
+                OnClick=@Cancel>
+            Cancel
+        </Button>
+    </div>
+
 </Form>

@@ -5,21 +5,16 @@ namespace Client.Components.Modules.Identity;
 
 public sealed partial class Logout : ComponentBase
 {
-    private readonly IIdentityService _identityService;
-    private readonly NavigationManager _navigationManager;
+    [Inject]
+    public required IIdentityService IdentityService { get; set; }
 
-    public Logout(
-        NavigationManager navigationManager,
-        IIdentityService identityService)
-    {
-        _navigationManager = navigationManager;
-        _identityService = identityService;
-    }
+    [Inject]
+    public required NavigationManager NavigationManager { get; set; }
 
     protected override void OnInitialized()
     {
-        _identityService.Logout();
+        IdentityService.Logout();
 
-        _navigationManager.NavigateTo("/");
+        NavigationManager.NavigateTo("/");
     }
 }

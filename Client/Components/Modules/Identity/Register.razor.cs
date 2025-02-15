@@ -9,6 +9,7 @@ public sealed partial class Register : ComponentBase
 {
     [Inject]
     public required IIdentityService IdentityService { get; set; }
+
     [Inject]
     public required NavigationManager NavManager { get; set; }
 
