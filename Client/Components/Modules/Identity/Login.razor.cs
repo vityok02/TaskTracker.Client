@@ -9,6 +9,7 @@ public partial class Login
 {
     [Inject]
     public required IIdentityService IdentityService { get; set; }
+
     [Inject]
     public required NavigationManager NavigationManager { get; set; }
 

@@ -2,24 +2,41 @@
 
 @rendermode InteractiveServer
 
-<h3>Login</h3>
+<PageTitle>Login</PageTitle>
 
-<Form Model="@LoginModel" OnFinishFailed="OnInitializedAsync" OnFinish="Submit" Layout="FormLayout.Vertical"
-    ValidateOnChange>
-    <FluentValidationValidator />
+<Content Class="auth-form">
+    <Title Level="3">Login</Title>
+    <Form Model=@LoginModel
+          OnFinishFailed=@OnInitializedAsync
+          OnFinish=@Submit
+          Layout=@FormLayout.Vertical>
 
-    <FormItem Label="Email">
-        <Input @bind-Value="LoginModel.Email" Placeholder="Enter your email" />
-    </FormItem>
+        <FluentValidationValidator />
 
-    <FormItem Label="Password">
-        <InputPassword @bind-Value="LoginModel.Password" Placeholder="Enter your password" />
-    </FormItem>
+        <FormItem Label="Email">
+            <Input @bind-Value=@LoginModel.Email />
+        </FormItem>
 
-    <ButtonGroup>
-        <Button Type="ButtonType.Primary" HtmlType="submit">Login</Button>
-    </ButtonGroup>
-</Form>
+        <FormItem Label="Password">
+            <InputPassword @bind-Value=@LoginModel.Password />
+        </FormItem>
 
-Don't have an account?
-<NavLink href="/register">Create</NavLink>
+        <Text>@ErrorMessage</Text>
+
+        <Button Type=@ButtonType.Primary
+                HtmlType="submit">
+            Login
+        </Button>
+
+    </Form>
+
+    <div>
+
+        <Text>Don't have an account?</Text>
+        <NavLink Match=@NavLinkMatch.All
+                 href="/register">
+            Create
+        </NavLink>
+    </div>
+
+</Content>

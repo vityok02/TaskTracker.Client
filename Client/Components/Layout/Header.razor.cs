@@ -8,7 +8,7 @@ public sealed partial class Header : ComponentBase
     [CascadingParameter]
     public required Task<AuthenticationState> AuthenticationStateTask { get; set; }
 
-    private string UserName { get; set; } = "Guest";
+    private string UserName { get; set; } = string.Empty;
 
     protected override async Task OnInitializedAsync()
     {

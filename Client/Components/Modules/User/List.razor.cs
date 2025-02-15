@@ -1,15 +1,17 @@
 using Domain.Dtos;
+using Microsoft.AspNetCore.Components;
 using Services.ExternalApi;
 
 namespace Client.Components.Modules.User;
 
 public partial class List
 {
-    private readonly IUserApi _userService;
+    [Inject]
+    public required IUserApi UserService { get; init; }
 
     public List(IUserApi userService)
     {
-        _userService = userService;
+        UserService = userService;
     }
 
     public IEnumerable<UserDto> Users { get; set; } = [];
@@ -18,7 +20,9 @@ public partial class List
     {
         await base.OnInitializedAsync();
 
-        var response = await _userService.GetUsersAsync();
+        var response = await UserService.GetUsersAsync();
+
+        // TODO: Handle response
 
         Users = response.Content;
     }

@@ -1,3 +1,4 @@
+using AntDesign;
 using Client;
 using Client.Components;
 using Client.Extensions;
@@ -11,6 +12,8 @@ builder.Services.AddApi(builder.Configuration);
 
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
+
+LocaleProvider.DefaultLanguage = "en-US";
 
 var app = builder.Build();
 

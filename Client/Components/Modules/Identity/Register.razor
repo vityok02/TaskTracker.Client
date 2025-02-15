@@ -2,26 +2,45 @@
 
 @rendermode InteractiveServer
 
-<h3>Register</h3>
+<PageTitle>Register</PageTitle>
 
-<Form Model="@RegisterModel" OnFinish="Submit" Layout="FormLayout.Vertical" ValidateOnChange>
-    <FluentValidationValidator />
+<Content Class="auth-form">
+    <Title Level="3">Register</Title>
+    <Form Model=@RegisterModel
+          OnFinish=@Submit
+          Layout=@FormLayout.Vertical>
 
-    <FormItem Label="Username">
-        <Input @bind-Value="RegisterModel.Username" Placeholder="Enter your username" />
-    </FormItem>
+        <FluentValidationValidator />
 
-    <FormItem Label="Email">
-        <Input @bind-Value="RegisterModel.Email" Placeholder="Enter your email" />
-    </FormItem>
+        <FormItem Label="Username">
+            <Input @bind-Value=@RegisterModel.Username />
+        </FormItem>
 
-    <FormItem Label="Password">
-        <InputPassword @bind-Value="RegisterModel.Password" Placeholder="Enter password"/>
-    </FormItem>
+        <FormItem Label="Email">
+            <Input @bind-Value=@RegisterModel.Email>
+        </FormItem>
 
-    <FormItem Label="Confirm password">
-        <InputPassword @bind-Value="RegisterModel.ConfirmedPassword" Placeholder="Confirm password"/>
-    </FormItem>
+        <FormItem Label="Password">
+            <InputPassword @bind-Value=@RegisterModel.Password />
+        </FormItem>
 
-    <Button Type="ButtonType.Primary" HtmlType="submit">Register</Button>
-</Form>
+        <FormItem Label="Confirm password">
+            <InputPassword @bind-Value=@RegisterModel.ConfirmedPassword />
+        </FormItem>
+
+        <Text>@ErrorMessage</Text>
+
+        <div>
+            <Button Type=@ButtonType.Primary
+                    HtmlType="submit">
+                Register
+            </Button>
+
+            <Button Type=@ButtonType.Default
+                    OnClick=@(() => NavManager.NavigateTo("/login"))>
+                Back
+            </Button>
+        </div>
+
+    </Form>
+</Content>

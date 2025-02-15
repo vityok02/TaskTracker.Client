@@ -1,6 +1,10 @@
-﻿<Modal Title="Create project"
-       @bind-Visible=@Visible
-       Closable="@false"
-       Footer="@null" >
-    <ProjectForm OnSubmit=@Submit OnCancel=@Cancel ProjectModel=@ProjectModel />
+﻿<Modal @bind-Visible=@Visible
+       Title="Create project"
+       Closable=@false
+       Footer=@null>
+
+    <ProjectForm OnSubmit=@Submit
+                 OnCancel=@Cancel
+                 ProjectModel=@ProjectModel />
+
 </Modal>
