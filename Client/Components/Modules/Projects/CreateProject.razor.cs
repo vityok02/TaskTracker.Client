@@ -1,4 +1,5 @@
-﻿using Domain.Abstract;
+﻿using Client.Extensions;
+using Domain.Abstract;
 using Domain.Models;
 using Microsoft.AspNetCore.Components;
 using Services.Services.Components;
@@ -18,29 +19,12 @@ public partial class CreateProject
 
     public ProjectModel ProjectModel { get; set; } = new ProjectModel();
 
-    private string ErrorMessage { get; set; } = string.Empty;
-
     private async Task Submit()
     {
         var result = await ProjectService
             .CreateProjectAsync(ProjectModel);
 
-        if (result.IsFailure)
-        {
-            if (result.Error is ValidationError validationError)
-            {
-                ErrorMessage = validationError.Errors
-                    .FirstOrDefault()?.Message
-                        ?? "Unknown validation error";
-
-                return;
-            }
-
-            ErrorMessage = result.Error?.Message
-                ?? string.Empty;
-
-            return;
-        }
+        result.HandleResult(ApplicationState);
 
         await OnProjectCreated.InvokeAsync();
 

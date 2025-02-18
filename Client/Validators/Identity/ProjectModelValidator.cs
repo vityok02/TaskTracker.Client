@@ -2,12 +2,12 @@
 using FluentValidation;
 using Services.Extensions;
 
-namespace Services.Validators;
+namespace Client.Validators.Identity;
 
-internal sealed class ProjectValidator
+internal sealed class ProjectModelValidator
     : AbstractValidator<ProjectModel>
 {
-    public ProjectValidator()
+    public ProjectModelValidator()
     {
         RuleLevelCascadeMode = CascadeMode.Stop;
 

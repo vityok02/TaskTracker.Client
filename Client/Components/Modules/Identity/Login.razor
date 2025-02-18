@@ -1,11 +1,11 @@
 ﻿@page "/login"
 
-@rendermode InteractiveServer
-
 <PageTitle>Login</PageTitle>
 
 <Content Class="auth-form">
+
     <Title Level="3">Login</Title>
+
     <Form Model=@LoginModel
           OnFinishFailed=@OnInitializedAsync
           OnFinish=@Submit
@@ -31,8 +31,15 @@
     </Form>
 
     <div>
+        <NavLink Match=@NavLinkMatch.All
+                 href="/forgot-password">
+            Forgot your password?
+        </NavLink>
+    </div>
 
+    <div>
         <Text>Don't have an account?</Text>
+
         <NavLink Match=@NavLinkMatch.All
                  href="/register">
             Create

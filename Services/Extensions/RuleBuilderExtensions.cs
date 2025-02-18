@@ -1,4 +1,5 @@
 ﻿using FluentValidation;
+using System.Linq.Expressions;
 
 namespace Services.Extensions;
 
@@ -20,6 +21,16 @@ public static class RuleBuilderExtensions
                 .WithMessage("Password must contain at least one lowercase letter.")
             .Matches("[0-9]")
                 .WithMessage("Password must contain at least one digit.");
+    }
+
+    public static IRuleBuilder<T, string> ApplyConfirmedPasswordRules<T>(
+        this IRuleBuilder<T, string> ruleBuilder,
+        Expression<Func<T, string>> toCompare)
+    {
+        return ruleBuilder
+            .Equal(toCompare)
+                .WithMessage("Passwords do not match.");
+
     }
 
     public static IRuleBuilder<T, string> ApplyEmailRules<T>(
