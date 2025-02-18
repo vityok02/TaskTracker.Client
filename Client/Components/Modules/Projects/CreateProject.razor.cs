@@ -17,6 +17,9 @@ public partial class CreateProject
     [Parameter]
     public EventCallback OnProjectCreated { get; set; }
 
+    [CascadingParameter]
+    public required ApplicationState ApplicationState { get; set; }
+
     public ProjectModel ProjectModel { get; set; } = new ProjectModel();
 
     private async Task Submit()
