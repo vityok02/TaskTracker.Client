@@ -29,9 +29,9 @@ namespace Services.Services
 
         public async Task MarkUserAsAuthenticatedAsync(string token)
         {
-            _tokenService.SetToken(token);
             var identity = GetClaimsIdentity(token);
             var user = new ClaimsPrincipal(identity);
+            _tokenService.SetToken(token);
 
             NotifyAuthenticationStateChanged(Task.FromResult(new AuthenticationState(user)));
         }

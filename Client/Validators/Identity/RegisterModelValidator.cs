@@ -2,7 +2,7 @@
 using FluentValidation;
 using Services.Extensions;
 
-namespace Services.Validators;
+namespace Client.Validators.Identity;
 
 internal sealed class RegisterModelValidator
     : AbstractValidator<RegisterModel>
@@ -23,8 +23,9 @@ internal sealed class RegisterModelValidator
             .ApplyEmailRules();
 
         RuleFor(x => x.Password)
-            .ApplyPasswordRules()
-            .Equal(x => x.ConfirmedPassword)
-                .WithMessage("Passwords must match");
+            .ApplyPasswordRules();
+
+        RuleFor(x => x.ConfirmedPassword)
+            .ApplyConfirmedPasswordRules(x => x.Password);
     }
 }

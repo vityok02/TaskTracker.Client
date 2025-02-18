@@ -2,19 +2,16 @@
 using FluentValidation;
 using Services.Extensions;
 
-namespace Services.Validators;
+namespace Client.Validators.Identity;
 
-internal sealed class LoginModelValidator
-    : AbstractValidator<LoginModel>
+public class ResetPasswordModelValidator
+    : AbstractValidator<ResetPasswordModel>
 {
-    public LoginModelValidator()
+    public ResetPasswordModelValidator()
     {
         RuleLevelCascadeMode = CascadeMode.Stop;
 
         RuleFor(x => x.Email)
             .ApplyEmailRules();
-
-        RuleFor(x => x.Password)
-            .ApplyPasswordRules();
     }
 }

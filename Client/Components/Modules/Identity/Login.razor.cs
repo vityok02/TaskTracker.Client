@@ -1,6 +1,7 @@
 ﻿using Domain.Abstract;
 using Domain.Models.Identity;
 using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Authorization;
 using Services.Interfaces.Components;
 
 namespace Client.Components.Modules.Identity;
@@ -8,14 +9,30 @@ namespace Client.Components.Modules.Identity;
 public partial class Login
 {
     [Inject]
-    public required IIdentityService IdentityService { get; set; }
+    public required IIdentityService IdentityService { get; init; }
 
     [Inject]
-    public required NavigationManager NavigationManager { get; set; }
+    public required NavigationManager NavigationManager { get; init; }
+
+    [Inject]
+    public required AuthenticationStateProvider AuthStateProvider { get; init; }
 
     private LoginModel LoginModel { get; set; } = new LoginModel();
 
     private string ErrorMessage { get; set; } = string.Empty;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var authState = await AuthStateProvider
+            .GetAuthenticationStateAsync();
+
+        var user = authState.User;
+
+        if (user.Identity?.IsAuthenticated is true)
+        {
+            NavigationManager.NavigateTo("/");
+        }
+    }
 
     protected async Task Submit()
     {

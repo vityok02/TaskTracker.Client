@@ -11,4 +11,13 @@ public interface IIdentityApi : ITaskTrackerApi
 
     [Post("/users/login")]
     Task<IApiResponse<TokenDto>> LoginAsync(LoginModel model);
+
+    [Post("/users/reset-password")]
+    Task<IApiResponse> ResetPasswordAsync(ResetPasswordModel model);
+
+    [Post("/users/set-password")]
+    Task<IApiResponse<TokenDto>> SetPasswordAsync(SetPasswordModel model);
+
+    [Post("/users/change-password")]
+    Task<IApiResponse> ChangePasswordAsync(ChangePasswordModel model);
 }

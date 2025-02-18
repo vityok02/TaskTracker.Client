@@ -14,6 +14,9 @@ public sealed partial class List
     [Inject]
     public required NavigationManager NavigationManager { get; set; }
 
+    [CascadingParameter]
+    public required ApplicationState AppState { get; set; }
+
     private IEnumerable<ProjectDto> Projects { get; set; } = [];
 
     private string ErrorMessage { get; set; } = string.Empty;
@@ -29,6 +32,7 @@ public sealed partial class List
 
         if (result.IsFailure)
         {
+            AppState.ErrorMessage = result.Error!.Message;
             return;
         }
 

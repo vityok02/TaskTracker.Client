@@ -1,12 +1,14 @@
 ﻿<CascadingAuthenticationState>
     <Router AppAssembly="typeof(Program).Assembly">
         <Found Context="routeData">
-            <AuthorizeRouteView RouteData="routeData" DefaultLayout="typeof(Layout.MainLayout)">
-                <NotAuthorized>
-                    <p>Sorry, but you are not allowed to see this</p>
-                </NotAuthorized>
-            </AuthorizeRouteView>
-            <FocusOnNavigate RouteData="routeData" Selector="h1" />
+            <CascadingValue Value="@ApplicationState">
+                <AuthorizeRouteView RouteData="routeData" DefaultLayout="typeof(Layout.MainLayout)">
+                    <NotAuthorized>
+                        <p>Sorry, but you are not allowed to see this</p>
+                    </NotAuthorized>
+                </AuthorizeRouteView>
+                <FocusOnNavigate RouteData="routeData" Selector="h1" />
+            </CascadingValue>
         </Found>
         <NotFound>
             <PageTitle>Not found</PageTitle>
@@ -18,3 +20,14 @@
 </CascadingAuthenticationState>
 
 <AntContainer />
+
+@code {
+    private ApplicationState? ApplicationState { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        ApplicationState ??= new ApplicationState();
+
+        await base.OnInitializedAsync();
+    }
+}

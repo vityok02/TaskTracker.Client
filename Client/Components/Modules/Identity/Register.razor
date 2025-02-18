@@ -1,11 +1,11 @@
 ﻿@page "/register"
 
-@rendermode InteractiveServer
-
 <PageTitle>Register</PageTitle>
 
 <Content Class="auth-form">
+
     <Title Level="3">Register</Title>
+
     <Form Model=@RegisterModel
           OnFinish=@Submit
           Layout=@FormLayout.Vertical>
@@ -38,9 +38,10 @@
 
             <Button Type=@ButtonType.Default
                     OnClick=@(() => NavManager.NavigateTo("/login"))>
-                Back
+                Cancel
             </Button>
         </div>
 
     </Form>
+
 </Content>
