@@ -24,6 +24,8 @@ public static class ServiceCollectionExtensions
 
         services.AddAntDesign();
 
+        services.AddSingleton<ApplicationState>();
+
         return services;
     }
 

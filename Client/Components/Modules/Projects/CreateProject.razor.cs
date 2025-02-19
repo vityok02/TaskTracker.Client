@@ -27,7 +27,11 @@ public partial class CreateProject
         var result = await ProjectService
             .CreateProjectAsync(ProjectModel);
 
-        result.HandleResult(ApplicationState);
+        if (result.IsFailure)
+        {
+            ApplicationState.ErrorMessage = result.Error!.Message;
+            return;
+        }
 
         await OnProjectCreated.InvokeAsync();
 

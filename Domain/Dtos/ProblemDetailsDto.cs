@@ -2,9 +2,11 @@
 
 namespace Domain.Dtos;
 
-public record ProblemDetailsDto(
-    string Type,
-    string Title,
-    int Status,
-    string Detail,
-    IEnumerable<Error> Errors);
+public class ProblemDetailsDto
+{
+    public string Type { get; init; } = string.Empty;
+    public string Title { get; init; } = string.Empty;
+    public int Status { get; init; }
+    public string Detail { get; init; } = string.Empty;
+    public IEnumerable<Error> Errors { get; init; } = [];
+}

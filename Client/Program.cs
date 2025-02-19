@@ -11,7 +11,9 @@ builder.Services.AddServices();
 builder.Services.AddApi(builder.Configuration);
 
 builder.Services.AddRazorComponents()
-    .AddInteractiveServerComponents();
+    .AddInteractiveServerComponents()
+    .AddInteractiveWebAssemblyComponents();
+;
 
 LocaleProvider.DefaultLanguage = "en-US";
 
@@ -32,8 +34,11 @@ app.UseAuthorization();
 
 app.UseAntiforgery();
 
+app.UseStaticFiles();
+
 app.MapStaticAssets();
 app.MapRazorComponents<App>()
-    .AddInteractiveServerRenderMode();
+    .AddInteractiveServerRenderMode()
+    .AddInteractiveWebAssemblyRenderMode();
 
 await app.RunAsync();
