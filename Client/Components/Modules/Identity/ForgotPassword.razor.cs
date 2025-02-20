@@ -1,7 +1,6 @@
 ﻿using Domain.Models.Identity;
 using Microsoft.AspNetCore.Components;
 using Services.Interfaces.Components;
-using System.Net.NetworkInformation;
 
 namespace Client.Components.Modules.Identity;
 
@@ -13,9 +12,6 @@ public partial class ForgotPassword
     [Inject]
     public required NavigationManager NavManager { get; init; }
 
-    [CascadingParameter]
-    public required ApplicationState AppState { get; init; }
-
     private ResetPasswordModel ResetPasswordModel { get; set; } = new();
 
     public async Task Submit()
@@ -23,12 +19,9 @@ public partial class ForgotPassword
         var result = await IdentityService
             .ResetPassword(ResetPasswordModel);
 
-        if (result.IsFailure)
+        if (result.IsSuccess)
         {
-            AppState.ErrorMessage = result.Error!.Message;
-            return;
+            NavManager.NavigateTo("/forgot-password/confirmation");
         }
-
-        NavManager.NavigateTo("/forgot-password/confirmation");
     }
 }
