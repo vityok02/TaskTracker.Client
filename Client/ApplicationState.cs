@@ -1,37 +1,24 @@
-﻿using System.ComponentModel;
-using System.Runtime.CompilerServices;
+﻿namespace Client;
 
-namespace Client;
-
-public class ApplicationState : INotifyPropertyChanged
+public class ApplicationState
 {
-    private string? _errorMessage;
+    private string _errorMessage = string.Empty;
 
-    public string? ErrorMessage
+    public string ErrorMessage
     {
         get => _errorMessage;
         set
         {
-            if (_errorMessage != value)
-            {
-                _errorMessage = value;
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(ErrorMessage)));
-            }
+            _errorMessage = value;
+            ShowError();
         }
     }
 
-    public void SetError(string? message)
+    public event Action? OnNotification;
+
+    public void ShowError()
     {
-        ErrorMessage = message;
-        OnPropertyChanged(nameof(ErrorMessage));
-    }
-
-    public bool HasError => !string.IsNullOrEmpty(ErrorMessage);
-
-    public event PropertyChangedEventHandler? PropertyChanged;
-
-    protected void OnPropertyChanged([CallerMemberName] string? propertyName = null)
-    {
-        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        OnNotification?.Invoke();
+        _errorMessage = string.Empty;
     }
 }

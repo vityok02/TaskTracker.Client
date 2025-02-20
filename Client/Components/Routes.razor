@@ -22,12 +22,6 @@
 <AntContainer />
 
 @code {
-    private ApplicationState? ApplicationState { get; set; }
-
-    protected override async Task OnInitializedAsync()
-    {
-        ApplicationState ??= new ApplicationState();
-
-        await base.OnInitializedAsync();
-    }
+    [Inject]
+    public required ApplicationState ApplicationState { get; set; }
 }
