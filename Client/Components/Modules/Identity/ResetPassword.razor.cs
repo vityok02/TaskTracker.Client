@@ -12,9 +12,6 @@ public partial class ResetPassword
     [Inject]
     public required NavigationManager NavManager { get; init; }
 
-    [CascadingParameter]
-    public required ApplicationState AppState { get; init; }
-
     [Parameter]
     public required string ResetToken { get; set; }
 
@@ -27,12 +24,9 @@ public partial class ResetPassword
         var result = await IdentityService
             .SetPasswordAndAuthorize(SetPassword);
 
-        if (result.IsFailure)
+        if (result.IsSuccess)
         {
-            AppState.ErrorMessage = result.Error!.Message;
-            return;
+            NavManager.NavigateTo("/");
         }
-
-        NavManager.NavigateTo("/");
     }
 }
