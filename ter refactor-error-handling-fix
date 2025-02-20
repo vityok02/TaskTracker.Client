@@ -1,0 +1,705 @@
+[1mdiff --git a/Client/ApplicationState.cs b/Client/ApplicationState.cs[m
+[1mindex 90d8e4e..d94d763 100644[m
+[1m--- a/Client/ApplicationState.cs[m
+[1m+++ b/Client/ApplicationState.cs[m
+[36m@@ -1,37 +1,24 @@[m
+[31m-﻿using System.ComponentModel;[m
+[31m-using System.Runtime.CompilerServices;[m
+[32m+[m[32m﻿namespace Client;[m
+ [m
+[31m-namespace Client;[m
+[31m-[m
+[31m-public class ApplicationState : INotifyPropertyChanged[m
+[32m+[m[32mpublic class ApplicationState[m
+ {[m
+[31m-    private string? _errorMessage;[m
+[32m+[m[32m    private string _errorMessage = string.Empty;[m
+ [m
+[31m-    public string? ErrorMessage[m
+[32m+[m[32m    public string ErrorMessage[m
+     {[m
+         get => _errorMessage;[m
+         set[m
+         {[m
+[31m-            if (_errorMessage != value)[m
+[31m-            {[m
+[31m-                _errorMessage = value;[m
+[31m-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(ErrorMessage)));[m
+[31m-            }[m
+[32m+[m[32m            _errorMessage = value;[m
+[32m+[m[32m            ShowError();[m
+         }[m
+     }[m
+ [m
+[31m-    public void SetError(string? message)[m
+[31m-    {[m
+[31m-        ErrorMessage = message;[m
+[31m-        OnPropertyChanged(nameof(ErrorMessage));[m
+[31m-    }[m
+[31m-[m
+[31m-    public bool HasError => !string.IsNullOrEmpty(ErrorMessage);[m
+[31m-[m
+[31m-    public event PropertyChangedEventHandler? PropertyChanged;[m
+[32m+[m[32m    public event Action? OnNotification;[m
+ [m
+[31m-    protected void OnPropertyChanged([CallerMemberName] string? propertyName = null)[m
+[32m+[m[32m    public void ShowError()[m
+     {[m
+[31m-        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));[m
+[32m+[m[32m        OnNotification?.Invoke();[m
+[32m+[m[32m        _errorMessage = string.Empty;[m
+     }[m
+[31m-}[m
+[32m+[m[32m}[m
+\ No newline at end of file[m
+[1mdiff --git a/Client/Client.csproj b/Client/Client.csproj[m
+[1mindex 39d9fb0..cb01eb8 100644[m
+[1m--- a/Client/Client.csproj[m
+[1m+++ b/Client/Client.csproj[m
+[36m@@ -12,6 +12,8 @@[m
+     <PackageReference Include="Blazored.LocalStorage" Version="4.5.0" />[m
+     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="9.0.1" />[m
+     <PackageReference Include="Microsoft.AspNetCore.Components.Authorization" Version="9.0.1" />[m
+[32m+[m[32m    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="9.0.2" />[m
+[32m+[m[32m    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="9.0.2" />[m
+     <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="8.3.1" />[m
+   </ItemGroup>[m
+ [m
+[1mdiff --git a/Client/Components/App.razor b/Client/Components/App.razor[m
+[1mindex 7320943..533048a 100644[m
+[1m--- a/Client/Components/App.razor[m
+[1m+++ b/Client/Components/App.razor[m
+[36m@@ -10,12 +10,12 @@[m
+     <link rel="stylesheet" href="@Assets["Client.styles.css"]" />[m
+     <ImportMap />[m
+     <link rel="icon" type="image/png" href="favicon.png" />[m
+[31m-    <HeadOutlet @rendermode="new InteractiveServerRenderMode(prerender: false)" />[m
+[32m+[m[32m    <HeadOutlet @rendermode="RenderMode.InteractiveServer" />[m
+ </head>[m
+ [m
+ <body>[m
+[31m-    <Routes @rendermode="new InteractiveServerRenderMode(prerender: false)" />[m
+[31m-    <AntContainer @rendermode="new InteractiveServerRenderMode(prerender: false)" />[m
+[32m+[m[32m    <Routes @rendermode="RenderMode.InteractiveServer" />[m
+[32m+[m[32m    <AntContainer @rendermode="RenderMode.InteractiveWebAssembly" />[m
+     <script src="_framework/blazor.web.js"></script>[m
+ </body>[m
+ [m
+[1mdiff --git a/Client/Components/Layout/MainLayout.razor b/Client/Components/Layout/MainLayout.razor[m
+[1mindex 5064b78..a12d35e 100644[m
+[1m--- a/Client/Components/Layout/MainLayout.razor[m
+[1m+++ b/Client/Components/Layout/MainLayout.razor[m
+[36m@@ -1,16 +1,6 @@[m
+ ﻿@inherits LayoutComponentBase[m
+ [m
+[31m-@rendermode InteractiveServer[m
+[31m-[m
+[31m-@* @if (!string.IsNullOrEmpty(ApplicationState?.ErrorMessage))[m
+[31m-{[m
+[31m-    <Alert Closable="true">[m
+[31m-        @ApplicationState.ErrorMessage[m
+[31m-    </Alert>[m
+[31m-} *@[m
+[31m-[m
+ <div class="page">[m
+[31m-[m
+     <AuthorizeView>[m
+         <Authorized>[m
+             <div class="sidebar">[m
+[36m@@ -32,23 +22,4 @@[m
+     An unhandled error has occurred.[m
+     <a href="." class="reload">Reload</a>[m
+     <span class="dismiss">🗙</span>[m
+[31m-</div>[m
+[31m-[m
+[31m-@code {[m
+[31m-    [CascadingParameter][m
+[31m-    public ApplicationState? ApplicationState { get; set; }[m
+[31m-[m
+[31m-    // protected override void OnInitialized()[m
+[31m-    // {[m
+[31m-    //     if (ApplicationState != null)[m
+[31m-    //     {[m
+[31m-    //         ApplicationState.PropertyChanged += (sender, args) =>[m
+[31m-    //         {[m
+[31m-    //             if (args.PropertyName == nameof(ApplicationState.ErrorMessage))[m
+[31m-    //             {[m
+[31m-    //                 StateHasChanged();[m
+[31m-    //             }[m
+[31m-    //         };[m
+[31m-    //     }[m
+[31m-    // }[m
+[31m-}[m
+\ No newline at end of file[m
+[32m+[m[32m</div>[m
+\ No newline at end of file[m
+[1mdiff --git a/Client/Components/Layout/MainLayout.razor.cs b/Client/Components/Layout/MainLayout.razor.cs[m
+[1mnew file mode 100644[m
+[1mindex 0000000..6c8af4f[m
+[1m--- /dev/null[m
+[1m+++ b/Client/Components/Layout/MainLayout.razor.cs[m
+[36m@@ -0,0 +1,45 @@[m
+[32m+[m[32m﻿using AntDesign;[m
+[32m+[m[32musing Microsoft.AspNetCore.Components;[m
+[32m+[m
+[32m+[m[32mnamespace Client.Components.Layout;[m
+[32m+[m
+[32m+[m[32mpublic partial class MainLayout : IDisposable[m
+[32m+[m[32m{[m
+[32m+[m[32m    [Inject][m
+[32m+[m[32m    public required NotificationService Notice { get; set; }[m
+[32m+[m
+[32m+[m[32m    [CascadingParameter][m
+[32m+[m[32m    public ApplicationState? AppState { get; set; }[m
+[32m+[m
+[32m+[m[32m    protected override void OnInitialized()[m
+[32m+[m[32m    {[m
+[32m+[m[32m        if (AppState is not null)[m
+[32m+[m[32m        {[m
+[32m+[m[32m            AppState.OnNotification += OnNotificationHandler;[m
+[32m+[m[32m        }[m
+[32m+[m[32m    }[m
+[32m+[m
+[32m+[m[32m    public void Dispose()[m
+[32m+[m[32m    {[m
+[32m+[m[32m        if (AppState is not null)[m
+[32m+[m[32m        {[m
+[32m+[m[32m            AppState.OnNotification -= OnNotificationHandler;[m
+[32m+[m[32m        }[m
+[32m+[m[32m    }[m
+[32m+[m
+[32m+[m[32m    private void OnNotificationHandler()[m
+[32m+[m[32m    {[m
+[32m+[m[32m        InvokeAsync(ShowNotification);[m
+[32m+[m[32m    }[m
+[32m+[m
+[32m+[m[32m    private async Task ShowNotification()[m
+[32m+[m[32m    {[m
+[32m+[m[32m        if (AppState is not null)[m
+[32m+[m[32m        {[m
+[32m+[m[32m            await Notice.Error(new NotificationConfig()[m
+[32m+[m[32m            {[m
+[32m+[m[32m                Message = AppState.ErrorMessage,[m
+[32m+[m[32m            });[m
+[32m+[m[32m        }[m
+[32m+[m[32m    }[m
+[32m+[m[32m}[m
+[1mdiff --git a/Client/Components/Modules/Identity/ChangePassword.razor.cs b/Client/Components/Modules/Identity/ChangePassword.razor.cs[m
+[1mindex 5865580..885ac8e 100644[m
+[1m--- a/Client/Components/Modules/Identity/ChangePassword.razor.cs[m
+[1m+++ b/Client/Components/Modules/Identity/ChangePassword.razor.cs[m
+[36m@@ -12,6 +12,9 @@[m [mpublic partial class ChangePassword[m
+     [Inject][m
+     public required NavigationManager NavManager { get; init; }[m
+ [m
+[32m+[m[32m    [CascadingParameter][m
+[32m+[m[32m    public required ApplicationState AppState { get; init; }[m
+[32m+[m
+     [Parameter][m
+     public required Guid UserId { get; init; }[m
+ [m
+[36m@@ -24,9 +27,12 @@[m [mpublic partial class ChangePassword[m
+         var result = await IdentityService[m
+             .ChangePassword(ChangePasswordModel);[m
+ [m
+[31m-        if (result.IsSuccess)[m
+[32m+[m[32m        if (result.IsFailure)[m
+         {[m
+[31m-            NavManager.NavigateTo("/");[m
+[32m+[m[32m            AppState.ErrorMessage = result.Error!.Message;[m
+[32m+[m[32m            return;[m
+         }[m
+[32m+[m
+[32m+[m[32m        NavManager.NavigateTo("/");[m
+     }[m
+ }[m
+[1mdiff --git a/Client/Components/Modules/Identity/ForgotPassword.razor.cs b/Client/Components/Modules/Identity/ForgotPassword.razor.cs[m
+[1mindex ff54f8b..37fd06b 100644[m
+[1m--- a/Client/Components/Modules/Identity/ForgotPassword.razor.cs[m
+[1m+++ b/Client/Components/Modules/Identity/ForgotPassword.razor.cs[m
+[36m@@ -1,6 +1,7 @@[m
+ ﻿using Domain.Models.Identity;[m
+ using Microsoft.AspNetCore.Components;[m
+ using Services.Interfaces.Components;[m
+[32m+[m[32musing System.Net.NetworkInformation;[m
+ [m
+ namespace Client.Components.Modules.Identity;[m
+ [m
+[36m@@ -12,6 +13,9 @@[m [mpublic partial class ForgotPassword[m
+     [Inject][m
+     public required NavigationManager NavManager { get; init; }[m
+ [m
+[32m+[m[32m    [CascadingParameter][m
+[32m+[m[32m    public required ApplicationState AppState { get; init; }[m
+[32m+[m
+     private ResetPasswordModel ResetPasswordModel { get; set; } = new();[m
+ [m
+     public async Task Submit()[m
+[36m@@ -19,9 +23,12 @@[m [mpublic partial class ForgotPassword[m
+         var result = await IdentityService[m
+             .ResetPassword(ResetPasswordModel);[m
+ [m
+[31m-        if (result.IsSuccess)[m
+[32m+[m[32m        if (result.IsFailure)[m
+         {[m
+[31m-            NavManager.NavigateTo("/forgot-password/confirmation");[m
+[32m+[m[32m            AppState.ErrorMessage = result.Error!.Message;[m
+[32m+[m[32m            return;[m
+         }[m
+[32m+[m
+[32m+[m[32m        NavManager.NavigateTo("/forgot-password/confirmation");[m
+     }[m
+ }[m
+[1mdiff --git a/Client/Components/Modules/Identity/Login.razor.cs b/Client/Components/Modules/Identity/Login.razor.cs[m
+[1mindex 85fb3cd..d25c44d 100644[m
+[1m--- a/Client/Components/Modules/Identity/Login.razor.cs[m
+[1m+++ b/Client/Components/Modules/Identity/Login.razor.cs[m
+[36m@@ -1,5 +1,4 @@[m
+[31m-﻿using Domain.Abstract;[m
+[31m-using Domain.Models.Identity;[m
+[32m+[m[32m﻿using Domain.Models.Identity;[m
+ using Microsoft.AspNetCore.Components;[m
+ using Microsoft.AspNetCore.Components.Authorization;[m
+ using Services.Interfaces.Components;[m
+[36m@@ -17,6 +16,9 @@[m [mpublic partial class Login[m
+     [Inject][m
+     public required AuthenticationStateProvider AuthStateProvider { get; init; }[m
+ [m
+[32m+[m[32m    [CascadingParameter][m
+[32m+[m[32m    public required ApplicationState AppState { get; set; }[m
+[32m+[m
+     private LoginModel LoginModel { get; set; } = new LoginModel();[m
+ [m
+     private string ErrorMessage { get; set; } = string.Empty;[m
+[36m@@ -41,18 +43,7 @@[m [mpublic partial class Login[m
+ [m
+         if (result.IsFailure)[m
+         {[m
+[31m-            if (result.Error is ValidationError validationError)[m
+[31m-            {[m
+[31m-                ErrorMessage = validationError.Errors[m
+[31m-                    .FirstOrDefault()?.Message[m
+[31m-                        ?? "Unknown validation error";[m
+[31m-[m
+[31m-                return;[m
+[31m-            }[m
+[31m-[m
+[31m-            ErrorMessage = result.Error?.Message[m
+[31m-                ?? string.Empty;[m
+[31m-[m
+[32m+[m[32m            AppState.ErrorMessage = result.Error!.Message;[m
+             return;[m
+         }[m
+ [m
+[1mdiff --git a/Client/Components/Modules/Identity/Register.razor.cs b/Client/Components/Modules/Identity/Register.razor.cs[m
+[1mindex 173d5e0..424d4cc 100644[m
+[1m--- a/Client/Components/Modules/Identity/Register.razor.cs[m
+[1m+++ b/Client/Components/Modules/Identity/Register.razor.cs[m
+[36m@@ -13,34 +13,21 @@[m [mpublic sealed partial class Register : ComponentBase[m
+     [Inject][m
+     public required NavigationManager NavManager { get; set; }[m
+ [m
+[32m+[m[32m    [CascadingParameter][m
+[32m+[m[32m    public required ApplicationState AppState { get; set; }[m
+[32m+[m
+     private RegisterModel RegisterModel { get; set; } = new RegisterModel();[m
+ [m
+     private string ErrorMessage { get; set; } = string.Empty;[m
+ [m
+     public async Task Submit()[m
+     {[m
+[31m-        if (RegisterModel.Password != RegisterModel.ConfirmedPassword)[m
+[31m-        {[m
+[31m-            ErrorMessage = "Passwords do not match";[m
+[31m-            return;[m
+[31m-        }[m
+[31m-[m
+[31m-        var result = await IdentityService.RegisterAsync(RegisterModel);[m
+[32m+[m[32m        var result = await IdentityService[m
+[32m+[m[32m            .RegisterAsync(RegisterModel);[m
+ [m
+         if (result.IsFailure)[m
+         {[m
+[31m-            if (result.Error is ValidationError validationError)[m
+[31m-            {[m
+[31m-                ErrorMessage = validationError.Errors[m
+[31m-                    .FirstOrDefault()?.Message[m
+[31m-                        ?? "Unknown validation error";[m
+[31m-[m
+[31m-                return;[m
+[31m-            }[m
+[31m-[m
+[31m-            ErrorMessage = result.Error?.Message[m
+[31m-                ?? string.Empty;[m
+[31m-[m
+[32m+[m[32m            AppState.ErrorMessage = result.Error!.Message;[m
+             return;[m
+         }[m
+ [m
+[1mdiff --git a/Client/Components/Modules/Identity/ResetPassword.razor.cs b/Client/Components/Modules/Identity/ResetPassword.razor.cs[m
+[1mindex f7c8961..7eb2097 100644[m
+[1m--- a/Client/Components/Modules/Identity/ResetPassword.razor.cs[m
+[1m+++ b/Client/Components/Modules/Identity/ResetPassword.razor.cs[m
+[36m@@ -12,6 +12,9 @@[m [mpublic partial class ResetPassword[m
+     [Inject][m
+     public required NavigationManager NavManager { get; init; }[m
+ [m
+[32m+[m[32m    [CascadingParameter][m
+[32m+[m[32m    public required ApplicationState AppState { get; init; }[m
+[32m+[m
+     [Parameter][m
+     public required string ResetToken { get; set; }[m
+ [m
+[36m@@ -24,9 +27,12 @@[m [mpublic partial class ResetPassword[m
+         var result = await IdentityService[m
+             .SetPasswordAndAuthorize(SetPassword);[m
+ [m
+[31m-        if (result.IsSuccess)[m
+[32m+[m[32m        if (result.IsFailure)[m
+         {[m
+[31m-            NavManager.NavigateTo("/");[m
+[32m+[m[32m            AppState.ErrorMessage = result.Error!.Message;[m
+[32m+[m[32m            return;[m
+         }[m
+[32m+[m
+[32m+[m[32m        NavManager.NavigateTo("/");[m
+     }[m
+ }[m
+[1mdiff --git a/Client/Components/Modules/Projects/CreateProject.razor.cs b/Client/Components/Modules/Projects/CreateProject.razor.cs[m
+[1mindex ccd4405..6b34ec1 100644[m
+[1m--- a/Client/Components/Modules/Projects/CreateProject.razor.cs[m
+[1m+++ b/Client/Components/Modules/Projects/CreateProject.razor.cs[m
+[36m@@ -27,7 +27,11 @@[m [mpublic partial class CreateProject[m
+         var result = await ProjectService[m
+             .CreateProjectAsync(ProjectModel);[m
+ [m
+[31m-        result.HandleResult(ApplicationState);[m
+[32m+[m[32m        if (result.IsFailure)[m
+[32m+[m[32m        {[m
+[32m+[m[32m            ApplicationState.ErrorMessage = result.Error!.Message;[m
+[32m+[m[32m            return;[m
+[32m+[m[32m        }[m
+ [m
+         await OnProjectCreated.InvokeAsync();[m
+ [m
+[1mdiff --git a/Client/Extensions/ResultExtensions.cs b/Client/Extensions/ResultExtensions.cs[m
+[1mindex f8faae2..1ce117c 100644[m
+[1m--- a/Client/Extensions/ResultExtensions.cs[m
+[1m+++ b/Client/Extensions/ResultExtensions.cs[m
+[36m@@ -4,49 +4,49 @@[m [mnamespace Client.Extensions;[m
+ [m
+ public static class ResultExtensions[m
+ {[m
+[31m-    public static void HandleResult([m
+[31m-        this Result result,[m
+[31m-        ApplicationState appState)[m
+[31m-    {[m
+[31m-        if (result.IsSuccess)[m
+[31m-        {[m
+[31m-            return;[m
+[31m-        }[m
+[31m-[m
+[31m-        if (result.Error is ValidationError validationError)[m
+[31m-        {[m
+[31m-            appState.SetError(validationError.Errors[m
+[31m-                .FirstOrDefault()?.Message[m
+[31m-                    ?? "Unknown validation error");[m
+[31m-[m
+[31m-            return;[m
+[31m-        }[m
+[31m-[m
+[31m-        appState.SetError(result.Error?.Message[m
+[31m-            ?? string.Empty);[m
+[31m-    }[m
+[31m-[m
+[31m-    public static T HandleResult<T>([m
+[31m-        this Result<T> result,[m
+[31m-        ApplicationState appState)[m
+[31m-    {[m
+[31m-        if (result.IsSuccess)[m
+[31m-        {[m
+[31m-            return result.Value;[m
+[31m-        }[m
+[31m-[m
+[31m-        if (result.Error is ValidationError validationError)[m
+[31m-        {[m
+[31m-            appState.SetError(validationError.Errors[m
+[31m-                .FirstOrDefault()?.Message[m
+[31m-                    ?? "Unknown validation error");[m
+[31m-[m
+[31m-            return result.Value;[m
+[31m-        }[m
+[31m-[m
+[31m-        appState.SetError(result.Error?.Message[m
+[31m-            ?? string.Empty);[m
+[31m-[m
+[31m-        return result.Value;[m
+[31m-    }[m
+[32m+[m[32m    //public static void HandleResult([m
+[32m+[m[32m    //    this Result result,[m
+[32m+[m[32m    //    ApplicationState appState)[m
+[32m+[m[32m    //{[m
+[32m+[m[32m    //    if (result.IsSuccess)[m
+[32m+[m[32m    //    {[m
+[32m+[m[32m    //        return;[m
+[32m+[m[32m    //    }[m
+[32m+[m
+[32m+[m[32m    //    if (result.Error is ValidationError validationError)[m
+[32m+[m[32m    //    {[m
+[32m+[m[32m    //        appState.SetError(validationError.Errors[m
+[32m+[m[32m    //            .FirstOrDefault()?.Message[m
+[32m+[m[32m    //                ?? "Unknown validation error");[m
+[32m+[m
+[32m+[m[32m    //        return;[m
+[32m+[m[32m    //    }[m
+[32m+[m
+[32m+[m[32m    //    appState.SetError(result.Error?.Message[m
+[32m+[m[32m    //        ?? string.Empty);[m
+[32m+[m[32m    //}[m
+[32m+[m
+[32m+[m[32m    //public static T HandleResult<T>([m
+[32m+[m[32m    //    this Result<T> result,[m
+[32m+[m[32m    //    ApplicationState appState)[m
+[32m+[m[32m    //{[m
+[32m+[m[32m    //    if (result.IsSuccess)[m
+[32m+[m[32m    //    {[m
+[32m+[m[32m    //        return result.Value;[m
+[32m+[m[32m    //    }[m
+[32m+[m
+[32m+[m[32m    //    if (result.Error is ValidationError validationError)[m
+[32m+[m[32m    //    {[m
+[32m+[m[32m    //        appState.SetError(validationError.Errors[m
+[32m+[m[32m    //            .FirstOrDefault()?.Message[m
+[32m+[m[32m    //                ?? "Unknown validation error");[m
+[32m+[m
+[32m+[m[32m    //        return result.Value;[m
+[32m+[m[32m    //    }[m
+[32m+[m
+[32m+[m[32m    //    appState.SetError(result.Error?.Message[m
+[32m+[m[32m    //        ?? string.Empty);[m
+[32m+[m
+[32m+[m[32m    //    return result.Value;[m
+[32m+[m[32m    //}[m
+ }[m
+[1mdiff --git a/Client/Program.cs b/Client/Program.cs[m
+[1mindex 18b46f8..77f8664 100644[m
+[1m--- a/Client/Program.cs[m
+[1m+++ b/Client/Program.cs[m
+[36m@@ -11,7 +11,9 @@[m [mbuilder.Services.AddServices();[m
+ builder.Services.AddApi(builder.Configuration);[m
+ [m
+ builder.Services.AddRazorComponents()[m
+[31m-    .AddInteractiveServerComponents();[m
+[32m+[m[32m    .AddInteractiveServerComponents()[m
+[32m+[m[32m    .AddInteractiveWebAssemblyComponents();[m
+[32m+[m[32m;[m
+ [m
+ LocaleProvider.DefaultLanguage = "en-US";[m
+ [m
+[36m@@ -32,8 +34,11 @@[m [mapp.UseAuthorization();[m
+ [m
+ app.UseAntiforgery();[m
+ [m
+[32m+[m[32mapp.UseStaticFiles();[m
+[32m+[m
+ app.MapStaticAssets();[m
+ app.MapRazorComponents<App>()[m
+[31m-    .AddInteractiveServerRenderMode();[m
+[32m+[m[32m    .AddInteractiveServerRenderMode()[m
+[32m+[m[32m    .AddInteractiveWebAssemblyRenderMode();[m
+ [m
+ await app.RunAsync();[m
+[1mdiff --git a/Domain/Constants/ErrorTypes.cs b/Domain/Constants/ErrorTypes.cs[m
+[1mnew file mode 100644[m
+[1mindex 0000000..701d1a7[m
+[1m--- /dev/null[m
+[1m+++ b/Domain/Constants/ErrorTypes.cs[m
+[36m@@ -0,0 +1,11 @@[m
+[32m+[m[32m﻿namespace Domain.Constants;[m
+[32m+[m
+[32m+[m[32mpublic class ErrorTypes[m
+[32m+[m[32m{[m
+[32m+[m[32m    public const string ValidationError = "ValidationError";[m
+[32m+[m[32m    public const string NotFound = "NotFound";[m
+[32m+[m[32m    public const string Unauthorized = "Unauthorized";[m
+[32m+[m[32m    public const string InvalidCredentials = "InvalidCredentials";[m
+[32m+[m[32m    public const string Conflict = "AlreadyExists";[m
+[32m+[m[32m    public const string InvalidToken = "InvalidToken";[m
+[32m+[m[32m}[m
+[1mdiff --git a/Domain/Dtos/ProblemDetailsDto.cs b/Domain/Dtos/ProblemDetailsDto.cs[m
+[1mindex f093ada..5c08cfa 100644[m
+[1m--- a/Domain/Dtos/ProblemDetailsDto.cs[m
+[1m+++ b/Domain/Dtos/ProblemDetailsDto.cs[m
+[36m@@ -2,9 +2,11 @@[m
+ [m
+ namespace Domain.Dtos;[m
+ [m
+[31m-public record ProblemDetailsDto([m
+[31m-    string Type,[m
+[31m-    string Title,[m
+[31m-    int Status,[m
+[31m-    string Detail,[m
+[31m-    IEnumerable<Error> Errors);[m
+[32m+[m[32mpublic class ProblemDetailsDto[m
+[32m+[m[32m{[m
+[32m+[m[32m    public string Type { get; init; } = string.Empty;[m
+[32m+[m[32m    public string Title { get; init; } = string.Empty;[m
+[32m+[m[32m    public int Status { get; init; }[m
+[32m+[m[32m    public string Detail { get; init; } = string.Empty;[m
+[32m+[m[32m    public IEnumerable<Error> Errors { get; init; } = [];[m
+[32m+[m[32m}[m
+\ No newline at end of file[m
+[1mdiff --git a/Services/Extensions/IApiResponseExtensions.cs b/Services/Extensions/IApiResponseExtensions.cs[m
+[1mindex 9837460..c172512 100644[m
+[1m--- a/Services/Extensions/IApiResponseExtensions.cs[m
+[1m+++ b/Services/Extensions/IApiResponseExtensions.cs[m
+[36m@@ -1,4 +1,5 @@[m
+ ﻿using Domain.Abstract;[m
+[32m+[m[32musing Domain.Constants;[m
+ using Domain.Dtos;[m
+ using Refit;[m
+ using System.Text.Json;[m
+[36m@@ -10,9 +11,6 @@[m [mpublic static class IApiResponseExtensions[m
+     private static readonly Error _defaultError[m
+         = new("UnknownError", "An error occurred. Please try again later.");[m
+ [m
+[31m-    private static readonly Error _nullResponse[m
+[31m-        = new("NullResponse", "Response content is empty.");[m
+[31m-[m
+     private readonly static JsonSerializerOptions _options = new()[m
+     {[m
+         PropertyNameCaseInsensitive = true[m
+[36m@@ -20,9 +18,22 @@[m [mpublic static class IApiResponseExtensions[m
+ [m
+     public static ProblemDetailsDto GetProblemDetails(this IApiResponse response)[m
+     {[m
+[32m+[m[32m        if (response.Error?.Content == null)[m
+[32m+[m[32m        {[m
+[32m+[m[32m            return new ProblemDetailsDto[m
+[32m+[m[32m            {[m
+[32m+[m[32m                Type = _defaultError.Code,[m
+[32m+[m[32m                Detail = _defaultError.Message[m
+[32m+[m[32m            };[m
+[32m+[m[32m        }[m
+[32m+[m
+         return JsonSerializer[m
+[31m-            .Deserialize<ProblemDetailsDto>(response.Error!.Content!,[m
+[31m-            _options)!;[m
+[32m+[m[32m            .Deserialize<ProblemDetailsDto>(response.Error.Content, _options)[m
+[32m+[m[32m                ?? new ProblemDetailsDto[m
+[32m+[m[32m                {[m
+[32m+[m[32m                    Type = _defaultError.Code,[m
+[32m+[m[32m                    Detail = _defaultError.Message[m
+[32m+[m[32m                };[m
+     }[m
+ [m
+     public static Result HandleResponse(this IApiResponse response)[m
+[36m@@ -32,16 +43,7 @@[m [mpublic static class IApiResponseExtensions[m
+             return Result.Success();[m
+         }[m
+ [m
+[31m-        var problemDetails = response.GetProblemDetails();[m
+[31m-[m
+[31m-        var errorType = problemDetails.Type[m
+[31m-            ?? _defaultError.Code;[m
+[31m-        var errorDetail = problemDetails.Detail[m
+[31m-            ?? _defaultError.Message;[m
+[31m-[m
+[31m-        return Result.Failure(problemDetails.Errors is null[m
+[31m-            ? new Error(errorType, errorDetail)[m
+[31m-            : new ValidationError(errorType, errorDetail, problemDetails.Errors));[m
+[32m+[m[32m        return MapResponseError(response);[m
+     }[m
+ [m
+     public static Result<T> HandleResponse<T>(this IApiResponse<T> response)[m
+[36m@@ -51,21 +53,56 @@[m [mpublic static class IApiResponseExtensions[m
+             if (response.Content is null)[m
+             {[m
+                 return Result<T>[m
+[31m-                    .Failure(_nullResponse);[m
+[32m+[m[32m                    .Failure(_defaultError);[m
+             }[m
+ [m
+             return Result<T>.Success(response.Content);[m
+         }[m
+ [m
+[32m+[m[32m        return MapResponseError(response);[m
+[32m+[m[32m    }[m
+[32m+[m
+[32m+[m[32m    private static Error MapResponseError(IApiResponse response)[m
+[32m+[m[32m    {[m
+         var problemDetails = response.GetProblemDetails();[m
+ [m
+         var errorType = problemDetails.Type[m
+             ?? _defaultError.Code;[m
+[31m-        var errorDetail = problemDetails.Detail[m
+[31m-            ?? _defaultError.Message;[m
+ [m
+[31m-        return Result<T>.Failure(problemDetails.Errors is null[m
+[31m-            ? new Error(errorType, errorDetail)[m
+[31m-            : new ValidationError(errorType, errorDetail, problemDetails.Errors));[m
+[32m+[m[32m        return problemDetails?.Type?.Split('.').Last() switch[m
+[32m+[m[32m        {[m
+[32m+[m[32m            ErrorTypes.ValidationError[m
+[32m+[m[32m                => new ValidationError([m
+[32m+[m[32m                    errorType,[m
+[32m+[m[32m                    "Please check your input data",[m
+[32m+[m[32m                    problemDetails.Errors),[m
+[32m+[m
+[32m+[m[32m            ErrorTypes.InvalidCredentials[m
+[32m+[m[32m                => new Error([m
+[32m+[m[32m                    errorType,[m
+[32m+[m[32m                    "Invalid email or password"),[m
+[32m+[m
+[32m+[m[32m            ErrorTypes.InvalidToken[m
+[32m+[m[32m                => new Error([m
+[32m+[m[32m                    errorType,[m
+[32m+[m[32m                    "Invalid token"),[m
+[32m+[m
+[32m+[m[32m            ErrorTypes.Unauthorized[m
+[32m+[m[32m                => new Error([m
+[32m+[m[32m                    errorType,[m
+[32m+[m[32m                    "You are not authorized to perform this action"),[m
+[32m+[m
+[32m+[m[32m            ErrorTypes.NotFound[m
+[32m+[m[32m                => new Error([m
+[32m+[m[32m                    errorType,[m
+[32m+[m[32m                    "Resource not found"),[m
+[32m+[m
+[32m+[m[32m            ErrorTypes.Conflict[m
+[32m+[m[32m                => new Error([m
+[32m+[m[32m                    errorType,[m
+[32m+[m[32m                    "Resource already exists"),[m
+[32m+[m
+[32m+[m[32m            _ => new Error(errorType, "An error occurred. Please try again")[m
+[32m+[m[32m        };[m
+     }[m
+ }[m
+[1mdiff --git a/Services/Services/Components/ProjectService.cs b/Services/Services/Components/ProjectService.cs[m
+[1mindex 98ffc49..1433f20 100644[m
+[1m--- a/Services/Services/Components/ProjectService.cs[m
+[1m+++ b/Services/Services/Components/ProjectService.cs[m
+[36m@@ -1,6 +1,7 @@[m
+ ﻿using Domain.Abstract;[m
+ using Domain.Dtos;[m
+ using Domain.Models;[m
+[32m+[m[32musing Services.Extensions;[m
+ using Services.ExternalApi;[m
+ using Services.Interfaces;[m
+ [m
+[36m@@ -28,13 +29,13 @@[m [mpublic class ProjectService : BaseService, IProjectService[m
+     {[m
+         var response = await _projectApi.GetProjectsAsync();[m
+ [m
+[31m-        return ResponseErrorHandler.HandleResponse(response);[m
+[32m+[m[32m        return response.HandleResponse();[m
+     }[m
+ [m
+     public async Task<Result> CreateProjectAsync(ProjectModel project)[m
+     {[m
+         var response = await _projectApi.CreateProjectAsync(project);[m
+ [m
+[31m-        return ResponseErrorHandler.HandleResponse(response);[m
+[32m+[m[32m        return response.HandleResponse();[m
+     }[m
+ }[m
