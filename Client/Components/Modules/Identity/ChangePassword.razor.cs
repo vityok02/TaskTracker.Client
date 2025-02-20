@@ -12,6 +12,9 @@ public partial class ChangePassword
     [Inject]
     public required NavigationManager NavManager { get; init; }
 
+    [CascadingParameter]
+    public required ApplicationState AppState { get; init; }
+
     [Parameter]
     public required Guid UserId { get; init; }
 
@@ -24,9 +27,12 @@ public partial class ChangePassword
         var result = await IdentityService
             .ChangePassword(ChangePasswordModel);
 
-        if (result.IsSuccess)
+        if (result.IsFailure)
         {
-            NavManager.NavigateTo("/");
+            AppState.ErrorMessage = result.Error!.Message;
+            return;
         }
+
+        NavManager.NavigateTo("/");
     }
 }

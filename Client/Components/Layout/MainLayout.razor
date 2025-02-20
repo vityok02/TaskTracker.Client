@@ -1,16 +1,6 @@
 ﻿@inherits LayoutComponentBase
 
-@rendermode InteractiveServer
-
-@* @if (!string.IsNullOrEmpty(ApplicationState?.ErrorMessage))
-{
-    <Alert Closable="true">
-        @ApplicationState.ErrorMessage
-    </Alert>
-} *@
-
 <div class="page">
-
     <AuthorizeView>
         <Authorized>
             <div class="sidebar">
@@ -33,22 +23,3 @@
     <a href="." class="reload">Reload</a>
     <span class="dismiss">🗙</span>
 </div>
-
-@code {
-    [CascadingParameter]
-    public ApplicationState? ApplicationState { get; set; }
-
-    // protected override void OnInitialized()
-    // {
-    //     if (ApplicationState != null)
-    //     {
-    //         ApplicationState.PropertyChanged += (sender, args) =>
-    //         {
-    //             if (args.PropertyName == nameof(ApplicationState.ErrorMessage))
-    //             {
-    //                 StateHasChanged();
-    //             }
-    //         };
-    //     }
-    // }
-}

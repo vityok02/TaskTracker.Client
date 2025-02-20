@@ -1,6 +1,7 @@
 ﻿using Domain.Abstract;
 using Domain.Dtos;
 using Domain.Models;
+using Services.Extensions;
 using Services.ExternalApi;
 using Services.Interfaces;
 
@@ -28,13 +29,13 @@ public class ProjectService : BaseService, IProjectService
     {
         var response = await _projectApi.GetProjectsAsync();
 
-        return ResponseErrorHandler.HandleResponse(response);
+        return response.HandleResponse();
     }
 
     public async Task<Result> CreateProjectAsync(ProjectModel project)
     {
         var response = await _projectApi.CreateProjectAsync(project);
 
-        return ResponseErrorHandler.HandleResponse(response);
+        return response.HandleResponse();
     }
 }

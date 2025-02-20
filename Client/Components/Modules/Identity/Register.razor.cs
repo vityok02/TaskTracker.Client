@@ -13,34 +13,21 @@ public sealed partial class Register : ComponentBase
     [Inject]
     public required NavigationManager NavManager { get; set; }
 
+    [CascadingParameter]
+    public required ApplicationState AppState { get; set; }
+
     private RegisterModel RegisterModel { get; set; } = new RegisterModel();
 
     private string ErrorMessage { get; set; } = string.Empty;
 
     public async Task Submit()
     {
-        if (RegisterModel.Password != RegisterModel.ConfirmedPassword)
-        {
-            ErrorMessage = "Passwords do not match";
-            return;
-        }
-
-        var result = await IdentityService.RegisterAsync(RegisterModel);
+        var result = await IdentityService
+            .RegisterAsync(RegisterModel);
 
         if (result.IsFailure)
         {
-            if (result.Error is ValidationError validationError)
-            {
-                ErrorMessage = validationError.Errors
-                    .FirstOrDefault()?.Message
-                        ?? "Unknown validation error";
-
-                return;
-            }
-
-            ErrorMessage = result.Error?.Message
-                ?? string.Empty;
-
+            AppState.ErrorMessage = result.Error!.Message;
             return;
         }
 
