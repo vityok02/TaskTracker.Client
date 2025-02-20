@@ -1,4 +1,5 @@
-﻿using Domain.Models.Identity;
+﻿using Domain.Abstract;
+using Domain.Models.Identity;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
 using Services.Interfaces.Components;
@@ -15,9 +16,6 @@ public partial class Login
 
     [Inject]
     public required AuthenticationStateProvider AuthStateProvider { get; init; }
-
-    [CascadingParameter]
-    public required ApplicationState AppState { get; set; }
 
     private LoginModel LoginModel { get; set; } = new LoginModel();
 
@@ -43,7 +41,18 @@ public partial class Login
 
         if (result.IsFailure)
         {
-            AppState.ErrorMessage = result.Error!.Message;
+            if (result.Error is ValidationError validationError)
+            {
+                ErrorMessage = validationError.Errors
+                    .FirstOrDefault()?.Message
+                        ?? "Unknown validation error";
+
+                return;
+            }
+
+            ErrorMessage = result.Error?.Message
+                ?? string.Empty;
+
             return;
         }
 

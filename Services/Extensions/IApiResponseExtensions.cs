@@ -1,5 +1,4 @@
 ﻿using Domain.Abstract;
-using Domain.Constants;
 using Domain.Dtos;
 using Refit;
 using System.Text.Json;
@@ -11,6 +10,9 @@ public static class IApiResponseExtensions
     private static readonly Error _defaultError
         = new("UnknownError", "An error occurred. Please try again later.");
 
+    private static readonly Error _nullResponse
+        = new("NullResponse", "Response content is empty.");
+
     private readonly static JsonSerializerOptions _options = new()
     {
         PropertyNameCaseInsensitive = true
@@ -18,22 +20,9 @@ public static class IApiResponseExtensions
 
     public static ProblemDetailsDto GetProblemDetails(this IApiResponse response)
     {
-        if (response.Error?.Content == null)
-        {
-            return new ProblemDetailsDto
-            {
-                Type = _defaultError.Code,
-                Detail = _defaultError.Message
-            };
-        }
-
         return JsonSerializer
-            .Deserialize<ProblemDetailsDto>(response.Error.Content, _options)
-                ?? new ProblemDetailsDto
-                {
-                    Type = _defaultError.Code,
-                    Detail = _defaultError.Message
-                };
+            .Deserialize<ProblemDetailsDto>(response.Error!.Content!,
+            _options)!;
     }
 
     public static Result HandleResponse(this IApiResponse response)
@@ -43,7 +32,16 @@ public static class IApiResponseExtensions
             return Result.Success();
         }
 
-        return MapResponseError(response);
+        var problemDetails = response.GetProblemDetails();
+
+        var errorType = problemDetails.Type
+            ?? _defaultError.Code;
+        var errorDetail = problemDetails.Detail
+            ?? _defaultError.Message;
+
+        return Result.Failure(problemDetails.Errors is null
+            ? new Error(errorType, errorDetail)
+            : new ValidationError(errorType, errorDetail, problemDetails.Errors));
     }
 
     public static Result<T> HandleResponse<T>(this IApiResponse<T> response)
@@ -53,56 +51,21 @@ public static class IApiResponseExtensions
             if (response.Content is null)
             {
                 return Result<T>
-                    .Failure(_defaultError);
+                    .Failure(_nullResponse);
             }
 
             return Result<T>.Success(response.Content);
         }
 
-        return MapResponseError(response);
-    }
-
-    private static Error MapResponseError(IApiResponse response)
-    {
         var problemDetails = response.GetProblemDetails();
 
         var errorType = problemDetails.Type
             ?? _defaultError.Code;
+        var errorDetail = problemDetails.Detail
+            ?? _defaultError.Message;
 
-        return problemDetails?.Type?.Split('.').Last() switch
-        {
-            ErrorTypes.ValidationError
-                => new ValidationError(
-                    errorType,
-                    "Please check your input data",
-                    problemDetails.Errors),
-
-            ErrorTypes.InvalidCredentials
-                => new Error(
-                    errorType,
-                    "Invalid email or password"),
-
-            ErrorTypes.InvalidToken
-                => new Error(
-                    errorType,
-                    "Invalid token"),
-
-            ErrorTypes.Unauthorized
-                => new Error(
-                    errorType,
-                    "You are not authorized to perform this action"),
-
-            ErrorTypes.NotFound
-                => new Error(
-                    errorType,
-                    "Resource not found"),
-
-            ErrorTypes.Conflict
-                => new Error(
-                    errorType,
-                    "Resource already exists"),
-
-            _ => new Error(errorType, "An error occurred. Please try again")
-        };
+        return Result<T>.Failure(problemDetails.Errors is null
+            ? new Error(errorType, errorDetail)
+            : new ValidationError(errorType, errorDetail, problemDetails.Errors));
     }
 }
