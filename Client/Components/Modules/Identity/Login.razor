@@ -1,5 +1,7 @@
 ﻿@page "/login"
 
+@inherits BaseComponent
+
 <PageTitle>Login</PageTitle>
 
 <Content Class="auth-form">
@@ -14,7 +16,7 @@
         <FluentValidationValidator />
 
         <FormItem Label="Email">
-            <Input @bind-Value=@LoginModel.Email />
+            <Input Type="InputType.Email" name="email" @bind-Value=@LoginModel.Email />
         </FormItem>
 
         <FormItem Label="Password">

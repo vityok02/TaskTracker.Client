@@ -1,6 +1,4 @@
-﻿using Client.Extensions;
-using Domain.Abstract;
-using Domain.Models;
+﻿using Domain.Models;
 using Microsoft.AspNetCore.Components;
 using Services.Services.Components;
 

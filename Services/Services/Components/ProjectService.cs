@@ -3,24 +3,21 @@ using Domain.Dtos;
 using Domain.Models;
 using Services.Extensions;
 using Services.ExternalApi;
-using Services.Interfaces;
 
 namespace Services.Services.Components;
 
 public interface IProjectService
 {
     Task<Result> CreateProjectAsync(ProjectModel project);
+
     Task<Result<IEnumerable<ProjectDto>>> GetAllProjectsAsync();
 }
 
-public class ProjectService : BaseService, IProjectService
+public class ProjectService : IProjectService
 {
     private readonly IProjectApi _projectApi;
 
-    public ProjectService(
-        IResponseErrorHandler responseErrorHandler,
-        IProjectApi projectApi)
-        : base(responseErrorHandler)
+    public ProjectService(IProjectApi projectApi)
     {
         _projectApi = projectApi;
     }

@@ -1,10 +1,8 @@
-using AntDesign;
 using Domain.Dtos;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
-using Services.ExternalApi;
-using Services.Interfaces;
+using Services.Services.Components;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 
@@ -14,7 +12,7 @@ namespace Client.Components.Modules.User;
 public sealed partial class Details
 {
     [Inject]
-    public required IUserApi UserApi { get; init; }
+    public required IUserService UserService { get; init; }
 
     [Inject]
     public required AuthenticationStateProvider AuthStateProvider { get; init; }
@@ -26,13 +24,27 @@ public sealed partial class Details
 
     private UserDto? User { get; set; }
 
-    protected override async Task OnInitializedAsync()
+    protected override async Task OnParametersSetAsync()
     {
-        var response = await UserApi
+        var result = await UserService
             .GetUserAsync(UserId);
 
+        if (result.IsFailure)
+        {
+            AppState.ErrorMessage = result.Error!.Message;
+
+            NavManager.NavigateTo("/");
+        }
+
+        IsAuthorized = await IsUserAuthorizedAsync();
+
+        User = result.Value;
+    }
+
+    private async Task<bool> IsUserAuthorizedAsync()
+    {
         var authState = await AuthStateProvider
-            .GetAuthenticationStateAsync();
+                    .GetAuthenticationStateAsync();
 
         var user = authState.User;
 
@@ -43,11 +55,10 @@ public sealed partial class Details
 
             if (Guid.TryParse(subClaim, out Guid tokenUserId))
             {
-                IsAuthorized = (UserId == tokenUserId);
+                return (UserId == tokenUserId);
             }
         }
 
-        // TODO: Handle response
-        User = response.Content;
+        return false;
     }
 }

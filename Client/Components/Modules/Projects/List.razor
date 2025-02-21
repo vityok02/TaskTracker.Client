@@ -1,6 +1,6 @@
 ﻿@page "/projects"
-@using Domain.Dtos
-@rendermode InteractiveServer
+
+@attribute [Authorize]
 
 <PageTitle>Projects</PageTitle>
 
@@ -16,22 +16,22 @@
 
 <Divider />
 
-<Table TItem="ProjectDto"
-       DataSource="Projects"
+<Table TItem=@Domain.Dtos.ProjectDto
+       DataSource=@Projects
        HidePagination>
 
-    <Column @bind-Field=@context.Name Title="Name" />
+    <Column TData=@string DataIndex="Name" Title="Name">
+        @context.Name
+    </Column>
 
-    <Column @bind-Field=@context.CreatedBy Title="Created by" />
+    <Column TData="@string" Title="Created by">
+        @context.CreatedBy
+    </Column>
 
-    <Column @bind-Field=@context.CreatedAt Title="Created at">
+    <Column TData="@string" Title="Created at">
         <Template>
             @context.CreatedAt.ToShortDateString()
         </Template>
     </Column>
 
 </Table>
-
-@code {
-    bool _visible = false;
-}
