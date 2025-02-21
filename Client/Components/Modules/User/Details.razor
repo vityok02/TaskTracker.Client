@@ -1,5 +1,7 @@
 ﻿@page "/users/{userId:guid}"
 
+@inherits BaseComponent
+
 @attribute [Authorize]
 
 <PageTitle>@(User?.Username ?? "Not found")</PageTitle>
@@ -17,10 +19,10 @@ else
     </p>
 }
 
-@if(IsAuthorized)
+@if (IsAuthorized)
 {
     <NavLink Match=@NavLinkMatch.All
-                href="/change-password">
+             href="/change-password">
         Change password
     </NavLink>
 }

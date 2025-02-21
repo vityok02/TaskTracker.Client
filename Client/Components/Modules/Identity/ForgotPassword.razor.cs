@@ -10,12 +10,6 @@ public partial class ForgotPassword
     [Inject]
     public required IIdentityService IdentityService { get; init; }
 
-    [Inject]
-    public required NavigationManager NavManager { get; init; }
-
-    [CascadingParameter]
-    public required ApplicationState AppState { get; init; }
-
     private ResetPasswordModel ResetPasswordModel { get; set; } = new();
 
     public async Task Submit()

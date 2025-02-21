@@ -1,17 +1,33 @@
-﻿namespace Services.Services.Components;
+﻿using Domain.Abstract;
+using Domain.Dtos;
+using Services.Extensions;
+using Services.ExternalApi;
 
-public class UserService
+namespace Services.Services.Components;
+
+public class UserService : IUserService
 {
-    private readonly HttpClient _client;
+    private readonly IUserApi _userApi;
 
-    public UserService(HttpClient client)
+    public UserService(IUserApi userApi)
     {
-        _client = client;
+        _userApi = userApi;
     }
 
-    //public Task<IEnumerable<UserDto>> GetUsers()
-    //{
+    public async Task<Result<UserDto>> GetUserAsync(Guid userId)
+    {
+        var response = await _userApi
+            .GetUserAsync(userId);
 
-    //    //var users = _client.
-    //}
+        return response
+            .HandleResponse();
+    }
+
+    public async Task<Result<IEnumerable<UserDto>>> GetUsersAsync()
+    {
+        var response = await _userApi
+            .GetUsersAsync();
+
+        return response.HandleResponse();
+    }
 }

@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Components;
 namespace Client.Components.Modules.Projects;
 
-public sealed partial class ProjectForm : ComponentBase
+public sealed partial class ProjectForm
 {
     [Parameter]
     public ProjectModel ProjectModel { get; set; } = new ProjectModel();

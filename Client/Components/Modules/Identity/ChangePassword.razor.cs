@@ -9,12 +9,6 @@ public partial class ChangePassword
     [Inject]
     public required IIdentityService IdentityService { get; init; }
 
-    [Inject]
-    public required NavigationManager NavManager { get; init; }
-
-    [CascadingParameter]
-    public required ApplicationState AppState { get; init; }
-
     [Parameter]
     public required Guid UserId { get; init; }
 

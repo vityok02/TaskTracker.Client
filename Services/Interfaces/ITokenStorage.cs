@@ -2,7 +2,9 @@
 
 public interface ITokenStorage
 {
-    void SetToken(string token);
-    string GetToken();
-    void RemoveToken();
+    Task SetToken(string token);
+
+    Task<string?> GetToken();
+
+    Task RemoveToken();
 }

@@ -18,7 +18,7 @@ public static class IApiResponseExtensions
 
     public static ProblemDetailsDto GetProblemDetails(this IApiResponse response)
     {
-        if (response.Error?.Content == null)
+        if (string.IsNullOrEmpty(response.Error?.Content))
         {
             return new ProblemDetailsDto
             {

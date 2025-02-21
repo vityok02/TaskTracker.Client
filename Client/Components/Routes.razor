@@ -20,14 +20,3 @@
 </CascadingAuthenticationState>
 
 <AntContainer />
-
-@code {
-    private ApplicationState? ApplicationState { get; set; }
-
-    protected override async Task OnInitializedAsync()
-    {
-        ApplicationState ??= new ApplicationState();
-
-        await base.OnInitializedAsync();
-    }
-}

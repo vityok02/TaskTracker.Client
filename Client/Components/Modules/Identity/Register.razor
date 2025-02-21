@@ -1,5 +1,7 @@
 ﻿@page "/register"
 
+@inherits BaseComponent
+
 <PageTitle>Register</PageTitle>
 
 <Content Class="auth-form">
@@ -13,11 +15,11 @@
         <FluentValidationValidator />
 
         <FormItem Label="Username">
-            <Input @bind-Value=@RegisterModel.Username />
+            <Input name="username" @bind-Value=@RegisterModel.Username />
         </FormItem>
 
         <FormItem Label="Email">
-            <Input @bind-Value=@RegisterModel.Email>
+            <Input Type="InputType.Email" name="email" @bind-Value=@RegisterModel.Email>
         </FormItem>
 
         <FormItem Label="Password">
@@ -27,8 +29,6 @@
         <FormItem Label="Confirm password">
             <InputPassword @bind-Value=@RegisterModel.ConfirmedPassword />
         </FormItem>
-
-        <Text>@ErrorMessage</Text>
 
         <div>
             <Button Type=@ButtonType.Primary

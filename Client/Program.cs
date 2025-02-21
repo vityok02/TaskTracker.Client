@@ -19,6 +19,8 @@ LocaleProvider.DefaultLanguage = "en-US";
 
 var app = builder.Build();
 
+app.UseMiddleware<CookieMiddleware>();
+
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {

@@ -1,5 +1,6 @@
-﻿using Microsoft.AspNetCore.Authentication.Cookies;
+﻿using Client.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.IdentityModel.Tokens;
 using Refit;
@@ -16,13 +17,11 @@ public static class ServiceCollectionExtensions
         IConfiguration configuration)
     {
         services.AddAuthenticationAndAuthorization(configuration);
-
         services.AddExternalApis(configuration);
-
         services.AddMemoryCache();
         services.AddHttpContextAccessor();
-
         services.AddAntDesign();
+        services.AddScoped<AuthenticationStateProvider, CustomAuthStateProvider>();
 
         return services;
     }
@@ -50,11 +49,11 @@ public static class ServiceCollectionExtensions
             {
                 OnMessageReceived = context =>
                 {
-                    var cache = context.HttpContext.RequestServices.GetService<ITokenStorage>();
+                    var cache = context.HttpContext.RequestServices
+                    .GetService<ITokenStorage>();
 
-                    //var token = context.HttpContext.User.Identities.First(i => i.Name == "");
-
-                    context.Token = cache!.GetToken() ?? string.Empty;
+                    context.Token = cache!.GetToken().Result
+                        ?? string.Empty;
 
                     return Task.CompletedTask;
                 }

@@ -1,4 +1,5 @@
-﻿using Domain.Models.Identity;
+﻿using Client.Extensions;
+using Domain.Models.Identity;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
 using Services.Interfaces.Components;
@@ -11,13 +12,7 @@ public partial class Login
     public required IIdentityService IdentityService { get; init; }
 
     [Inject]
-    public required NavigationManager NavigationManager { get; init; }
-
-    [Inject]
     public required AuthenticationStateProvider AuthStateProvider { get; init; }
-
-    [CascadingParameter]
-    public required ApplicationState AppState { get; set; }
 
     private LoginModel LoginModel { get; set; } = new LoginModel();
 
@@ -32,7 +27,7 @@ public partial class Login
 
         if (user.Identity?.IsAuthenticated is true)
         {
-            NavigationManager.NavigateTo("/");
+            NavManager.NavigateTo("/");
         }
     }
 
@@ -47,6 +42,6 @@ public partial class Login
             return;
         }
 
-        NavigationManager.NavigateTo("/");
+        NavManager.NavigateToSetTokenPage(result.Value.Token);
     }
 }

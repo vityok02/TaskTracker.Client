@@ -3,7 +3,7 @@ using Services.Interfaces;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 
-namespace Services.Services
+namespace Client.Authentication
 {
     public class CustomAuthStateProvider : AuthenticationStateProvider
     {
@@ -16,7 +16,7 @@ namespace Services.Services
 
         public override async Task<AuthenticationState> GetAuthenticationStateAsync()
         {
-            var token = _tokenService.GetToken();
+            var token = await _tokenService.GetToken();
 
             var identity = string.IsNullOrWhiteSpace(token)
                 ? new ClaimsIdentity()
@@ -25,23 +25,6 @@ namespace Services.Services
             var user = new ClaimsPrincipal(identity);
 
             return new AuthenticationState(user);
-        }
-
-        public async Task MarkUserAsAuthenticatedAsync(string token)
-        {
-            var identity = GetClaimsIdentity(token);
-            var user = new ClaimsPrincipal(identity);
-            _tokenService.SetToken(token);
-
-            NotifyAuthenticationStateChanged(Task.FromResult(new AuthenticationState(user)));
-        }
-
-        public async Task MarkUserAsLoggedOutAsync()
-        {
-            _tokenService.RemoveToken();
-            var user = new ClaimsPrincipal(new ClaimsIdentity());
-
-            NotifyAuthenticationStateChanged(Task.FromResult(new AuthenticationState(user)));
         }
 
         private static ClaimsIdentity GetClaimsIdentity(string token)

@@ -1,11 +1,14 @@
 ﻿@page "/users"
 
-<h3>List</h3>
+@inherits BaseComponent
+
+<Title Level="3">List</Title>
 
 @foreach(var user in Users)
 {
     <p>
         @user.Username, @user.Email
     </p>
+
     <a href="users/@user.Id">Details</a>
 }
