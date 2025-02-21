@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Services.Interfaces;
 
-namespace Services.Services;
+namespace Services.Infrastructure;
 
 public class CookieManager : ICookieManager
 {
@@ -14,13 +14,18 @@ public class CookieManager : ICookieManager
 
     public void Set(string key, string value)
     {
-        _contextAccessor.HttpContext.Response.Cookies
-            .Append(key, value);
+        _contextAccessor.HttpContext?.Response.Cookies
+            .Append(key, value, new CookieOptions
+            {
+                Expires = DateTime.UtcNow.AddDays(7),
+                HttpOnly = true,
+                Secure = true
+            });
     }
 
-    public string Get(string key)
+    public string? Get(string key)
     {
-        return _contextAccessor.HttpContext.Request.Cookies[key];
+        return _contextAccessor.HttpContext?.Request.Cookies[key];
     }
 
     public void Remove(string key)

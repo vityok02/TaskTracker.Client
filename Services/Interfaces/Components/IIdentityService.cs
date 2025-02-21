@@ -6,15 +6,13 @@ namespace Services.Interfaces.Components;
 
 public interface IIdentityService
 {
-    Task<Result> LoginAsync(LoginModel model);
+    Task<Result<TokenDto>> LoginAsync(LoginModel model);
 
-    Task<Result> RegisterAsync(RegisterModel model);
-
-    Task Logout();
+    Task<Result<RegisterDto>> RegisterAsync(RegisterModel model);
 
     Task<Result> ResetPassword(ResetPasswordModel model);
 
-    Task<Result> SetPasswordAndAuthorize(SetPasswordModel model);
+    Task<Result<TokenDto>> SetPasswordAndAuthorize(SetPasswordModel model);
 
     Task<Result> ChangePassword(ChangePasswordModel model);
 }

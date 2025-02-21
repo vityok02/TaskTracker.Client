@@ -1,24 +1,16 @@
-﻿using Domain.Abstract;
+﻿using Client.Extensions;
 using Domain.Models.Identity;
 using Microsoft.AspNetCore.Components;
 using Services.Interfaces.Components;
 
 namespace Client.Components.Modules.Identity;
 
-public sealed partial class Register : ComponentBase
+public sealed partial class Register
 {
     [Inject]
     public required IIdentityService IdentityService { get; set; }
 
-    [Inject]
-    public required NavigationManager NavManager { get; set; }
-
-    [CascadingParameter]
-    public required ApplicationState AppState { get; set; }
-
     private RegisterModel RegisterModel { get; set; } = new RegisterModel();
-
-    private string ErrorMessage { get; set; } = string.Empty;
 
     public async Task Submit()
     {
@@ -31,6 +23,6 @@ public sealed partial class Register : ComponentBase
             return;
         }
 
-        NavManager.NavigateTo("/");
+        NavManager.NavigateToSetTokenPage(result.Value.Token.Token);
     }
 }
