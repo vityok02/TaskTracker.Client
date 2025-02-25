@@ -1,0 +1,61 @@
+﻿@page "/projects"
+
+@using Client.Components.Modules.Projects.Components
+
+@attribute [Authorize]
+
+<PageTitle>Projects</PageTitle>
+
+<Title Level="3">Projects</Title>
+
+<Button Type=@ButtonType.Primary
+        OnClick=@(() => ShowCreateForm())>
+    Create new
+</Button>
+
+<Divider />
+
+<Table TItem=@Domain.Dtos.ProjectDto
+       DataSource=@Projects
+       HidePagination>
+
+    <ActionColumn Title="Name">
+        <a @onclick=@(() => ShowDetails(context.Id))>
+            @context.Name
+        </a>
+    </ActionColumn>
+
+    <Column TData="@string" Title="Created by">
+        @context.CreatedBy
+    </Column>
+
+    <Column TData="@string" Title="Created at">
+        <Template>
+            @context.CreatedAt.ToShortDateString()
+        </Template>
+    </Column>
+
+    <ActionColumn Title="Actions">
+
+        <Button OnClick=@(() => ShowEditForm(context))>
+            Edit
+        </Button>
+
+        <Popconfirm Title="Are you sure delete this project?"
+                    OnConfirm=@(() => Delete(context.Id))
+                    OkText="Yes"
+                    CancelText="No">
+            <Button>Delete</Button>
+        </Popconfirm>
+
+    </ActionColumn>
+
+</Table>
+
+<ProjectForm @bind-Visible=@_formVisible
+             IsEdit=@_isEdit
+             ProjectModel=@_selectedProjectModel
+             OnProjectSaved=@LoadDataAsync />
+
+<ProjectDetails @bind-Visible=@_detailsVisible
+                ProjectId=@_selectedProjectId />

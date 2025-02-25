@@ -13,8 +13,11 @@ public interface IProjectApi : ITaskTrackerApi
     Task<IApiResponse<ProjectDto>> GetProjectAsync(Guid id);
 
     [Post("/projects")]
-    Task<IApiResponse<ProjectDto>> CreateProjectAsync(ProjectModel project);
+    Task<IApiResponse<ProjectDto>> CreateProjectAsync([Body] ProjectModel model);
 
-    [Put("/projects/{id}")]
-    Task<IApiResponse<ProjectDto>> UpdateProjectAsync(Guid id, ProjectModel project);
+    [Put("/projects/{model.Id}")]
+    Task<IApiResponse> UpdateProjectAsync(ProjectModel model);
+
+    [Delete("/projects/{id}")]
+    Task<IApiResponse> DeleteProjectAsync(Guid id);
 }
