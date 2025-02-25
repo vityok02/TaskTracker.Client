@@ -1,7 +1,7 @@
 ﻿using Domain.Abstract;
 using Domain.Dtos;
 
-namespace Services.Services.Components;
+namespace Services.Interfaces.ApiServices;
 
 public interface IUserService
 {

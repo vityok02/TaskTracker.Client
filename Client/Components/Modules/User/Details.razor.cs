@@ -2,7 +2,7 @@ using Domain.Dtos;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
-using Services.Services.Components;
+using Services.Interfaces.ApiServices;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 

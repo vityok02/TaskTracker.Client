@@ -1,6 +1,6 @@
 using Domain.Dtos;
 using Microsoft.AspNetCore.Components;
-using Services.Services.Components;
+using Services.Interfaces.ApiServices;
 
 namespace Client.Components.Modules.User;
 

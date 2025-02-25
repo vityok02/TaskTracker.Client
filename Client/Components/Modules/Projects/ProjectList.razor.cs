@@ -1,5 +1,5 @@
 ﻿using Domain.Dtos;
-using Domain.Models.Project;
+using Domain.Models;
 using Microsoft.AspNetCore.Components;
 using Services.Interfaces.ApiServices;
 

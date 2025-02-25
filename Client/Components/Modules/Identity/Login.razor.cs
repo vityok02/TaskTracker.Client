@@ -2,7 +2,7 @@
 using Domain.Models.Identity;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
-using Services.Interfaces.Components;
+using Services.Interfaces.ApiServices;
 
 namespace Client.Components.Modules.Identity;
 
