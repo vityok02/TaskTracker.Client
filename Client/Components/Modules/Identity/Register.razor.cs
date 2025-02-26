@@ -1,7 +1,7 @@
 ﻿using Client.Extensions;
 using Domain.Models.Identity;
 using Microsoft.AspNetCore.Components;
-using Services.Interfaces.Components;
+using Services.Interfaces.ApiServices;
 
 namespace Client.Components.Modules.Identity;
 

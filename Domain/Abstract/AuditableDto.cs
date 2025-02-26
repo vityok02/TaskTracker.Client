@@ -8,5 +8,5 @@ public class AuditableDto
 
     public DateTime? UpdatedAt { get; set; }
 
-    public string? UpdateBy { get; set; }
+    public string? UpdatedBy { get; set; }
 }

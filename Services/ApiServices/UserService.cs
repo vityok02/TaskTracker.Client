@@ -2,8 +2,9 @@
 using Domain.Dtos;
 using Services.Extensions;
 using Services.ExternalApi;
+using Services.Interfaces.ApiServices;
 
-namespace Services.Services.Components;
+namespace Services.ApiServices;
 
 public class UserService : IUserService
 {

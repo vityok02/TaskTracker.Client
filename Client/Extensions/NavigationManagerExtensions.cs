@@ -11,4 +11,10 @@ public static class NavigationManagerExtensions
         navigationManager
             .NavigateTo($"/set-token?token={token}", true);
     }
+
+    public static void NavigateToHome(this NavigationManager navigationManager)
+    {
+        navigationManager
+            .NavigateTo("/");
+    }
 }

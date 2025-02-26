@@ -1,0 +1,40 @@
+﻿@rendermode InteractiveServer
+
+<Modal @bind-Visible=@Visible
+       Title=@Title
+       Closable=@false
+       Footer=@null
+       DestroyOnClose=@true>
+
+    <Form Model=@ProjectModel
+          OnFinish=@Submit
+          Layout=@FormLayout.Vertical
+          Autocomplete="off">
+
+        <FluentValidationValidator />
+
+        <FormItem Label="Name">
+            <Input @bind-Value=@ProjectModel.Name />
+        </FormItem>
+
+        <FormItem Label="Description">
+            <TextArea @bind-Value=@ProjectModel.Description />
+        </FormItem>
+
+        <Divider />
+
+        <div>
+            <Button Type=@ButtonType.Primary
+                    HtmlType="submit">
+                @ButtonText
+            </Button>
+
+            <Button Type=@ButtonType.Default
+                    OnClick=@Cancel>
+                Cancel
+            </Button>
+        </div>
+
+    </Form>
+
+</Modal>

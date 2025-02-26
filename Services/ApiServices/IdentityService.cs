@@ -4,9 +4,9 @@ using Domain.Models.Identity;
 using Microsoft.AspNetCore.Components.Authorization;
 using Services.Extensions;
 using Services.ExternalApi;
-using Services.Interfaces.Components;
+using Services.Interfaces.ApiServices;
 
-namespace Services.Services.Components;
+namespace Services.ApiServices;
 
 public class IdentityService : IIdentityService
 {

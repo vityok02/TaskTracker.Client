@@ -1,0 +1,24 @@
+﻿@{
+    RenderFragment footer =
+    @<Template>
+        <span>@GetCreatingDetails();</span>
+        @if (Project.UpdatedBy is not null)
+        {
+            <br />
+            <span>@GetUpdatingDetails()</span>
+        }
+    </Template>;
+}
+
+<Modal @bind-Visible=@Visible
+       Footer=@footer
+       DestroyOnClose=@true
+       OnCancel="Close">
+
+    <Title Level="3">@Project.Name</Title>
+
+    <Content>
+        <div>@Project.Description</div>
+    </Content>
+
+</Modal>

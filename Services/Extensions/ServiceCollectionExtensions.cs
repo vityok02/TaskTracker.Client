@@ -1,10 +1,10 @@
 ﻿using FluentValidation;
 using Microsoft.Extensions.DependencyInjection;
+using Services.ApiServices;
 using Services.Infrastructure;
 using Services.Interfaces;
-using Services.Interfaces.Components;
+using Services.Interfaces.ApiServices;
 using Services.Services;
-using Services.Services.Components;
 
 namespace Services.Extensions;
 

@@ -1,6 +1,6 @@
 ﻿using Domain.Models.Identity;
 using Microsoft.AspNetCore.Components;
-using Services.Interfaces.Components;
+using Services.Interfaces.ApiServices;
 using System.Net.NetworkInformation;
 
 namespace Client.Components.Modules.Identity;

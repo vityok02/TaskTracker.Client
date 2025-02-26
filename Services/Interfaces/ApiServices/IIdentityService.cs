@@ -2,7 +2,7 @@
 using Domain.Dtos;
 using Domain.Models.Identity;
 
-namespace Services.Interfaces.Components;
+namespace Services.Interfaces.ApiServices;
 
 public interface IIdentityService
 {

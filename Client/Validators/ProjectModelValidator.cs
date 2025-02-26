@@ -2,9 +2,9 @@
 using FluentValidation;
 using Services.Extensions;
 
-namespace Client.Validators.Identity;
+namespace Client.Validators;
 
-internal sealed class ProjectModelValidator
+public sealed class ProjectModelValidator
     : AbstractValidator<ProjectModel>
 {
     public ProjectModelValidator()
