@@ -2,7 +2,7 @@
     RenderFragment footer =
     @<Template>
         <span>@GetCreatingDetails();</span>
-        @if (Project.UpdatedBy is not null)
+        @if (!string.IsNullOrWhiteSpace(Project.UpdatedByName))
         {
             <br />
             <span>@GetUpdatingDetails()</span>

@@ -12,7 +12,9 @@ public class AuthHttpClientHandler : DelegatingHandler
         _storage = tokenStorage;
     }
 
-    protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
+    protected override async Task<HttpResponseMessage> SendAsync(
+        HttpRequestMessage request,
+        CancellationToken cancellationToken)
     {
         var token = await _storage.GetToken();
 

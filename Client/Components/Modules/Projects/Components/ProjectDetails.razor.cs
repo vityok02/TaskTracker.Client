@@ -43,12 +43,12 @@ public partial class ProjectDetails
 
     private string GetCreatingDetails()
     {
-        return $"Created at {Project.CreatedAt.ToShortDateString()} by {Project.CreatedBy}";
+        return $"Created at {Project.CreatedAt.ToShortDateString()} by {Project.CreatedByName}";
     }
 
     private string GetUpdatingDetails()
     {
-        return $"Updated at {Project.UpdatedAt!.Value.ToShortDateString()} by {Project.UpdatedBy}";
+        return $"Updated at {Project.UpdatedAt!.Value.ToShortDateString()} by {Project.UpdatedByName}";
     }
 
     private void Close()
