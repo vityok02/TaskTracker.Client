@@ -8,7 +8,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddServices();
 
-builder.Services.AddApi(builder.Configuration);
+builder.Services.AddClient(builder.Configuration);
 
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents()

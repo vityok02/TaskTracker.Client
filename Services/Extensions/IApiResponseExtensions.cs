@@ -2,6 +2,8 @@
 using Domain.Constants;
 using Domain.Dtos;
 using Refit;
+using System.Diagnostics.CodeAnalysis;
+using System.Net;
 using System.Text.Json;
 
 namespace Services.Extensions;
@@ -102,7 +104,7 @@ public static class IApiResponseExtensions
                     errorType,
                     "Resource already exists"),
 
-            _ => new Error(errorType, "An error occurred. Please try again")
+            _ => _defaultError
         };
     }
 }

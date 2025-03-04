@@ -3,7 +3,7 @@ using Refit;
 
 namespace Services.ExternalApi;
 
-public interface IUserApi : ITaskTrackerApi
+public interface IUserApi : IApi
 {
     [Get("/users")]
     Task<IApiResponse<IEnumerable<UserDto>>> GetUsersAsync();

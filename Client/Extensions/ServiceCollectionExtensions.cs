@@ -1,4 +1,5 @@
-﻿using Client.Authentication;
+﻿using AntDesign;
+using Client.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.Extensions.Caching.Memory;
@@ -12,7 +13,7 @@ namespace Client.Extensions;
 
 public static class ServiceCollectionExtensions
 {
-    public static IServiceCollection AddApi(
+    public static IServiceCollection AddClient(
         this IServiceCollection services,
         IConfiguration configuration)
     {
@@ -60,7 +61,7 @@ public static class ServiceCollectionExtensions
             };
         });
 
-        services.AddAuthorization();
+        services.AddAuthorizationCore();
 
         services.AddCascadingAuthenticationState();
 
@@ -79,9 +80,9 @@ public static class ServiceCollectionExtensions
         var settings = configuration.GetSection(TaskTrackerSettings.ConfigurationSection)
             .Get<TaskTrackerSettings>();
 
-        var baseInterface = typeof(ITaskTrackerApi);
+        var baseInterface = typeof(IApi);
 
-        var types = typeof(ITaskTrackerApi).Assembly
+        var types = typeof(IApi).Assembly
             .GetTypes()
             .Where(t => t.IsInterface && baseInterface.IsAssignableFrom(t) && t != baseInterface);
 
