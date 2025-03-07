@@ -5,7 +5,9 @@ namespace Services.Interfaces.ApiServices;
 
 public interface IUserService
 {
-    Task<Result<UserDto>> GetUserAsync(Guid userId);
+    Task<Result<UserDto>> GetUserByIdAsync(Guid userId);
 
     Task<Result<IEnumerable<UserDto>>> GetUsersAsync();
+
+    Task<Result<IEnumerable<UserDto>>> SearchUsersAsync(string Username);
 }

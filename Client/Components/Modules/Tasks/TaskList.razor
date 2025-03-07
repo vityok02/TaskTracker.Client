@@ -1,9 +1,17 @@
 ﻿@page "/projects/{projectId:guid}/tasks"
+
+@using Client.Components.Modules.Projects.Components
 @using Client.Components.Modules.Tasks.Components
+
+@attribute [Authorize]
 
 <PageTitle>@Title</PageTitle>
 
 <Title Level="3">@Title</Title>
+
+<a @onclick=@(() => ProjectDetailsVisible = true)>Settings</a>
+
+<ProjectDetails ProjectId=ProjectId @bind-Visible=@ProjectDetailsVisible />
 
 <Flex Gap="FlexGap.Middle"
       Direction="FlexDirection.Horizontal"

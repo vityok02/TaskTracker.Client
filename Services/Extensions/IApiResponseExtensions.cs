@@ -2,8 +2,6 @@
 using Domain.Constants;
 using Domain.Dtos;
 using Refit;
-using System.Diagnostics.CodeAnalysis;
-using System.Net;
 using System.Text.Json;
 
 namespace Services.Extensions;

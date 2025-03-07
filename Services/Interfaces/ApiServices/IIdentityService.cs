@@ -1,5 +1,6 @@
 ﻿using Domain.Abstract;
 using Domain.Dtos;
+using Domain.Dtos.Authorization;
 using Domain.Models.Identity;
 
 namespace Services.Interfaces.ApiServices;

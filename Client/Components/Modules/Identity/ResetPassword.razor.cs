@@ -9,6 +9,9 @@ public partial class ResetPassword
     [Inject]
     public required IIdentityService IdentityService { get; init; }
 
+    [Inject]
+    public required NavigationManager NavManager { get; init; }
+
     public required string ResetToken { get; set; }
 
     private SetPasswordModel SetPassword { get; set; } = new();

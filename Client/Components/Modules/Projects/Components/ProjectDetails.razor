@@ -1,12 +1,13 @@
-﻿@{
+﻿@using Client.Components.Modules.ProjectMembers.Components
+@{
     RenderFragment footer =
     @<Template>
         <span>@GetCreatingDetails();</span>
         @if (!string.IsNullOrWhiteSpace(Project.UpdatedByName))
-        {
-            <br />
-            <span>@GetUpdatingDetails()</span>
-        }
+    {
+        <br />
+        <span>@GetUpdatingDetails()</span>
+    }
     </Template>;
 }
 
@@ -17,8 +18,17 @@
 
     <Title Level="3">@Project.Name</Title>
 
-    <Content>
-        <div>@Project.Description</div>
-    </Content>
+    <div>@Project.Description</div>
+
+    <ProjectMemberForm Roles=@Roles
+                       ProjectId=@ProjectId
+                       OnMemberAdded=@LoadMembersAsync />
+
+    <Divider />
+
+    <ProjectMemberList ProjectId=@ProjectId
+                       Members=@Members
+                       Roles=@Roles
+                       OnMemberChanged=@LoadMembersAsync />
 
 </Modal>

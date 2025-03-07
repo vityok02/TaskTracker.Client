@@ -10,6 +10,9 @@ public sealed partial class Register
     [Inject]
     public required IIdentityService IdentityService { get; set; }
 
+    [Inject]
+    public required NavigationManager NavManager { get; init; }
+
     private RegisterModel RegisterModel { get; set; } = new RegisterModel();
 
     public async Task Submit()

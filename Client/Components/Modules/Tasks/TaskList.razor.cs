@@ -1,5 +1,4 @@
 ﻿using AntDesign;
-using Client.Components.Modules.Tasks.Components;
 using Domain.Dtos;
 using Domain.Models;
 using Microsoft.AspNetCore.Components;
@@ -36,6 +35,8 @@ public partial class TaskList
     private bool _detailsVisible = false;
 
     private Guid SelectedTaskId { get; set; }
+
+    private bool ProjectDetailsVisible { get; set; }
 
     protected override async Task OnInitializedAsync()
     {

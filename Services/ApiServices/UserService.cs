@@ -15,10 +15,10 @@ public class UserService : IUserService
         _userApi = userApi;
     }
 
-    public async Task<Result<UserDto>> GetUserAsync(Guid userId)
+    public async Task<Result<UserDto>> GetUserByIdAsync(Guid userId)
     {
         var response = await _userApi
-            .GetUserAsync(userId);
+            .GetUserByIdAsync(userId);
 
         return response
             .HandleResponse();
@@ -28,6 +28,14 @@ public class UserService : IUserService
     {
         var response = await _userApi
             .GetUsersAsync();
+
+        return response.HandleResponse();
+    }
+
+    public async Task<Result<IEnumerable<UserDto>>> SearchUsersAsync(string username)
+    {
+        var response = await _userApi
+            .SearchUserByName(username);
 
         return response.HandleResponse();
     }

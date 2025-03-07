@@ -1,4 +1,5 @@
 ﻿using Domain.Dtos;
+using Domain.Dtos.Authorization;
 using Domain.Models.Identity;
 using Refit;
 

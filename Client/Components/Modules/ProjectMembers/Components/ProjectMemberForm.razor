@@ -1,0 +1,27 @@
+﻿@inherits BaseComponent
+
+<Form Model="MemberModel">
+    <Flex Direction="FlexDirection.Horizontal" Gap="FlexGap.Small">
+
+        <AutoComplete @bind-Value=@SearchedMemberName
+                      Options="SearchedUsers"
+                      OnInput=@SearchUser>
+
+            <OptionTemplate Context="option">
+                <AutoCompleteOption Value=@option.Value.Id Label=@option.Value.Username>
+                </AutoCompleteOption>
+            </OptionTemplate>
+
+        </AutoComplete>
+
+        <Select DataSource=@Roles
+                @bind-Value=@MemberModel.RoleId
+                ItemValue=@(r => r.Id)
+                ItemLabel=@(r => r.Name) />
+
+        <Button OnClick=@AddMember>
+            Add Member
+        </Button>
+
+    </Flex>
+</Form>
