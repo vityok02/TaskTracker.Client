@@ -1,0 +1,43 @@
+﻿@page "/users/{userId:guid}"
+
+@inherits BaseComponent
+
+@attribute [Authorize]
+
+<PageTitle>@(User?.Username ?? "Not found")</PageTitle>
+
+<div class="container mt-5">
+    <div class="card shadow-lg p-4 mb-4 border-0" style="max-width: 700px; margin: 0 auto;">
+        <h3 class="card-title text-center mb-4">Profile</h3>
+
+        @if (User is null)
+        {
+            <p class="text-muted text-center">User not found</p>
+        }
+        else
+        {
+            <div class="d-flex flex-column align-items-start">
+                <div class="card shadow-sm p-3 mb-3 w-100">
+                    <h5 class="card-title text-muted">Username</h5>
+                    <p class="card-text">@User.Username</p>
+                </div>
+
+                <div class="card shadow-sm p-3 mb-3 w-100">
+                    <h5 class="card-title text-muted">Email</h5>
+                    <p class="card-text">@User.Email</p>
+                </div>
+            </div>
+
+            @if (IsAuthorized)
+            {
+                <div class="d-flex justify-content-center mt-4">
+                    <NavLink Match=@NavLinkMatch.All
+                             href="/change-password"
+                             class="btn btn-primary px-4 py-2">
+                        Change Password
+                    </NavLink>
+                </div>
+            }
+        }
+    </div>
+</div>

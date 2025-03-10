@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Components;
+﻿using Domain;
+using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
 using System.IdentityModel.Tokens.Jwt;
 
@@ -8,6 +9,9 @@ public sealed partial class Header
 {
     [CascadingParameter]
     public required Task<AuthenticationState> AuthenticationStateTask { get; set; }
+
+    [CascadingParameter]
+    public ApplicationState? AppState { get; set; }
 
     private string UserName { get; set; } = string.Empty;
 

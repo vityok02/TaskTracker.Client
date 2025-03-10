@@ -1,40 +1,49 @@
 ﻿@rendermode InteractiveServer
 
+@{
+    RenderFragment? header = null!;
+}
+
 <Modal @bind-Visible=@Visible
+       Header=@header
        Title=@Title
        Closable=@false
        Footer=@null
        DestroyOnClose=@true>
 
-    <Form Model=@ProjectModel
-          OnFinish=@Submit
-          Layout=@FormLayout.Vertical
-          Autocomplete="off">
+    <Title Level="3">@Title</Title>
 
-        <FluentValidationValidator />
+    <div class="modal-content p-4">
+        <Form Model=@ProjectModel
+              OnFinish=@Submit
+              Layout=@FormLayout.Vertical
+              Autocomplete="off">
 
-        <FormItem Label="Name">
-            <Input @bind-Value=@ProjectModel.Name />
-        </FormItem>
+            <FluentValidationValidator />
 
-        <FormItem Label="Description">
-            <TextArea @bind-Value=@ProjectModel.Description />
-        </FormItem>
+            <FormItem Label="Name" Class="mb-3">
+                <Input @bind-Value=@ProjectModel.Name Class="form-control" />
+            </FormItem>
 
-        <Divider />
+            <FormItem Label="Description" Class="mb-3">
+                <TextArea @bind-Value=@ProjectModel.Description Class="form-control" Rows="4" />
+            </FormItem>
 
-        <div>
-            <Button Type=@ButtonType.Primary
-                    HtmlType="submit">
-                @ButtonText
-            </Button>
+            <Divider />
 
-            <Button Type=@ButtonType.Default
-                    OnClick=@Cancel>
-                Cancel
-            </Button>
-        </div>
+            <div class="d-flex justify-content-end gap-2">
+                <Button Type=@ButtonType.Default
+                        OnClick=@Cancel
+                        Class="btn btn-outline-secondary">
+                    Cancel
+                </Button>
 
-    </Form>
-
+                <Button Type=@ButtonType.Primary
+                        HtmlType="submit"
+                        Class="btn btn-primary">
+                    @ButtonText
+                </Button>
+            </div>
+        </Form>
+    </div>
 </Modal>

@@ -4,44 +4,64 @@
 
 <PageTitle>Register</PageTitle>
 
-<Content Class="auth-form">
+<div class="d-flex flex-column align-items-center justify-content-center min-vh-100 bg-light">
+    <div class="card shadow p-4 w-100"
+         style="max-width: 400px;">
 
-    <Title Level="3">Register</Title>
+        <Title Level="3"
+               Class="text-center mb-3">
+            Register
+        </Title>
 
-    <Form Model=@RegisterModel
-          OnFinish=@Submit
-          Layout=@FormLayout.Vertical>
+        <Form Model=@RegisterModel
+              OnFinish=@Submit
+              Layout=@FormLayout.Vertical>
 
-        <FluentValidationValidator />
+            <FluentValidationValidator />
 
-        <FormItem Label="Username">
-            <Input name="username" @bind-Value=@RegisterModel.Username />
-        </FormItem>
+            <FormItem Label="Username"
+                      Class="mb-3">
+                <Input @bind-Value=@RegisterModel.Username
+                       Class="form-control" />
+            </FormItem>
 
-        <FormItem Label="Email">
-            <Input Type="InputType.Email" name="email" @bind-Value=@RegisterModel.Email>
-        </FormItem>
+            <FormItem Label="Email"
+                      Class="mb-3">
+                <Input Type="InputType.Email"
+                       @bind-Value=@RegisterModel.Email
+                       Class="form-control" />
+            </FormItem>
 
-        <FormItem Label="Password">
-            <InputPassword @bind-Value=@RegisterModel.Password />
-        </FormItem>
+            <FormItem Label="Password"
+                      Class="mb-3">
+                <Input Type="InputType.Password"
+                       @bind-Value=@RegisterModel.Password
+                       Class="form-control" />
+            </FormItem>
 
-        <FormItem Label="Confirm password">
-            <InputPassword @bind-Value=@RegisterModel.ConfirmedPassword />
-        </FormItem>
+            <FormItem Label="Confirm password"
+                      Class="mb-3">
+                <Input Type="InputType.Password"
+                       @bind-Value=@RegisterModel.ConfirmedPassword
+                       Class="form-control" />
+            </FormItem>
 
-        <div>
             <Button Type=@ButtonType.Primary
-                    HtmlType="submit">
+                    HtmlType="submit"
+                    Class="btn btn-primary w-100 mt-3">
                 Register
             </Button>
+        </Form>
 
-            <Button Type=@ButtonType.Default
-                    OnClick=@(() => NavManager.NavigateTo("/login"))>
-                Cancel
-            </Button>
+        <div class="text-center mt-2">
+            <Text Class="text-muted">
+                Already have an account?
+            </Text>
+            <NavLink Match=@NavLinkMatch.Prefix
+                     href="/login"
+                     class="text-decoration-none">
+                Sign in
+            </NavLink>
         </div>
-
-    </Form>
-
-</Content>
+    </div>
+</div>

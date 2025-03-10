@@ -8,7 +8,6 @@ namespace Client.Components.Modules.Projects.Components;
 
 public partial class ProjectDetails
 {
-    // TODO: refactor injection many dependencies
     [Inject]
     public required IProjectService ProjectService { get; set; }
 

@@ -9,6 +9,8 @@ public sealed class ChangePasswordModelValidator
 {
     public ChangePasswordModelValidator()
     {
+        RuleLevelCascadeMode = CascadeMode.Stop;
+
         RuleFor(x => x.CurrentPassword)
             .ApplyPasswordRules();
 

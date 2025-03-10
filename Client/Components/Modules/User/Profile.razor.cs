@@ -9,7 +9,7 @@ using System.Security.Claims;
 namespace Client.Components.Modules.User;
 
 [Authorize]
-public sealed partial class Details
+public sealed partial class Profile
 {
     [Inject]
     public required IUserService UserService { get; init; }
@@ -27,6 +27,8 @@ public sealed partial class Details
 
     private UserDto? User { get; set; }
 
+    private bool isFirstRender = true;
+
     protected override async Task OnParametersSetAsync()
     {
         var result = await UserService
@@ -34,14 +36,20 @@ public sealed partial class Details
 
         if (result.IsFailure)
         {
-            AppState.ErrorMessage = result.Error!.Message;
+            if (isFirstRender)
+            {
+                AppState.ErrorMessage = result.Error!.Message;
+            }
 
             NavManager.NavigateTo("/");
+            return;
         }
 
         IsAuthorized = await IsUserAuthorizedAsync();
 
         User = result.Value;
+
+        isFirstRender = false;
     }
 
     private async Task<bool> IsUserAuthorizedAsync()

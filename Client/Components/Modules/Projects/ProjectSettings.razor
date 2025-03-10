@@ -1,0 +1,60 @@
+﻿@page "/projects/{projectId:guid}/settings"
+
+@inherits BaseComponent
+
+@attribute [Authorize]
+
+<PageTitle>@Project.Name</PageTitle>
+
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h4 class="mb-0">
+            @Project.Name - Settings
+        </h4>
+    </div>
+
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <Form Model=@ProjectModel
+                  OnFinish=@Submit
+                  Layout=@FormLayout.Vertical
+                  Autocomplete="off">
+
+                <FluentValidationValidator />
+
+                <FormItem Label="Project Name">
+                    <Input @bind-Value=@ProjectModel.Name Class="form-control" />
+                </FormItem>
+
+                <FormItem Label="Description">
+                    <TextArea @bind-Value=@ProjectModel.Description Class="form-control" Rows="4" />
+                </FormItem>
+
+                <div class="d-flex justify-content-end">
+                    <Button Type=@ButtonType.Primary HtmlType="submit" Class="btn btn-primary">
+                        Save Changes
+                    </Button>
+                </div>
+            </Form>
+        </div>
+    </div>
+
+    <div class="mt-4">
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <h5>Manage Members</h5>
+
+                <ProjectMemberForm Roles=@Roles
+                                   ProjectId=@ProjectId
+                                   OnMemberAdded=@LoadMembersAsync />
+
+                <Divider />
+
+                <ProjectMemberList ProjectId=@ProjectId
+                                   Members=@Members
+                                   Roles=@Roles
+                                   OnMemberChanged=@LoadMembersAsync />
+            </div>
+        </div>
+    </div>
+</div>

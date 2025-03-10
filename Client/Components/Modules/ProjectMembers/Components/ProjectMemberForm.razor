@@ -1,15 +1,15 @@
 ﻿@inherits BaseComponent
 
 <Form Model="MemberModel">
-    <Flex Direction="FlexDirection.Horizontal" Gap="FlexGap.Small">
-
+    <div class="d-flex align-items-center gap-3">
         <AutoComplete @bind-Value=@SearchedMemberName
                       Options="SearchedUsers"
-                      OnInput=@SearchUser>
+                      OnInput=@SearchUser
+                      Class="form-control"
+                      Placeholder="Search User...">
 
             <OptionTemplate Context="option">
-                <AutoCompleteOption Value=@option.Value.Id Label=@option.Value.Username>
-                </AutoCompleteOption>
+                <AutoCompleteOption Value=@option.Value.Id Label=@option.Value.Username />
             </OptionTemplate>
 
         </AutoComplete>
@@ -17,11 +17,13 @@
         <Select DataSource=@Roles
                 @bind-Value=@MemberModel.RoleId
                 ItemValue=@(r => r.Id)
-                ItemLabel=@(r => r.Name) />
+                ItemLabel=@(r => r.Name)
+                Class="form-select"
+                Placeholder="Select Role" />
 
-        <Button OnClick=@AddMember>
+        <Button OnClick=@AddMember
+                Class="btn btn-success">
             Add Member
         </Button>
-
-    </Flex>
+    </div>
 </Form>
