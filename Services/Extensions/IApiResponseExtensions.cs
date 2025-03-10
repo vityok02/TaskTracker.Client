@@ -102,7 +102,7 @@ public static class IApiResponseExtensions
                     errorType,
                     "Resource already exists"),
 
-            _ => new Error(errorType, "An error occurred. Please try again")
+            _ => _defaultError
         };
     }
 }

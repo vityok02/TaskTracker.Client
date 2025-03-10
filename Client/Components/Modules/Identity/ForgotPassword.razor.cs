@@ -1,7 +1,6 @@
 ﻿using Domain.Models.Identity;
 using Microsoft.AspNetCore.Components;
 using Services.Interfaces.ApiServices;
-using System.Net.NetworkInformation;
 
 namespace Client.Components.Modules.Identity;
 
@@ -9,6 +8,9 @@ public partial class ForgotPassword
 {
     [Inject]
     public required IIdentityService IdentityService { get; init; }
+
+    [Inject]
+    public required NavigationManager NavManager { get; init; }
 
     private ResetPasswordModel ResetPasswordModel { get; set; } = new();
 

@@ -3,11 +3,14 @@ using Refit;
 
 namespace Services.ExternalApi;
 
-public interface IUserApi : ITaskTrackerApi
+public interface IUserApi : IApi
 {
     [Get("/users")]
     Task<IApiResponse<IEnumerable<UserDto>>> GetUsersAsync();
 
     [Get("/users/{id}")]
-    Task<IApiResponse<UserDto>> GetUserAsync(Guid id);
+    Task<IApiResponse<UserDto>> GetUserByIdAsync(Guid id);
+
+    [Get("/users")]
+    Task<IApiResponse<IEnumerable<UserDto>>> SearchUserByName([Query] string username);
 }

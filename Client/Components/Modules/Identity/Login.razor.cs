@@ -14,6 +14,9 @@ public partial class Login
     [Inject]
     public required AuthenticationStateProvider AuthStateProvider { get; init; }
 
+    [Inject]
+    public required NavigationManager NavManager { get; init; }
+
     private LoginModel LoginModel { get; set; } = new LoginModel();
 
     private string ErrorMessage { get; set; } = string.Empty;

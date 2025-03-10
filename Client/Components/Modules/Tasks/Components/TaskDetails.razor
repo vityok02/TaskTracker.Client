@@ -1,0 +1,116 @@
+﻿@if (Task is null)
+{
+    return;
+}
+
+<Drawer @bind-Visible=@Visible
+        OnClose=@Close>
+
+    @if (IsNameInput)
+    {
+        <Form Model=@TaskModel
+              OnFinish=@Update>
+
+            <Input @bind-Value=@TaskModel.Name />
+
+            <Button HtmlType="submit"
+                    OnClick=@HideNameInput>
+                Cancel
+            </Button>
+
+            <Button HtmlType="submit">
+                Save
+            </Button>
+
+        </Form>
+    }
+    else
+    {
+        <Title>@Task.Name</Title>
+
+        <Button OnClick=@ShowNameInput>
+            Edit
+        </Button>
+    }
+
+    @if (IsDescriptionInput)
+    {
+        <Form Model=@TaskModel
+              OnFinish=@Update>
+
+            <TextArea @bind-Value=@TaskModel.Description />
+
+            <Button HtmlType="submit"
+                    OnClick=@HideDescriptionInput>
+                Cancel
+            </Button>
+
+            <Button HtmlType="submit">
+                Save
+            </Button>
+
+        </Form>
+    }
+    else
+    {
+        <TextArea DefaultValue=@(TaskModel.Description ?? "Not description provided")
+                  Disabled=@true />
+
+        <Button OnClick=@ShowDescriptionInput>
+            Edit
+        </Button>
+    }
+
+    <GridRow>
+        <GridCol>
+            State
+        </GridCol>
+
+        <GridCol>
+            @Task.State
+        </GridCol>
+    </GridRow>
+
+    <GridRow>
+        <GridCol>
+            Created by
+        </GridCol>
+
+        <GridCol>
+            @Task.CreatedByName
+        </GridCol>
+    </GridRow>
+
+    <GridRow>
+        <GridCol>
+            Created at
+        </GridCol>
+
+        <GridCol>
+            @Task.CreatedAt
+        </GridCol>
+    </GridRow>
+
+    @if (Task.UpdatedBy is not null)
+    {
+        <GridRow>
+            <GridCol>
+                Updated by
+            </GridCol>
+
+            <GridCol>
+                @Task.UpdatedByName
+            </GridCol>
+        </GridRow>
+
+        <GridRow>
+            <GridCol>
+                Updated at
+            </GridCol>
+
+            <GridCol>
+                @Task.UpdatedAt
+            </GridCol>
+        </GridRow>
+    }
+</Drawer>

@@ -17,6 +17,9 @@ public sealed partial class Details
     [Inject]
     public required AuthenticationStateProvider AuthStateProvider { get; init; }
 
+    [Inject]
+    public required NavigationManager NavManager { get; init; }
+
     [Parameter]
     public Guid UserId { get; set; }
 
@@ -27,7 +30,7 @@ public sealed partial class Details
     protected override async Task OnParametersSetAsync()
     {
         var result = await UserService
-            .GetUserAsync(UserId);
+            .GetUserByIdAsync(UserId);
 
         if (result.IsFailure)
         {

@@ -4,7 +4,7 @@ using Refit;
 
 namespace Services.ExternalApi;
 
-public interface IProjectApi : ITaskTrackerApi
+public interface IProjectApi : IApi
 {
     [Get("/projects")]
     Task<IApiResponse<IEnumerable<ProjectDto>>> GetProjectsAsync();

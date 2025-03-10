@@ -1,10 +1,11 @@
 ﻿using Domain.Dtos;
+using Domain.Dtos.Authorization;
 using Domain.Models.Identity;
 using Refit;
 
 namespace Services.ExternalApi;
 
-public interface IIdentityApi : ITaskTrackerApi
+public interface IIdentityApi : IApi
 {
     [Post("/users/register")]
     Task<IApiResponse<RegisterDto>> RegisterAsync(RegisterModel model);

@@ -19,9 +19,9 @@
        HidePagination>
 
     <ActionColumn Title="Name">
-        <a @onclick=@(() => ShowDetails(context.Id))>
+        <NavLink href=@($"/projects/{@context.Id}/tasks")>
             @context.Name
-        </a>
+        </NavLink>
     </ActionColumn>
 
     <Column TData="@string" Title="Created by">

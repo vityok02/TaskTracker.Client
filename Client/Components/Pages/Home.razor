@@ -1,7 +1,19 @@
 ﻿@page "/"
 
+@inject NavigationManager NavManager
+
 <PageTitle>Home</PageTitle>
 
-<Flex Gap="FlexGap.Middle" Align="FlexAlign.Center">
-    <h1>Welcome to Task Tracker!</h1>
-</Flex>
+<AuthorizeView>
+    <Authorized>
+        @{
+            NavManager.NavigateTo("/projects");
+        }
+    </Authorized>
+    <NotAuthorized>
+        @{
+            NavManager.NavigateTo("/login");
+        }
+    </NotAuthorized>
+</AuthorizeView>
+

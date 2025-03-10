@@ -1,0 +1,104 @@
+﻿@page "/projects/{projectId:guid}/tasks"
+
+@using Client.Components.Modules.Projects.Components
+@using Client.Components.Modules.Tasks.Components
+
+@attribute [Authorize]
+
+<PageTitle>@Title</PageTitle>
+
+<Title Level="3">@Title</Title>
+
+<a @onclick=@(() => ProjectDetailsVisible = true)>Settings</a>
+
+<ProjectDetails ProjectId=ProjectId @bind-Visible=@ProjectDetailsVisible />
+
+<Flex Gap="FlexGap.Middle"
+      Direction="FlexDirection.Horizontal"
+      Style="flex-grow: 1">
+
+    @foreach (var state in Project.States.OrderBy(s => s.Number))
+    {
+        <Flex Direction="FlexDirection.Vertical">
+
+            <Card Title=@state.Name Style="min-width: 300px; flex-grow: 1">
+
+                <AntList DataSource=@Tasks.Where(t => t.StateId == state.Id)>
+                    <ChildContent Context="item">
+
+                        <ListItem Style="
+                            border: 1px solid black;
+                            margin-bottom: 20px;
+                            padding: 10px">
+
+                            <a @onclick=@(() => OpenDetials(item.Id))>
+                                @item.Name
+                            </a>
+
+                            <Dropdown Trigger="@(new Trigger[] { Trigger.Click })">
+                                <Overlay>
+                                    <Menu>
+                                        <MenuItem>
+                                            <Button Type="@ButtonType.Text"
+                                                    OnClick="@(() => OpenDetials(item.Id))">
+                                                Details
+                                            </Button>
+                                        </MenuItem>
+
+                                        <MenuItem>
+                                            <Popconfirm Title="Are you sure delete this project?"
+                                                        OnConfirm=@(() => Delete(item.Id))
+                                                        OkText="Yes"
+                                                        CancelText="No">
+                                                <Button Type=@ButtonType.Text>
+                                                    Delete
+                                                </Button>
+                                            </Popconfirm>
+                                        </MenuItem>
+                                    </Menu>
+                                </Overlay>
+
+                                <ChildContent>
+                                    <a @onclick:preventDefault>
+                                        ...
+                                    </a>
+                                </ChildContent>
+                            </Dropdown>
+
+                        </ListItem>
+
+                    </ChildContent>
+                </AntList>
+
+            </Card>
+
+            <Button OnClick="@(() => ShowInput(state.Id))">
+                Add item
+            </Button>
+
+        </Flex>
+    }
+</Flex>
+
+<div hidden=@HideInput>
+    <Form Model=@TaskModel
+          OnFinish=@Submit
+          Layout="FormLayout.Horizontal">
+
+        <FluentValidationValidator />
+
+        <Button HtmlType="submit">+</Button>
+
+        <FormItem>
+            <Input @ref=@Input @onfocusout=@(() => HideInput = true )
+                   @bind-Value=@TaskModel.Name
+                   Placeholder="Task name" />
+
+        </FormItem>
+
+    </Form>
+</div>
+
+<TaskDetails TaskId="SelectedTaskId"
+             ProjectId="ProjectId"
+             @bind-Visible=@_detailsVisible />

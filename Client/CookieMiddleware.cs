@@ -25,7 +25,7 @@ public class CookieMiddleware
                         HttpOnly = true,
                         Secure = true,
                         SameSite = SameSiteMode.Strict,
-                        Expires = DateTime.UtcNow.AddHours(1)
+                        Expires = DateTime.UtcNow.AddHours(24)
                     });
             }
 
@@ -40,6 +40,6 @@ public class CookieMiddleware
             return;
         }
 
-        await _next(context);
+       await _next(context);
     }
 }
