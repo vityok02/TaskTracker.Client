@@ -2,12 +2,18 @@
 
 <AntList DataSource=@Members>
     <ChildContent Context="item">
-        <ListItem class="d-flex justify-content-between align-items-center">
+        <ListItem Class="d-flex justify-content-between align-items-center">
             <Text Class="me-2">
                 @item.UserName
             </Text>
+
+            <Select DataSource=@Roles
+                    @bind-Value=@item.RoleId
+                    ItemLabel=@(c => c.Name)
+                    ItemValue=@(c => c.Id) />
+
             <Button OnClick=@(() => DeleteMember(item.UserId))
-                    Class="btn btn-danger btn-sm">
+                    Class="btn btn-danger btn-sm m-1">
                 Remove
             </Button>
         </ListItem>

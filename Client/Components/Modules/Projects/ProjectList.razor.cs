@@ -22,10 +22,6 @@ public sealed partial class ProjectList
 
     private bool _formVisible = false;
 
-    private bool _detailsVisible = false;
-
-    private Guid _selectedProjectId = Guid.Empty;
-
     protected override async Task OnInitializedAsync()
     {
         await LoadDataAsync();

@@ -11,7 +11,9 @@
        Footer=@null
        DestroyOnClose=@true>
 
-    <Title Level="3">@Title</Title>
+    <h4>
+        @Title
+    </h4>
 
     <div class="modal-content p-4">
         <Form Model=@ProjectModel
@@ -21,15 +23,18 @@
 
             <FluentValidationValidator />
 
-            <FormItem Label="Name" Class="mb-3">
-                <Input @bind-Value=@ProjectModel.Name Class="form-control" />
+            <FormItem Label="Name"
+                      Class="mb-3">
+                <Input @bind-Value=@ProjectModel.Name
+                       Class="form-control" />
             </FormItem>
 
-            <FormItem Label="Description" Class="mb-3">
-                <TextArea @bind-Value=@ProjectModel.Description Class="form-control" Rows="4" />
+            <FormItem Label="Description"
+                      Class="mb-3">
+                <TextArea @bind-Value=@ProjectModel.Description
+                          Class="form-control"
+                          Rows="4" />
             </FormItem>
-
-            <Divider />
 
             <div class="d-flex justify-content-end gap-2">
                 <Button Type=@ButtonType.Default

@@ -9,7 +9,8 @@
                       Placeholder="Search User...">
 
             <OptionTemplate Context="option">
-                <AutoCompleteOption Value=@option.Value.Id Label=@option.Value.Username />
+                <AutoCompleteOption Value=@option.Value.Id
+                                    Label=@option.Value.Username />
             </OptionTemplate>
 
         </AutoComplete>
@@ -22,7 +23,7 @@
                 Placeholder="Select Role" />
 
         <Button OnClick=@AddMember
-                Class="btn btn-success">
+                Class="btn btn-primary">
             Add Member
         </Button>
     </div>

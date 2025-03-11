@@ -1,33 +1,44 @@
 ﻿@page "/projects/{projectId:guid}/tasks"
 
-@using Client.Components.Modules.Projects.Components
-@using Client.Components.Modules.Tasks.Components
-
 @attribute [Authorize]
 
 <PageTitle>@Title</PageTitle>
 
-<NavLink href="@($"/projects/{ProjectId}/settings")" class="btn btn-link text-decoration-none text-dark">
-    <h4 class="mb-4 mt-3">@Title</h4>
-</NavLink>
+<div class="d-flex align-items-center m-4">
+    <NavLink href=@(PageRoutes.ProjectsPage)
+             class="text-dark me-3">
+        <i class="bi bi-arrow-left fs-4" />
+    </NavLink>
 
-<div class="row g-4" style="height: calc(100vh - 200px)">
+    <NavLink href="@($"/projects/{ProjectId}/settings")"
+             class="text-decoration-none text-dark">
+        <h4 class="mb-0">
+            @Title
+        </h4>
+    </NavLink>
+</div>
+
+<div class="row g-4"
+     style="height: calc(100vh - 200px)">
     @foreach (var state in Project.States.OrderBy(s => s.Number))
     {
-        <div class="col-12 col-md-6 col-lg-4" style="max-width: 400px">
+        <div class="col-12 col-md-6 col-lg-4"
+             style="max-width: 400px">
             <div class="card shadow-sm h-100 d-flex flex-column">
                 <div class="card-body d-flex flex-column">
-                    <h5 class="card-title mt-1 ms-2">@state.Name</h5>
+                    <h5 class="card-title mt-1 ms-2">
+                        @state.Name
+                    </h5>
 
                     <div class="task-card">
                         <ul class="list-group list-group-flush flex-grow-1">
                             @foreach (var item in Tasks.Where(t => t.StateId == state.Id))
                             {
                                 <li class="list-group-item p-0">
-                                    <!-- Завдання в картці -->
                                     <div class="card shadow-sm mb-2">
                                         <div class="card-body d-flex justify-content-between align-items-center">
-                                            <a @onclick="@(() => OpenDetials(item.Id))" class="text-decoration-none text-dark">
+                                            <a @onclick="@(() => OpenDetials(item.Id))"
+                                               class="text-decoration-none text-dark">
                                                 @item.Name
                                             </a>
 
@@ -55,7 +66,8 @@
                                                 </Overlay>
 
                                                 <ChildContent>
-                                                    <a @onclick:preventDefault class="text-decoration-none">...</a>
+                                                    <a @onclick:preventDefault
+                                                       class="text-decoration-none">...</a>
                                                 </ChildContent>
                                             </Dropdown>
                                         </div>
@@ -65,7 +77,8 @@
                         </ul>
                     </div>
 
-                    <Button class="btn bg-transparent border-0 mt-auto w-100" OnClick="@(() => ShowInput(state.Id))">
+                    <Button OnClick="@(() => ShowInput(state.Id))"
+                            Class="btn bg-transparent border-0 mt-auto w-100">
                         Add item
                     </Button>
                 </div>
@@ -74,16 +87,31 @@
     }
 </div>
 
-<div class="mt-2" hidden=@HideInput>
-    <Form Model="@TaskModel" OnFinish="@Submit" Layout="FormLayout.Horizontal">
+<div class="mt-2"
+     hidden=@HideInput>
+    <Form Model="@TaskModel"
+          OnFinish="@Submit"
+          Layout="FormLayout.Horizontal">
         <FluentValidationValidator />
-        <div class="d-flex align-items-stretch" style="height: 38px">
-            <Button HtmlType="submit" class="btn btn-primary me-1 h-100">+</Button>
+
+        <div class="d-flex align-items-stretch"
+             style="height: 38px">
+            <Button HtmlType="submit"
+                    Class="btn btn-primary me-1 h-100">
+                +
+            </Button>
+
             <FormItem class="flex-grow-1">
-                <Input Size="InputSize.Large" @ref="@Input" @onfocusout="@(() => HideInput = true)" @bind-Value="@TaskModel.Name" Placeholder="Task name" />
+                <Input Size="InputSize.Large"
+                       @ref="@Input"
+                       @onfocusout="@(() => HideInput = true)"
+                       @bind-Value="@TaskModel.Name"
+                       Placeholder="Task name" />
             </FormItem>
         </div>
     </Form>
 </div>
 
-<TaskDetails TaskId="SelectedTaskId" ProjectId="ProjectId" @bind-Visible="@_detailsVisible" />
+<TaskDetails TaskId="SelectedTaskId"
+             ProjectId="ProjectId"
+             @bind-Visible="@_detailsVisible" />

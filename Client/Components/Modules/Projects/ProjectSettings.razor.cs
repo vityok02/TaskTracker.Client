@@ -1,4 +1,5 @@
-﻿using Domain.Abstract;
+﻿using AntDesign;
+using Domain.Abstract;
 using Domain.Dtos;
 using Domain.Models;
 using Microsoft.AspNetCore.Components;
@@ -9,16 +10,19 @@ namespace Client.Components.Modules.Projects;
 public sealed partial class ProjectSettings
 {
     [Inject]
-    public required IProjectService ProjectService { get; set; }
+    public required IProjectService ProjectService { get; init; }
 
-    [Parameter]
-    public EventCallback OnProjectSaved { get; set; }
+    [Inject]
+    public required IProjectMemberService ProjectMemberService { get; init; }
+
+    [Inject]
+    public required IRoleService RoleService { get; init; }
+
+    [Inject]
+    public required NotificationService Notice { get; init; }
 
     [CascadingParameter]
     public required ApplicationState ApplicationState { get; set; }
-
-    [Parameter]
-    public bool IsEdit { get; set; }
 
     [Parameter]
     public Guid ProjectId { get; set; }
@@ -26,18 +30,7 @@ public sealed partial class ProjectSettings
     [Parameter]
     public ProjectModel ProjectModel { get; set; } = new ProjectModel();
 
-    [Inject]
-    public required IProjectMemberService ProjectMemberService { get; set; }
-
-    [Inject]
-    public required IRoleService RoleService { get; set; }
-
-    [Parameter]
-    public EventCallback<bool> VisibleChanged { get; set; }
-
     public ProjectDto Project { get; set; } = new();
-
-    public ProjectMemberModel MemberModel { get; set; } = new();
 
     public IEnumerable<ProjectMemberDto> Members { get; set; } = [];
 
@@ -53,21 +46,18 @@ public sealed partial class ProjectSettings
         await HandleRequest(() => ProjectService
             .GetProjectAsync(ProjectId), value => Project = value);
 
+        ProjectModel = new ProjectModel
+        {
+            Id = Project.Id,
+            Name = Project.Name,
+            Description = Project.Description,
+        };
+
         await HandleRequest(() => ProjectMemberService
             .GetProjectMembersAsync(ProjectId), value => Members = value);
 
         await HandleRequest(RoleService
             .GetRolesAsync, value => Roles = value);
-    }
-
-    private string GetCreatingDetails()
-    {
-        return $"Created at {Project.CreatedAt.ToShortDateString()} by {Project.CreatedByName}";
-    }
-
-    private string GetUpdatingDetails()
-    {
-        return $"Updated at {Project.UpdatedAt!.Value.ToShortDateString()} by {Project.UpdatedByName}";
     }
 
     private async Task LoadMembersAsync()
@@ -82,17 +72,10 @@ public sealed partial class ProjectSettings
             value => Members = value);
     }
 
-    private void Close()
+    private async Task UpdateProject()
     {
-        VisibleChanged.InvokeAsync(false);
-    }
-    private async Task Submit()
-    {
-        var result = IsEdit
-            ? await ProjectService
-                .UpdateProjectAsync(ProjectModel)
-            : await ProjectService
-                .CreateProjectAsync(ProjectModel);
+        var result = await ProjectService
+            .UpdateProjectAsync(ProjectModel);
 
         if (result.IsFailure)
         {
@@ -100,6 +83,9 @@ public sealed partial class ProjectSettings
             return;
         }
 
-        await OnProjectSaved.InvokeAsync();
+        await Notice.Success(new NotificationConfig()
+        {
+            Message = "Project updated successfully"
+        });
     }
 }

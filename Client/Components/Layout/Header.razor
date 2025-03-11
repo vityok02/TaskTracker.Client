@@ -1,11 +1,12 @@
-﻿@using Client.Constants
-<div class="top-row px-4 py-2 d-flex justify-content-between align-items-center bg-light shadow-sm rounded">
-
+﻿<div class="top-row px-4 py-2 d-flex justify-content-between align-items-center bg-light shadow-sm rounded">
     <div class="d-flex align-items-center">
-        <NavLink href=@($"users/{UserId}") class="text-dark text-decoration-none me-4">
+        <NavLink href=@($"users/{UserId}")
+                 class="text-dark text-decoration-none me-4">
             @UserName
         </NavLink>
-        <NavLink href=@(PageRoutes.ProjectsPage) class="text-dark text-decoration-none">
+
+        <NavLink href=@(PageRoutes.ProjectsPage)
+                 class="text-dark text-decoration-none">
             Projects
         </NavLink>
     </div>
@@ -13,10 +14,17 @@
     <div class="d-flex align-items-center">
         <AuthorizeView>
             <Authorized>
-                <NavLink href="/logout" class="text-danger text-decoration-none ms-3">Log out</NavLink>
+                <NavLink href="/logout"
+                         class="text-danger text-decoration-none ms-3">
+                    Log out
+                </NavLink>
             </Authorized>
+
             <NotAuthorized>
-                <NavLink href="/login" class="text-primary text-decoration-none ms-3">Sign in</NavLink>
+                <NavLink href="/login"
+                         class="text-primary text-decoration-none ms-3">
+                    Sign in
+                </NavLink>
             </NotAuthorized>
         </AuthorizeView>
     </div>

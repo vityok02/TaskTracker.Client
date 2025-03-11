@@ -22,23 +22,11 @@ public partial class ProjectMemberList
     [Parameter]
     public EventCallback OnMemberChanged { get; set; }
 
-
     private async Task DeleteMember(Guid memberId)
     {
         await HandleRequest(() => ProjectMemberService
             .DeleteMemberAsync(ProjectId, memberId));
 
         await OnMemberChanged.InvokeAsync();
-    }
-
-    // TODO: fix update
-    private async Task UpdateMember(Guid memberId, Guid roleId)
-    {
-        await HandleRequest(() => ProjectMemberService
-            .UpdateMemberAsync(ProjectId, memberId, new ProjectMemberModel
-            {
-                UserId = memberId,
-                RoleId = roleId
-            }));
     }
 }
