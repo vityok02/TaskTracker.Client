@@ -12,16 +12,17 @@ public partial class ResetPassword
     [Inject]
     public required NavigationManager NavManager { get; init; }
 
+    [Parameter]
     public required string ResetToken { get; set; }
 
-    private SetPasswordModel SetPassword { get; set; } = new();
+    private SetPasswordModel SetPasswordModel { get; set; } = new();
 
     public async Task Submit()
     {
-        SetPassword.ResetToken = ResetToken;
+        SetPasswordModel.ResetToken = ResetToken;
 
         var result = await IdentityService
-            .SetPasswordAndAuthorize(SetPassword);
+            .SetPasswordAndAuthorize(SetPasswordModel);
 
         if (result.IsFailure)
         {

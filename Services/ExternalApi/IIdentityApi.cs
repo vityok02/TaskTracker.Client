@@ -7,18 +7,18 @@ namespace Services.ExternalApi;
 
 public interface IIdentityApi : IApi
 {
-    [Post("/users/register")]
+    [Post("/register")]
     Task<IApiResponse<RegisterDto>> RegisterAsync(RegisterModel model);
 
-    [Post("/users/login")]
+    [Post("/login")]
     Task<IApiResponse<TokenDto>> LoginAsync(LoginModel model);
 
-    [Post("/users/reset-password")]
+    [Post("/reset-password")]
     Task<IApiResponse> ResetPasswordAsync(ResetPasswordModel model);
 
-    [Post("/users/set-password")]
+    [Post("/set-password")]
     Task<IApiResponse<TokenDto>> SetPasswordAsync(SetPasswordModel model);
 
-    [Post("/users/change-password")]
+    [Post("/change-password")]
     Task<IApiResponse> ChangePasswordAsync(ChangePasswordModel model);
 }

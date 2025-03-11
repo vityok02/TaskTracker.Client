@@ -4,7 +4,7 @@ using Services.Extensions;
 
 namespace Client.Validators.Identity;
 
-internal sealed class LoginModelValidator
+public sealed class LoginModelValidator
     : AbstractValidator<LoginModel>
 {
     public LoginModelValidator()

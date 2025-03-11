@@ -1,28 +1,17 @@
 ﻿@inherits LayoutComponentBase
 
 <div class="page">
-    <AuthorizeView>
-        <Authorized>
-            <div class="sidebar">
-                <NavMenu />
-            </div>
-
-            <main>
+    <main class="bg-light">
+        <AuthorizeView>
+            <Authorized>
                 <Client.Components.Layout.Header />
+            </Authorized>
+        </AuthorizeView>
 
-                <article class="content px-4">
-                    @Body
-                </article>
-            </main>
-        </Authorized>
-        <NotAuthorized>
-            <main>
-                <article class="content px-4">
-                    @Body
-                </article>
-            </main>
-        </NotAuthorized>
-    </AuthorizeView>
+        <article class="content px-4">
+            @Body
+        </article>
+    </main>
 </div>
 
 <div id="blazor-error-ui" data-nosnippet>

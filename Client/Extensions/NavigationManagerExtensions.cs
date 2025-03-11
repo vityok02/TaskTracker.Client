@@ -12,9 +12,9 @@ public static class NavigationManagerExtensions
             .NavigateTo($"/set-token?token={token}", true);
     }
 
-    public static void NavigateToHome(this NavigationManager navigationManager)
+    public static void NavigateToHomePage(this NavigationManager navigationManager)
     {
         navigationManager
-            .NavigateTo("/");
+            .NavigateTo("/projects");
     }
 }

@@ -30,6 +30,6 @@ public partial class ChangePassword
             return;
         }
 
-        NavManager.NavigateTo("/");
+        NavManager.NavigateTo($"/details/{UserId}");
     }
 }

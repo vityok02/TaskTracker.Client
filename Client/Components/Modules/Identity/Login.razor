@@ -4,48 +4,57 @@
 
 <PageTitle>Login</PageTitle>
 
-<Content Class="auth-form">
+<div class="d-flex flex-column align-items-center justify-content-center min-vh-100 bg-light">
+    <div class="card shadow p-4 w-100"
+         style="max-width: 400px;">
 
-    <Title Level="3">Login</Title>
-
-    <Form Model=@LoginModel
-          OnFinishFailed=@OnInitializedAsync
-          OnFinish=@Submit
-          Layout=@FormLayout.Vertical>
-
-        <FluentValidationValidator />
-
-        <FormItem Label="Email">
-            <Input Type="InputType.Email" name="email" @bind-Value=@LoginModel.Email />
-        </FormItem>
-
-        <FormItem Label="Password">
-            <InputPassword @bind-Value=@LoginModel.Password />
-        </FormItem>
-
-        <Text>@ErrorMessage</Text>
-
-        <Button Type=@ButtonType.Primary
-                HtmlType="submit">
+        <Title Level="3"
+               Class="text-center mb-3">
             Login
-        </Button>
+        </Title>
 
-    </Form>
+        <Form Model=@LoginModel
+              OnFinish=@Submit
+              Layout=@FormLayout.Vertical
+              Class="mb-3">
 
-    <div>
-        <NavLink Match=@NavLinkMatch.All
-                 href="/forgot-password">
-            Forgot your password?
-        </NavLink>
+            <FluentValidationValidator />
+
+            <FormItem Label="Email"
+                      Class="mb-3">
+                <Input Type="InputType.Email"
+                       @bind-Value=@LoginModel.Email
+                       Class="form-control" />
+            </FormItem>
+
+            <FormItem Label="Password"
+                      Class="mb-3">
+                <Input Type="InputType.Password"
+                       @bind-Value=@LoginModel.Password
+                       Class="form-control" />
+            </FormItem>
+
+            <Button Type=@ButtonType.Primary
+                    HtmlType="submit"
+                    Class="btn btn-primary w-100 mt-3">
+                Login
+            </Button>
+        </Form>
+
+        <div class="text-center mt-2">
+            <NavLink Match=@NavLinkMatch.Prefix
+                     href="/forgot-password"
+                     class="text-decoration-none">Forgot your password?</NavLink>
+        </div>
+
+        <div class="text-center mt-2">
+            <Text Class="text-muted">
+                Don't have an account?
+            </Text>
+
+            <NavLink Match=@NavLinkMatch.Prefix
+                     href="/register"
+                     class="text-decoration-none"> Create</NavLink>
+        </div>
     </div>
-
-    <div>
-        <Text>Don't have an account?</Text>
-
-        <NavLink Match=@NavLinkMatch.All
-                 href="/register">
-            Create
-        </NavLink>
-    </div>
-
-</Content>
+</div>

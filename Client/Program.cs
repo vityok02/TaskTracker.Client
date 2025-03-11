@@ -1,4 +1,3 @@
-using AntDesign;
 using Client;
 using Client.Components;
 using Client.Extensions;
@@ -13,9 +12,6 @@ builder.Services.AddClient(builder.Configuration);
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents()
     .AddInteractiveWebAssemblyComponents();
-;
-
-LocaleProvider.DefaultLanguage = "en-US";
 
 var app = builder.Build();
 

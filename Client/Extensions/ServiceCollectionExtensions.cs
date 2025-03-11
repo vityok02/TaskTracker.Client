@@ -21,8 +21,11 @@ public static class ServiceCollectionExtensions
         services.AddExternalApis(configuration);
         services.AddMemoryCache();
         services.AddHttpContextAccessor();
-        services.AddAntDesign();
         services.AddScoped<AuthenticationStateProvider, CustomAuthStateProvider>();
+        services.AddAntDesign();
+
+        LocaleProvider.DefaultLanguage = "en-US";
+        LocaleProvider.SetLocale("en-US");
 
         return services;
     }

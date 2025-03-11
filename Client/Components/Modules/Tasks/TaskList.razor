@@ -1,104 +1,117 @@
 ﻿@page "/projects/{projectId:guid}/tasks"
 
-@using Client.Components.Modules.Projects.Components
-@using Client.Components.Modules.Tasks.Components
-
 @attribute [Authorize]
 
 <PageTitle>@Title</PageTitle>
 
-<Title Level="3">@Title</Title>
+<div class="d-flex align-items-center m-4">
+    <NavLink href=@(PageRoutes.ProjectsPage)
+             class="text-dark me-3">
+        <i class="bi bi-arrow-left fs-4" />
+    </NavLink>
 
-<a @onclick=@(() => ProjectDetailsVisible = true)>Settings</a>
+    <NavLink href="@($"/projects/{ProjectId}/settings")"
+             class="text-decoration-none text-dark">
+        <h4 class="mb-0">
+            @Title
+        </h4>
+    </NavLink>
+</div>
 
-<ProjectDetails ProjectId=ProjectId @bind-Visible=@ProjectDetailsVisible />
-
-<Flex Gap="FlexGap.Middle"
-      Direction="FlexDirection.Horizontal"
-      Style="flex-grow: 1">
-
+<div class="row g-4"
+     style="height: calc(100vh - 200px)">
     @foreach (var state in Project.States.OrderBy(s => s.Number))
     {
-        <Flex Direction="FlexDirection.Vertical">
+        <div class="col-12 col-md-6 col-lg-4"
+             style="max-width: 400px">
+            <div class="card shadow-sm h-100 d-flex flex-column">
+                <div class="card-body d-flex flex-column">
+                    <h5 class="card-title mt-1 ms-2">
+                        @state.Name
+                    </h5>
 
-            <Card Title=@state.Name Style="min-width: 300px; flex-grow: 1">
+                    <div class="task-card">
+                        <ul class="list-group list-group-flush flex-grow-1">
+                            @foreach (var item in Tasks.Where(t => t.StateId == state.Id))
+                            {
+                                <li class="list-group-item p-0">
+                                    <div class="card shadow-sm mb-2">
+                                        <div class="card-body d-flex justify-content-between align-items-center">
+                                            <a @onclick="@(() => OpenDetials(item.Id))"
+                                               class="text-decoration-none text-dark">
+                                                @item.Name
+                                            </a>
 
-                <AntList DataSource=@Tasks.Where(t => t.StateId == state.Id)>
-                    <ChildContent Context="item">
+                                            <Dropdown Trigger="@(new Trigger[] { Trigger.Click })">
+                                                <Overlay>
+                                                    <Menu>
+                                                        <MenuItem>
+                                                            <Button Type="@ButtonType.Text"
+                                                                    OnClick="@(() => OpenDetials(item.Id))">
+                                                                Details
+                                                            </Button>
+                                                        </MenuItem>
 
-                        <ListItem Style="
-                            border: 1px solid black;
-                            margin-bottom: 20px;
-                            padding: 10px">
+                                                        <MenuItem>
+                                                            <Popconfirm Title="Are you sure delete this project?"
+                                                                        OnConfirm="@(() => Delete(item.Id))"
+                                                                        OkText="Yes"
+                                                                        CancelText="No">
+                                                                <Button Type="@ButtonType.Text">
+                                                                    Delete
+                                                                </Button>
+                                                            </Popconfirm>
+                                                        </MenuItem>
+                                                    </Menu>
+                                                </Overlay>
 
-                            <a @onclick=@(() => OpenDetials(item.Id))>
-                                @item.Name
-                            </a>
+                                                <ChildContent>
+                                                    <a @onclick:preventDefault
+                                                       class="text-decoration-none">...</a>
+                                                </ChildContent>
+                                            </Dropdown>
+                                        </div>
+                                    </div>
+                                </li>
+                            }
+                        </ul>
+                    </div>
 
-                            <Dropdown Trigger="@(new Trigger[] { Trigger.Click })">
-                                <Overlay>
-                                    <Menu>
-                                        <MenuItem>
-                                            <Button Type="@ButtonType.Text"
-                                                    OnClick="@(() => OpenDetials(item.Id))">
-                                                Details
-                                            </Button>
-                                        </MenuItem>
-
-                                        <MenuItem>
-                                            <Popconfirm Title="Are you sure delete this project?"
-                                                        OnConfirm=@(() => Delete(item.Id))
-                                                        OkText="Yes"
-                                                        CancelText="No">
-                                                <Button Type=@ButtonType.Text>
-                                                    Delete
-                                                </Button>
-                                            </Popconfirm>
-                                        </MenuItem>
-                                    </Menu>
-                                </Overlay>
-
-                                <ChildContent>
-                                    <a @onclick:preventDefault>
-                                        ...
-                                    </a>
-                                </ChildContent>
-                            </Dropdown>
-
-                        </ListItem>
-
-                    </ChildContent>
-                </AntList>
-
-            </Card>
-
-            <Button OnClick="@(() => ShowInput(state.Id))">
-                Add item
-            </Button>
-
-        </Flex>
+                    <Button OnClick="@(() => ShowInput(state.Id))"
+                            Class="btn bg-transparent border-0 mt-auto w-100">
+                        Add item
+                    </Button>
+                </div>
+            </div>
+        </div>
     }
-</Flex>
+</div>
 
-<div hidden=@HideInput>
-    <Form Model=@TaskModel
-          OnFinish=@Submit
+<div class="mt-2"
+     hidden=@HideInput>
+    <Form Model="@TaskModel"
+          OnFinish="@Submit"
           Layout="FormLayout.Horizontal">
-
         <FluentValidationValidator />
 
-        <Button HtmlType="submit">+</Button>
+        <div class="d-flex align-items-stretch"
+             style="height: 38px">
+            <Button HtmlType="submit"
+                    Class="btn btn-primary me-1 h-100">
+                +
+            </Button>
 
-        <FormItem>
-            <Input @ref=@Input @onfocusout=@(() => HideInput = true )
-                   @bind-Value=@TaskModel.Name
-                   Placeholder="Task name" />
-
-        </FormItem>
-
+            <FormItem class="flex-grow-1">
+                <Input Size="InputSize.Large"
+                       @ref="@Input"
+                       @onfocusout="@(() => HideInput = true)"
+                       @bind-Value="@TaskModel.Name"
+                       Placeholder="Task name" />
+            </FormItem>
+        </div>
     </Form>
 </div>
 
 <TaskDetails TaskId="SelectedTaskId"
              ProjectId="ProjectId"
-             @bind-Visible=@_detailsVisible />
+             @bind-Visible="@_detailsVisible" />

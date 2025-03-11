@@ -4,113 +4,107 @@
 }
 
 <Drawer @bind-Visible=@Visible
-        OnClose=@Close>
+        Width="500px"
+        OnClose=@Close
+        Class="p-3">
 
-    @if (IsNameInput)
-    {
-        <Form Model=@TaskModel
-              OnFinish=@Update>
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        @if (IsNameInput)
+        {
+            <Form Model=@TaskModel
+                  OnFinish=@Update
+                  Class="w-100 d-flex align-items-center gap-2">
+                <Input @bind-Value=@TaskModel.Name
+                       Class="form-control" />
 
-            <Input @bind-Value=@TaskModel.Name />
+                <Button HtmlType="button"
+                        OnClick=@HideNameInput
+                        Class="btn btn-secondary btn-sm">
+                    Cancel
+                </Button>
 
-            <Button HtmlType="submit"
-                    OnClick=@HideNameInput>
-                Cancel
+                <Button HtmlType="submit"
+                        Class="btn btn-primary btn-sm">
+                    Save
+                </Button>
+            </Form>
+        }
+        else
+        {
+            <h3 class="m-0">@Task.Name</h3>
+            <Button OnClick=@ShowNameInput
+                    Class="btn btn-primary btn-sm">
+                Edit
             </Button>
+        }
+    </div>
 
-            <Button HtmlType="submit">
-                Save
+    <Divider />
+
+    <div class="mb-3">
+        @if (IsDescriptionInput)
+        {
+            <Form Model=@TaskModel
+                  OnFinish=@Update>
+                <TextArea @bind-Value=@TaskModel.Description
+                          Class="form-control mb-2"
+                          Rows="3" />
+
+                <div class="d-flex gap-2 mt-2">
+                    <Button HtmlType="button"
+                            OnClick=@HideDescriptionInput
+                            Class="btn btn-secondary btn-sm">
+                        Cancel
+                    </Button>
+
+                    <Button HtmlType="submit"
+                            Class="btn btn-primary btn-sm">
+                        Save
+                    </Button>
+                </div>
+            </Form>
+        }
+        else
+        {
+            <div class="border p-3 bg-white rounded mb-2">
+                @(TaskModel.Description ?? "No description provided")
+            </div>
+            <Button OnClick=@ShowDescriptionInput
+                    Class="btn btn-primary btn-sm">
+                Edit
             </Button>
+        }
+    </div>
 
-        </Form>
-    }
-    else
-    {
-        <Title>@Task.Name</Title>
+    <Divider />
 
-        <Button OnClick=@ShowNameInput>
-            Edit
-        </Button>
-    }
-
-    @if (IsDescriptionInput)
-    {
-        <Form Model=@TaskModel
-              OnFinish=@Update>
-
-            <TextArea @bind-Value=@TaskModel.Description />
-
-            <Button HtmlType="submit"
-                    OnClick=@HideDescriptionInput>
-                Cancel
-            </Button>
-
-            <Button HtmlType="submit">
-                Save
-            </Button>
-
-        </Form>
-    }
-    else
-    {
-        <TextArea DefaultValue=@(TaskModel.Description ?? "Not description provided")
-                  Disabled=@true />
-
-        <Button OnClick=@ShowDescriptionInput>
-            Edit
-        </Button>
-    }
-
-    <GridRow>
-        <GridCol>
-            State
-        </GridCol>
-
-        <GridCol>
+    <div class="border p-3 bg-white rounded">
+        <div class="mb-2">
+            <span class="fw-bold">State: </span>
             @Task.State
-        </GridCol>
-    </GridRow>
+        </div>
 
-    <GridRow>
-        <GridCol>
-            Created by
-        </GridCol>
-
-        <GridCol>
+        <div class="mb-2">
+            <span class="fw-bold">Created by: </span>
             @Task.CreatedByName
-        </GridCol>
-    </GridRow>
+        </div>
 
-    <GridRow>
-        <GridCol>
-            Created at
-        </GridCol>
-
-        <GridCol>
+        <div class="mb-2">
+            <span class="fw-bold">Created at: </span>
             @Task.CreatedAt
-        </GridCol>
-    </GridRow>
+        </div>
 
-    @if (Task.UpdatedBy is not null)
-    {
-        <GridRow>
-            <GridCol>
-                Updated by
-            </GridCol>
-
-            <GridCol>
+        @if (Task.UpdatedBy is not null)
+        {
+            <div class="mb-2">
+                <span class="fw-bold">Updated by: </span>
                 @Task.UpdatedByName
-            </GridCol>
-        </GridRow>
+            </div>
 
-        <GridRow>
-            <GridCol>
-                Updated at
-            </GridCol>
-
-            <GridCol>
+            <div class="mb-2">
+                <span class="fw-bold">Updated at: </span>
                 @Task.UpdatedAt
-            </GridCol>
-        </GridRow>
-    }
+            </div>
+        }
+    </div>
 </Drawer>

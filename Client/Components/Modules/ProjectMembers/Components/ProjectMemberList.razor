@@ -1,31 +1,21 @@
 ﻿@inherits BaseComponent
 
-@using Domain.Dtos;
-
 <AntList DataSource=@Members>
     <ChildContent Context="item">
-
-        <ListItem>
-
-            <Text>
+        <ListItem Class="d-flex justify-content-between align-items-center">
+            <Text Class="me-2">
                 @item.UserName
             </Text>
 
-            <Select 
-                TItem="RoleDto"
-                TItemValue="Guid"
-                DataSource=@Roles
+            <Select DataSource=@Roles
                     @bind-Value=@item.RoleId
-                    ItemValue=@(r => r.Id)
-                    ItemLabel=@(r => r.Name)
-                    @onchange="@(roleId => UpdateMember(item.UserId, item.RoleId))">
-            </Select>
+                    ItemLabel=@(c => c.Name)
+                    ItemValue=@(c => c.Id) />
 
-            <Button OnClick=@(() => DeleteMember(item.UserId))>
+            <Button OnClick=@(() => DeleteMember(item.UserId))
+                    Class="btn btn-danger btn-sm m-1">
                 Remove
             </Button>
-
         </ListItem>
-
     </ChildContent>
 </AntList>

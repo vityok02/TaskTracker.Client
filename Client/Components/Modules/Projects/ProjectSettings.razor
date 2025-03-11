@@ -1,0 +1,70 @@
+﻿@page "/projects/{projectId:guid}/settings"
+
+@inherits BaseComponent
+
+@attribute [Authorize]
+
+<PageTitle>@Project.Name</PageTitle>
+
+<div class="container mt-4">
+    <div class="d-flex align-items-center mb-4">
+        <NavLink href=@($"projects/{ProjectId}/tasks")
+                 class="text-dark me-3">
+            <i class="bi bi-arrow-left fs-4" />
+        </NavLink>
+
+        <h4 class="mb-0">
+            @Project.Name - settings
+        </h4>
+    </div>
+
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <Form Model=@ProjectModel
+                  OnFinish=@UpdateProject
+                  Layout=@FormLayout.Vertical
+                  Autocomplete="off">
+
+                <FluentValidationValidator />
+
+                <FormItem Label="Project Name">
+                    <Input @bind-Value=@ProjectModel.Name
+                           Class="form-control" />
+                </FormItem>
+
+                <FormItem Label="Description">
+                    <TextArea @bind-Value=@ProjectModel.Description
+                              Rows="4"
+                              Class="form-control" />
+                </FormItem>
+
+                <div class="d-flex justify-content-end">
+                    <Button Type=@ButtonType.Primary
+                            HtmlType="submit"
+                            Class="btn btn-primary">
+                        Save Changes
+                    </Button>
+                </div>
+            </Form>
+        </div>
+    </div>
+
+    <div class="mt-4">
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <h5>Manage Members</h5>
+
+                <ProjectMemberForm Roles=@Roles
+                                   ProjectId=@ProjectId
+                                   OnMemberAdded=@LoadMembersAsync />
+
+                <Divider />
+
+                <ProjectMemberList ProjectId=@ProjectId
+                                   Members=@Members
+                                   Roles=@Roles
+                                   OnMemberChanged=@LoadMembersAsync />
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,4 +1,5 @@
-﻿using Domain.Dtos;
+﻿using Client.Constants;
+using Domain.Dtos;
 using Domain.Models;
 using Microsoft.AspNetCore.Components;
 using Services.Interfaces.ApiServices;
@@ -21,35 +22,9 @@ public sealed partial class ProjectList
 
     private bool _formVisible = false;
 
-    private bool _detailsVisible = false;
-
-    private Guid _selectedProjectId = Guid.Empty;
-
     protected override async Task OnInitializedAsync()
     {
         await LoadDataAsync();
-    }
-
-    private void ShowDetails(Guid id)
-    {
-        _selectedProjectId = Guid.Empty;
-        StateHasChanged();
-        _selectedProjectId = id;
-        _detailsVisible = true;
-        StateHasChanged();
-    }
-
-    private void ShowEditForm(ProjectDto project)
-    {
-        _selectedProjectModel = new ProjectModel
-        {
-            Id = project.Id,
-            Name = project.Name,
-            Description = project.Description
-        };
-
-        _isEdit = true;
-        _formVisible = true;
     }
 
     private void ShowCreateForm()

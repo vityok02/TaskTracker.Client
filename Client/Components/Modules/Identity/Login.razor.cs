@@ -30,7 +30,7 @@ public partial class Login
 
         if (user.Identity?.IsAuthenticated is true)
         {
-            NavManager.NavigateTo("/");
+            NavManager.NavigateToHomePage();
         }
     }
 
