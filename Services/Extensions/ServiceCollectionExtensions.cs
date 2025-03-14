@@ -20,6 +20,7 @@ public static class ServiceCollectionExtensions
         services.AddScoped<ITaskService, TaskService>();
         services.AddScoped<IProjectMemberService, ProjectMemberService>();
         services.AddScoped<IRoleService, RoleService>();
+        services.AddScoped<ICommentService, CommentService>();
         services.AddValidatorsFromAssembly(AssemblyReference.Assembly, includeInternalTypes: true);
 
         return services;
