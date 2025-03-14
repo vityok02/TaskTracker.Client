@@ -1,0 +1,94 @@
+﻿@inherits BaseComponent
+
+<div class="comments-section p-3">
+    <h5 class="mb-3">Comments</h5>
+
+    <Form Model=@CommentModel
+          OnFinish=@CreateCommentAsync
+          Class="comment-form p-3 bg-white rounded shadow-sm">
+        <FluentValidationValidator />
+
+        <FormItem>
+            <TextArea @bind-Value="CommentModel.Comment"
+                      Class="form-control"
+                      Placeholder="Write a comment..."
+                      Rows="3" />
+        </FormItem>
+
+        <div class="d-flex justify-content-end mt-2">
+            <Button HtmlType="submit"
+                    Class="btn btn-primary btn-sm">
+                Add Comment
+            </Button>
+        </div>
+    </Form>
+
+    <AntList DataSource="Comments"
+             Context="item"
+             Class="list-group mt-3">
+        <ListItem Class="list-group-item border rounded p-3 shadow-sm bg-white mb-3">
+
+            <div class="d-flex justify-content-between align-items-center">
+                <strong class="text-primary">
+                    @item.CreatedByName
+                </strong>
+
+                <small class="text-muted">
+                    @item.CreatedAt.ToString("yyyy-MM-dd | HH:mm")
+                </small>
+            </div>
+
+            @if (UpdateCommentId == item.Id)
+            {
+                <Form Model=@UpdateCommentModel
+                      OnFinish=@UpdateCommentAsync>
+                    <FluentValidationValidator />
+
+                    <FormItem Class="mb-3">
+                        <TextArea @bind-Value=@UpdateCommentModel.Comment
+                                  Class="form-control mb-2"
+                                  Rows="3" />
+                    </FormItem>
+
+                    <div class="d-flex gap-2">
+                        <Button HtmlType="button"
+                                OnClick=@(() => DeleteUpdateCommentId())
+                                Class="btn btn-secondary btn-sm">
+                            Cancel
+                        </Button>
+
+                        <Button HtmlType="submit"
+                                Class="btn btn-primary btn-sm">
+                            Save
+                        </Button>
+                    </div>
+                </Form>
+            }
+            else
+            {
+                <p class="mb-2 text-dark">
+                    @item.Comment
+                </p>
+
+                <div class="d-flex gap-2">
+                    <Button Type=@ButtonType.Text
+                            OnClick=@(() => SetUpdateCommentId(item.Id))
+                            Class="btn btn-sm btn-link text-decoration-none text-primary">
+                        <i class="bi bi-pencil"></i> Edit
+                    </Button>
+
+                    <Popconfirm Title="Are you sure delete this comment?"
+                                OnConfirm=@(() => DeleteCommentAsync(item.Id))
+                                OkText="Yes"
+                                CancelText="No">
+                        <Button Type=@ButtonType.Text
+                                Class="btn btn-sm btn-link text-danger text-decoration-none">
+                            <i class="bi bi-trash"></i> Delete
+                        </Button>
+                    </Popconfirm>
+                </div>
+            }
+        </ListItem>
+    </AntList>
+
+</div>
