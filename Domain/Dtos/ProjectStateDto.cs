@@ -8,4 +8,3 @@ public class ProjectStateDto
 
     public int Number { get; init; }
 }
-

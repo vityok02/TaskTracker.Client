@@ -1,8 +1,6 @@
-﻿@rendermode InteractiveServer
-
-<Modal @bind-Visible=@Visible
-       Title=@Title
+﻿<Modal @bind-Visible=@Visible
        Closable=@false
+       Footer=@null
        DestroyOnClose=@true>
 
     <h4>
@@ -10,8 +8,8 @@
     </h4>
 
     <div class="modal-content p-4">
-        <Form Model=@ProjectModel
-              OnFinish=@Submit
+        <Form Model=@_stateModel
+              OnFinish=@CreateState
               Layout=@FormLayout.Vertical
               Autocomplete="off">
 
@@ -19,20 +17,20 @@
 
             <FormItem Label="Name"
                       Class="mb-3">
-                <Input @bind-Value=@ProjectModel.Name
-                       Class="form-control" />
+                <InputText @bind-Value=@context.Name
+                           Class="form-control" />
             </FormItem>
 
             <FormItem Label="Description"
                       Class="mb-3">
-                <TextArea @bind-Value=@ProjectModel.Description
+                <TextArea @bind-Value=@context.Description
                           Class="form-control"
                           Rows="4" />
             </FormItem>
 
             <div class="d-flex justify-content-end gap-2">
                 <Button Type=@ButtonType.Default
-                        OnClick=@Cancel
+                        OnClick=@Close
                         Class="btn btn-outline-secondary">
                     Cancel
                 </Button>
@@ -40,7 +38,7 @@
                 <Button Type=@ButtonType.Primary
                         HtmlType="submit"
                         Class="btn btn-primary">
-                    @ButtonText
+                    @SubmitButtonText
                 </Button>
             </div>
         </Form>

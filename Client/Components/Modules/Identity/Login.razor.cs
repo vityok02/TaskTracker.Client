@@ -11,6 +11,9 @@ public partial class Login
     [Inject]
     public required IIdentityService IdentityService { get; init; }
 
+    [CascadingParameter]
+    public required ApplicationState AppState { get; init; }
+
     [Inject]
     public required AuthenticationStateProvider AuthStateProvider { get; init; }
 

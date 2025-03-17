@@ -1,5 +1,4 @@
 ﻿using Domain.Dtos;
-using Domain.Models;
 using Microsoft.AspNetCore.Components;
 using Services.Interfaces.ApiServices;
 
@@ -9,6 +8,9 @@ public partial class ProjectMemberList
 {
     [Inject]
     public required IProjectMemberService ProjectMemberService { get; init; }
+
+    [CascadingParameter]
+    public required ApplicationState AppState { get; init; }
 
     [Parameter]
     public Guid ProjectId { get; set; }
@@ -24,8 +26,13 @@ public partial class ProjectMemberList
 
     private async Task DeleteMember(Guid memberId)
     {
-        await HandleRequest(() => ProjectMemberService
-            .DeleteMemberAsync(ProjectId, memberId));
+        var result = await ProjectMemberService
+            .DeleteMemberAsync(ProjectId, memberId);
+
+        if (result.IsFailure)
+        {
+            AppState.ErrorMessage = result.Error!.Message;
+        }
 
         await OnMemberChanged.InvokeAsync();
     }

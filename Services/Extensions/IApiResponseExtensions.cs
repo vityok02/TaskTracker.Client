@@ -27,13 +27,24 @@ public static class IApiResponseExtensions
             };
         }
 
-        return JsonSerializer
-            .Deserialize<ProblemDetailsDto>(response.Error.Content, _options)
-                ?? new ProblemDetailsDto
-                {
-                    Type = _defaultError.Code,
-                    Detail = _defaultError.Message
-                };
+        try
+        {
+            return JsonSerializer
+                .Deserialize<ProblemDetailsDto>(response.Error.Content, _options)
+                    ?? new ProblemDetailsDto
+                    {
+                        Type = _defaultError.Code,
+                        Detail = _defaultError.Message
+                    };
+        }
+        catch (Exception)
+        {
+            return new ProblemDetailsDto
+            {
+                Type = _defaultError.Code,
+                Detail = _defaultError.Message
+            };
+        }
     }
 
     public static Result HandleResponse(this IApiResponse response)

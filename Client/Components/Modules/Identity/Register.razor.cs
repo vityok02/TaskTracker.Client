@@ -10,6 +10,9 @@ public sealed partial class Register
     [Inject]
     public required IIdentityService IdentityService { get; set; }
 
+    [CascadingParameter]
+    public required ApplicationState AppState { get; init; }
+
     [Inject]
     public required NavigationManager NavManager { get; init; }
 

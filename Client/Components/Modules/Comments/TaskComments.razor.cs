@@ -11,6 +11,9 @@ public partial class TaskComments
     [Inject]
     public required ICommentService CommentService { get; init; }
 
+    [CascadingParameter]
+    public required ApplicationState AppState { get; init; }
+
     [Parameter]
     public Guid ProjectId { get; set; }
 
