@@ -1,7 +1,5 @@
 ﻿@page "/users/{userId:guid}"
 
-@inherits BaseComponent
-
 @attribute [Authorize]
 
 <PageTitle>@(User?.Username ?? "Not found")</PageTitle>

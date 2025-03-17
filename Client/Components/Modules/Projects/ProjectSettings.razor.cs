@@ -43,8 +43,16 @@ public sealed partial class ProjectSettings
             return;
         }
 
-        await HandleRequest(() => ProjectService
-            .GetProjectAsync(ProjectId), value => Project = value);
+        var projectResult = await ProjectService
+            .GetProjectAsync(ProjectId);
+
+        if (projectResult.IsFailure)
+        {
+            ApplicationState.ErrorMessage = projectResult.Error!.Message;
+            return;
+        }
+
+        Project = projectResult.Value;
 
         ProjectModel = new ProjectModel
         {
@@ -53,11 +61,27 @@ public sealed partial class ProjectSettings
             Description = Project.Description,
         };
 
-        await HandleRequest(() => ProjectMemberService
-            .GetProjectMembersAsync(ProjectId), value => Members = value);
+        var projectMembersResult = await ProjectMemberService
+            .GetProjectMembersAsync(ProjectId);
 
-        await HandleRequest(RoleService
-            .GetRolesAsync, value => Roles = value);
+        if (projectMembersResult.IsFailure)
+        {
+            ApplicationState.ErrorMessage = projectMembersResult.Error!.Message;
+            return;
+        }
+
+        Members = projectMembersResult.Value;
+
+        var rolesResult = await RoleService
+            .GetRolesAsync();
+
+        if (rolesResult.IsFailure)
+        {
+            ApplicationState.ErrorMessage = rolesResult.Error!.Message;
+            return;
+        }
+
+        Roles = rolesResult.Value;
     }
 
     private async Task LoadMembersAsync()
@@ -65,11 +89,13 @@ public sealed partial class ProjectSettings
         var result = await ProjectMemberService
             .GetProjectMembersAsync(ProjectId);
 
-        Members = result.Value;
+        if (result.IsFailure)
+        {
+            ApplicationState.ErrorMessage = result.Error!.Message;
+            return;
+        }
 
-        await HandleRequest(() =>
-            ProjectMemberService.GetProjectMembersAsync(ProjectId),
-            value => Members = value);
+        Members = result.Value;
     }
 
     private async Task UpdateProject()

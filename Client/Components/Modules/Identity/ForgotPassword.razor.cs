@@ -9,6 +9,9 @@ public partial class ForgotPassword
     [Inject]
     public required IIdentityService IdentityService { get; init; }
 
+    [CascadingParameter]
+    public required ApplicationState AppState { get; init; }
+
     [Inject]
     public required NavigationManager NavManager { get; init; }
 

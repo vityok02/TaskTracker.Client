@@ -17,6 +17,9 @@ public sealed partial class Profile
     [Inject]
     public required AuthenticationStateProvider AuthStateProvider { get; init; }
 
+    [CascadingParameter]
+    public required ApplicationState AppState { get; init; }
+
     [Inject]
     public required NavigationManager NavManager { get; init; }
 
