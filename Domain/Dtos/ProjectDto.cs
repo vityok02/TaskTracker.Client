@@ -10,5 +10,5 @@ public class ProjectDto : AuditableDto
 
     public string? Description { get; init; } = string.Empty;
 
-    public IEnumerable<ProjectStateDto> States { get; init; } = [];
+    public IEnumerable<StateDto> States { get; init; } = [];
 }

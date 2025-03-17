@@ -11,15 +11,13 @@ public class Result<TValue> : Result
     }
 
     private Result(Error error)
+        : base(error)
     {
-        IsSuccess = false;
-        Error = error;
     }
 
     private Result(string code, string description)
+        : base(code, description)
     {
-        IsSuccess = false;
-        Error = new Error(code, description);
     }
 
     public static Result<TValue> Success(TValue value) => new(value);
