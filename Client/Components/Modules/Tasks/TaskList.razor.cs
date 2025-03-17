@@ -1,5 +1,4 @@
 ﻿using AntDesign;
-using Domain;
 using Domain.Dtos;
 using Domain.Models;
 using Microsoft.AspNetCore.Components;
@@ -16,7 +15,7 @@ public partial class TaskList
     public required IProjectService ProjectService { get; set; }
 
     [CascadingParameter]
-    public required ApplicationState AppState { get; set; }
+    public required ApplicationState AppState { get; init; }
 
     [Parameter]
     public Guid ProjectId { get; set; }
@@ -33,15 +32,28 @@ public partial class TaskList
 
     public required Input<string> Input { get; set; }
 
+    private bool _stateFormVisible = false;
+
     private bool _detailsVisible = false;
 
-    private Guid SelectedTaskId { get; set; }
+    private Guid? _selectedStateId { get; set; }
 
-    private bool ProjectDetailsVisible { get; set; }
+    private Guid SelectedTaskId { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
         await LoadDataAsync();
+    }
+
+    private void OpenUpdateStateForm(Guid stateId)
+    {
+        _selectedStateId = stateId;
+        _stateFormVisible = true;
+    }
+
+    private void OpenCreateStateForm()
+    {
+        _stateFormVisible = true;
     }
 
     private async Task Submit()
@@ -52,6 +64,7 @@ public partial class TaskList
         if (result.IsFailure)
         {
             AppState.ErrorMessage = result.Error!.Message;
+            return;
         }
 
         HideInput = true;
@@ -71,20 +84,6 @@ public partial class TaskList
             await Task.Delay(50);
             await Input.Focus();
         });
-    }
-
-    private async Task Delete(Guid taskId)
-    {
-        var result = await TaskService
-            .DeleteTaskAsync(ProjectId, taskId);
-
-        if (result.IsFailure)
-        {
-            AppState.ErrorMessage = result.Error!.Message;
-            return;
-        }
-
-        await LoadDataAsync();
     }
 
     private void OpenDetials(Guid taskId)

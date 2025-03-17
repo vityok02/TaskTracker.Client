@@ -13,6 +13,9 @@ public sealed partial class ProjectForm
     public bool Visible { get; set; }
 
     [Parameter]
+    public EventCallback<bool> VisibleChanged { get; set; }
+
+    [Parameter]
     public EventCallback OnProjectSaved { get; set; }
 
     [CascadingParameter]
@@ -26,9 +29,6 @@ public sealed partial class ProjectForm
 
     [Parameter]
     public ProjectModel ProjectModel { get; set; } = new ProjectModel();
-
-    [Parameter]
-    public EventCallback<bool> VisibleChanged { get; set; }
 
     private string Title => IsEdit ? "Edit project" : "Create project";
 
@@ -50,7 +50,7 @@ public sealed partial class ProjectForm
 
         await OnProjectSaved.InvokeAsync();
 
-        Visible = false;
+        await VisibleChanged.InvokeAsync(false);
     }
 
     private void Cancel()
