@@ -21,13 +21,16 @@
         </NavLink>
     </div>
 
-    <Button OnClick=@OpenCreateStateForm class="btn btn-outline-secondary">
+    <Button OnClick=@OpenCreateStateForm
+            Class="btn btn-outline-secondary">
         Add state
     </Button>
 </div>
 
-<div class="overflow-auto" style="width: 100%;">
-    <div class="row g-4 flex-nowrap" style="min-width: 100%; height: calc(100vh - 200px);">
+<div class="overflow-auto"
+     style="width: 100%;">
+    <div class="row g-4 flex-nowrap"
+         style="min-width: 100%; height: calc(100vh - 200px);">
         @foreach (var state in Project.States.OrderBy(s => s.Number))
         {
             <TaskColumn Tasks=@Tasks
