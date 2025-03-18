@@ -38,14 +38,10 @@
                                     @project.Name
                                 </NavLink>
 
-                                <Popconfirm Title="Are you sure delete this project?"
-                                            OnConfirm=@(() => Delete(project.Id))
-                                            OkText="Delete"
-                                            CancelText="No">
-                                    <a class="text-danger">
-                                        <i class="bi bi-trash-fill" />
-                                    </a>
-                                </Popconfirm>
+                                <a class="text-danger"
+                                   @onclick=@(() => ShowDeleteModal(project.Id, project.Name))>
+                                    <i class="bi bi-trash-fill" />
+                                </a>
                             </h5>
 
                             <p class="card-text text-muted">
@@ -60,10 +56,13 @@
                         </div>
                     </div>
                 </div>
-
             }
         </div>
     }
+
+    <DeleteProjectModal OnConfirm=@(() => Delete(_deleteProjectId))
+                        @bind-ProjectName=@_deleteProjectName
+                        @bind-Visible=@_deleteModalVisible />
 
     <ProjectForm @bind-Visible=@_formVisible
                  IsEdit=@_isEdit

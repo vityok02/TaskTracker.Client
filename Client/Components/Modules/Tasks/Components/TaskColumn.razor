@@ -20,7 +20,7 @@
 
                             <MenuItem>
                                 <Button Type="@ButtonType.Text"
-                                        OnClick="@(() => DeleteState(State.Id))">
+                                        OnClick="@(() => ShowStateDeleteConfirm(State.Id))">
                                     Delete
                                 </Button>
                             </MenuItem>
@@ -58,14 +58,10 @@
                                                 </MenuItem>
 
                                                 <MenuItem>
-                                                    <Popconfirm Title="Are you sure delete this project?"
-                                                                OnConfirm="@(() => DeleteTask(item.Id))"
-                                                                OkText="Yes"
-                                                                CancelText="No">
-                                                        <Button Type="@ButtonType.Text">
-                                                            Delete
-                                                        </Button>
-                                                    </Popconfirm>
+                                                    <Button Type="@ButtonType.Text"
+                                                            OnClick=@(() => ShowTaskDeleteConfirm(item.Id))>
+                                                        Delete
+                                                    </Button>
                                                 </MenuItem>
                                             </Menu>
                                         </Overlay>

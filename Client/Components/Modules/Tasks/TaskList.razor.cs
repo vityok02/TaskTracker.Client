@@ -9,10 +9,10 @@ namespace Client.Components.Modules.Tasks;
 public partial class TaskList
 {
     [Inject]
-    public required ITaskService TaskService { get; set; }
+    public required ITaskService TaskService { get; init; }
 
     [Inject]
-    public required IProjectService ProjectService { get; set; }
+    public required IProjectService ProjectService { get; init; }
 
     [CascadingParameter]
     public required ApplicationState AppState { get; init; }

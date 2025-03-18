@@ -1,0 +1,36 @@
+﻿<Modal @bind-Visible=@Visible
+       DestroyOnClose=@true
+       AfterClose=@Close
+       Footer=@null>
+
+    <h5 class="text-danger">
+        Warning!
+    </h5>
+    <p class="text-muted">
+        This action cannot be undone. Deleting the
+        <strong> @ProjectName</strong>
+        project will remove all associated data, including tasks.
+    </p>
+    <p class="fw-semibold">
+        Please type
+        <strong> @ProjectName</strong>
+        to confirm.
+    </p>
+
+    <Form Model=@ConfirmModel OnFinish=@Confirm>
+        <FluentValidationValidator />
+
+        <FormItem Class="mb-3">
+            <Input @bind-Value=@context.Input
+                   @oninput="UpdateState"
+                   Class="form-control border rounded-2 shadow-sm" />
+        </FormItem>
+
+        <Button Type=@ButtonType.Primary
+                HtmlType="submit"
+                Disabled=@(!CanDelete())
+                Class="btn btn-sm btn-danger w-100">
+            I understand the consequences, delete this project
+        </Button>
+    </Form>
+</Modal>
