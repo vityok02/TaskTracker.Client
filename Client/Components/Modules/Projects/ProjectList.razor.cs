@@ -1,5 +1,4 @@
-﻿using Client.Constants;
-using Domain.Dtos;
+﻿using Domain.Dtos;
 using Domain.Models;
 using Microsoft.AspNetCore.Components;
 using Services.Interfaces.ApiServices;
@@ -22,9 +21,21 @@ public sealed partial class ProjectList
 
     private bool _formVisible = false;
 
+    private Guid _deleteProjectId;
+    private string _deleteProjectName = string.Empty;
+    private bool _deleteModalVisible = false;
+
     protected override async Task OnInitializedAsync()
     {
         await LoadDataAsync();
+    }
+
+    private void ShowDeleteModal(Guid projectId, string projectName)
+    {
+        _formVisible = false;
+        _deleteProjectId = projectId;
+        _deleteProjectName = projectName;
+        _deleteModalVisible = true;
     }
 
     private void ShowCreateForm()

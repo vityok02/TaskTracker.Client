@@ -76,9 +76,9 @@ public partial class StateForm
         }
 
         _stateModel = new();
-        await ResetStateId();
         await OnCreate.InvokeAsync();
-        await VisibleChanged.InvokeAsync(false);
+
+        await Close();
     }
 
     public async Task Close()

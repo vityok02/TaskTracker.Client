@@ -1,4 +1,5 @@
-﻿using Domain.Dtos;
+﻿using AntDesign;
+using Domain.Dtos;
 using Domain.Models;
 using Microsoft.AspNetCore.Components;
 using Services.Interfaces.ApiServices;
@@ -12,6 +13,9 @@ public partial class TaskColumn
 
     [Inject]
     public required IStateService StateService { get; init; }
+
+    [Inject]
+    public required ModalService ModalService { get; init; }
 
     [CascadingParameter]
     public required ApplicationState AppState { get; init; }
@@ -83,5 +87,66 @@ public partial class TaskColumn
         }
 
         await OnChange.InvokeAsync();
+    }
+
+    private async Task ShowTaskDeleteConfirm(Guid taskId)
+    {
+        await ModalService.ConfirmAsync(new ConfirmOptions()
+        {
+            Title = "Delete task?",
+            Content = "Are you sure you want to delete this item from this project?",
+            Icon = RenderFragments.DeleteIcon,
+            OnOk = (e) => DeleteTask(taskId),
+            OnCancel = (e) => Task.CompletedTask,
+            OkText = "Delete",
+            CancelText = "Cancel",
+            OkButtonProps = new ButtonProps
+            {
+                Danger = true
+            }
+        });
+    }
+
+    private async Task ShowStateDeleteConfirm(Guid stateId)
+    {
+        await ModalService.ConfirmAsync(new ConfirmOptions()
+        {
+            Title = "Delete confirmation",
+            Content = GetContentFragment(),
+            Icon = RenderFragments.DeleteIcon,
+            OnOk = (e) => DeleteState(stateId),
+            OnCancel = (e) => Task.CompletedTask,
+            OkText = "Delete",
+            CancelText = "Cancel",
+            OkButtonProps = new ButtonProps
+            {
+                Danger = true
+            }
+        });
+
+        static RenderFragment GetContentFragment()
+        {
+            return builder =>
+            {
+                builder.OpenElement(0, "div");
+                builder.AddContent(1, "This will permanently delete this option from the \"Status\" field.");
+
+                builder.OpenElement(2, "span");
+                builder.AddAttribute(3, "class", "fw-bold");
+                builder.AddContent(4, " This cannot be undone.");
+                builder.CloseElement();
+
+                builder.CloseElement();
+
+                builder.OpenElement(5, "div");
+                builder.AddAttribute(6, "class", "custom-description bg-light border border-danger text-danger p-2 rounded mt-2");
+                builder.OpenElement(7, "span");
+                builder.AddAttribute(8, "class", "text-danger");
+                builder.AddContent(9, "Warning:");
+                builder.CloseElement();
+                builder.AddContent(10, " The option will be permanently deleted from any items in this project.");
+                builder.CloseElement();
+            };
+        }
     }
 }

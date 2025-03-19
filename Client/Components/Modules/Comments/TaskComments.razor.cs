@@ -77,6 +77,12 @@ public partial class TaskComments
         }
     }
 
+    private string GetCommentDate(CommentDto comment)
+    {
+        return comment.UpdatedAt?.ToString("yyyy-MM-dd | HH:mm")
+            ?? comment.CreatedAt.ToString("yyyy-MM-dd | HH:mm");
+    }
+
     private async Task UpdateCommentAsync()
     {
         if (UpdateCommentId is null)
@@ -99,6 +105,7 @@ public partial class TaskComments
         if (comment is not null)
         {
             comment.Comment = UpdateCommentModel.Comment;
+            comment.UpdatedAt = DateTime.Now;
         }
 
         DeleteUpdateCommentId();
