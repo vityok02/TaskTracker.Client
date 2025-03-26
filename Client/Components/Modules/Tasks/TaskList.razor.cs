@@ -86,7 +86,7 @@ public partial class TaskList
         });
     }
 
-    private void OpenDetials(Guid taskId)
+    private void OpenDetails(Guid taskId)
     {
         SelectedTaskId = taskId;
         _detailsVisible = true;
