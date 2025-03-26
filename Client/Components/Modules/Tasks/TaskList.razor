@@ -1,6 +1,4 @@
 ﻿@page "/projects/{projectId:guid}/tasks"
-@using Domain.Models
-@using Domain.Extensions
 
 @attribute [Authorize]
 
@@ -29,18 +27,18 @@
 
 <div class="overflow-auto"
      style="width: 100%;">
-    <div class="row g-4 flex-nowrap"
+    <div class="row g-4 flex-nowrap cards"
          style="min-width: 100%; height: calc(100vh - 200px);">
-        @foreach (var state in Project.States.OrderBy(s => s.Number))
+        @foreach (var state in Project.States)
         {
-            <TaskColumn Tasks=@Tasks
-                        TaskModel=@TaskModel
-                        State=@state
-                        ProjectId=@ProjectId
-                        OnShowInput=@ShowInput
-                        OnOpenDetails=@OpenDetials
-                        OnChange=@LoadDataAsync
-                        OnOpenUpdateStateForm=@(() => OpenUpdateStateForm(state.Id)) />
+            <TasksColumn Tasks=@Tasks.Where(t => t.StateId == state.Id).ToList()
+                         TaskModel=@TaskModel
+                         State=@state
+                         ProjectId=@ProjectId
+                         OnShowInput=@ShowInput
+                         OnOpenDetails=@OpenDetials
+                         OnChange=@LoadDataAsync
+                         OnOpenUpdateStateForm=@(() => OpenUpdateStateForm(state.Id)) />
         }
     </div>
 </div>
@@ -61,9 +59,9 @@
 
             <FormItem class="flex-grow-1">
                 <Input Size=@InputSize.Large
-                       @ref="@Input"
-                       @onfocusout="@(() => HideInput = true)"
-                       @bind-Value="@TaskModel.Name"
+                       @ref=@Input
+                       @onfocusout=@(() => HideInput = true )
+                       @bind-Value=@TaskModel.Name
                        Placeholder="Task name" />
             </FormItem>
         </div>

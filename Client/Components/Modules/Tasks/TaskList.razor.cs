@@ -59,7 +59,7 @@ public partial class TaskList
     private async Task Submit()
     {
         var result = await TaskService
-            .CreateTaskAsync(TaskModel, ProjectId);
+            .CreateAsync(TaskModel, ProjectId);
 
         if (result.IsFailure)
         {
@@ -94,8 +94,7 @@ public partial class TaskList
 
     private async Task LoadDataAsync()
     {
-        var projectResult = await ProjectService
-            .GetProjectAsync(ProjectId);
+        var projectResult = await ProjectService.GetProjectAsync(ProjectId);
 
         if (projectResult.IsFailure)
         {
@@ -105,8 +104,11 @@ public partial class TaskList
 
         Project = projectResult.Value;
 
-        var taskResult = await TaskService
-            .GetTasksAsync(ProjectId);
+        Project.States = Project.States
+            .OrderBy(x => x.SortOrder)
+            .ToList();
+
+        var taskResult = await TaskService.GetAllAsync(ProjectId);
 
         if (taskResult.IsFailure)
         {
@@ -114,6 +116,6 @@ public partial class TaskList
             return;
         }
 
-        Tasks = taskResult.Value;
+        Tasks = taskResult.Value.ToList();
     }
 }

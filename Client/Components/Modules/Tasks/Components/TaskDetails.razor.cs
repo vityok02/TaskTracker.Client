@@ -46,7 +46,7 @@ public partial class TaskDetails
         }
 
         var result = await TaskService
-            .GetTaskAsync(ProjectId, TaskId);
+            .GetAsync(ProjectId, TaskId);
 
         if (result.IsFailure)
         {
@@ -62,7 +62,7 @@ public partial class TaskDetails
     private async Task Update()
     {
         var result = await TaskService
-            .UpdateTaskAsync(TaskModel, ProjectId);
+            .UpdateAsync(TaskModel, ProjectId);
 
         if (result.IsFailure)
         {
