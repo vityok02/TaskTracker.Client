@@ -2,5 +2,5 @@
 
 public class ReorderStateModel
 {
-    public Guid? BeforeTaskId { get; set; }
+    public Guid? BeforeStateId { get; set; }
 }
