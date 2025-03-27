@@ -14,5 +14,7 @@ public interface IStateService
 
     public Task<Result> UpdateAsync(Guid projectId, Guid stateId, StateModel model);
 
+    Task<Result> ReorderAsync(Guid projectId, Guid stateId, ReorderStateModel model);
+
     public Task<Result> DeleteAsync(Guid projectId, Guid stateId);
 }

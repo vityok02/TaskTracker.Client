@@ -6,13 +6,17 @@ namespace Services.Interfaces.ApiServices;
 
 public interface ITaskService
 {
-    Task<Result<IEnumerable<TaskDto>>> GetTasksAsync(Guid projectId);
+    Task<Result<IEnumerable<TaskDto>>> GetAllAsync(Guid projectId);
 
-    Task<Result<TaskDto>> GetTaskAsync(Guid projectId, Guid taskId);
+    Task<Result<TaskDto>> GetAsync(Guid projectId, Guid taskId);
 
-    Task<Result<TaskDto>> CreateTaskAsync(TaskModel model, Guid projectId);
+    Task<Result<TaskDto>> CreateAsync(TaskModel model, Guid projectId);
 
-    Task<Result> UpdateTaskAsync(TaskModel model, Guid projectId);
+    Task<Result> UpdateAsync(TaskModel model, Guid projectId);
 
-    Task<Result> DeleteTaskAsync(Guid projectId, Guid taskId);
+    Task<Result> ReorderAsync(Guid projectId, Guid taskId, ReorderTasksModel model);
+
+    Task<Result> UpdateStateAsync(Guid projectId, Guid taskId, UpdateTaskStateModel model);
+
+    Task<Result> DeleteAsync(Guid projectId, Guid taskId);
 }

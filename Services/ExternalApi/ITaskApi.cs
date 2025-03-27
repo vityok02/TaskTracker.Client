@@ -7,17 +7,23 @@ namespace Services.ExternalApi;
 public interface ITaskApi : IApi
 {
     [Get("/projects/{projectId}/tasks")]
-    Task<IApiResponse<IEnumerable<TaskDto>>> GetTasksAsync(Guid projectId);
+    Task<IApiResponse<IEnumerable<TaskDto>>> GetAllAsync(Guid projectId);
 
     [Get("/projects/{projectId}/tasks/{taskId}")]
-    Task<IApiResponse<TaskDto>> GetTaskAsync(Guid projectId, Guid taskId);
+    Task<IApiResponse<TaskDto>> GetAsync(Guid projectId, Guid taskId);
 
     [Post("/projects/{projectId}/tasks")]
-    Task<IApiResponse<TaskDto>> CreateTaskAsync(TaskModel model, Guid projectId);
+    Task<IApiResponse<TaskDto>> CreateAsync([Body] TaskModel model, Guid projectId);
 
     [Put("/projects/{projectId}/tasks/{model.Id}")]
-    Task<IApiResponse> UpdateTaskAsync(TaskModel model, Guid projectId);
+    Task<IApiResponse> UpdateAsync([Body] TaskModel model, Guid projectId);
+
+    [Patch("/projects/{projectId}/tasks/{taskId}/state")]
+    Task<IApiResponse> UpdateStateAsync(Guid projectId, Guid taskId, UpdateTaskStateModel model);
+
+    [Patch("/projects/{projectId}/tasks/{taskId}/order")]
+    Task<IApiResponse> ReorderAsync(Guid projectId, Guid taskId, [Body] ReorderTasksModel model);
 
     [Delete("/projects/{projectId}/tasks/{taskId}")]
-    Task<IApiResponse> DeleteTaskAsync(Guid projectId, Guid taskId);
+    Task<IApiResponse> DeleteAsync(Guid projectId, Guid taskId);
 }

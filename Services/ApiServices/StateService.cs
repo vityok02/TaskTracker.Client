@@ -24,10 +24,10 @@ public class StateService : IStateService
         return response.HandleResponse();
     }
 
-    public async Task<Result> DeleteAsync(Guid projectId, Guid stateId)
+    public async Task<Result<StateDto>> GetAsync(Guid projectId, Guid stateId)
     {
         var response = await _stateApi
-            .DeleteAsync(projectId, stateId);
+            .GetAsync(projectId, stateId);
 
         return response.HandleResponse();
     }
@@ -40,18 +40,26 @@ public class StateService : IStateService
         return response.HandleResponse();
     }
 
-    public async Task<Result<StateDto>> GetAsync(Guid projectId, Guid stateId)
-    {
-        var response = await _stateApi
-            .GetAsync(projectId, stateId);
-
-        return response.HandleResponse();
-    }
-
     public async Task<Result> UpdateAsync(Guid projectId, Guid stateId, StateModel model)
     {
         var response = await _stateApi
             .UpdateAsync(projectId, stateId, model);
+
+        return response.HandleResponse();
+    }
+
+    public async Task<Result> ReorderAsync(Guid projectId, Guid stateId, ReorderStateModel model)
+    {
+        var response = await _stateApi
+            .ReorderAsync(projectId, stateId, model);
+
+        return response.HandleResponse();
+    }
+
+    public async Task<Result> DeleteAsync(Guid projectId, Guid stateId)
+    {
+        var response = await _stateApi
+            .DeleteAsync(projectId, stateId);
 
         return response.HandleResponse();
     }

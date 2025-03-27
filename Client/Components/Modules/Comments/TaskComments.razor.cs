@@ -1,7 +1,6 @@
 ﻿using Domain.Dtos;
 using Domain.Models;
 using Microsoft.AspNetCore.Components;
-using Services.ApiServices;
 using Services.Interfaces.ApiServices;
 
 namespace Client.Components.Modules.Comments;

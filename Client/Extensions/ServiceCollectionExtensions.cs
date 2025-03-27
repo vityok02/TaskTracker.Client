@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.IdentityModel.Tokens;
+using Plk.Blazor.DragDrop;
 using Refit;
 using Services.ExternalApi;
 using Services.Interfaces;
@@ -23,6 +24,7 @@ public static class ServiceCollectionExtensions
         services.AddHttpContextAccessor();
         services.AddScoped<AuthenticationStateProvider, CustomAuthStateProvider>();
         services.AddAntDesign();
+        services.AddBlazorDragDrop();
 
         LocaleProvider.DefaultLanguage = "en-US";
         LocaleProvider.SetLocale("en-US");

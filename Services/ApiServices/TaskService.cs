@@ -16,46 +16,70 @@ public class TaskService : ITaskService
         _taskApi = taskApi;
     }
 
-    public async Task<Result<TaskDto>> CreateTaskAsync(TaskModel model, Guid projectId)
+    public async Task<Result<TaskDto>> CreateAsync(TaskModel model, Guid projectId)
     {
         var response = await _taskApi
-            .CreateTaskAsync(model, projectId);
+            .CreateAsync(model, projectId);
 
         return response
             .HandleResponse();
     }
 
-    public async Task<Result> DeleteTaskAsync(Guid projectId, Guid taskId)
+    public async Task<Result> DeleteAsync(Guid projectId, Guid taskId)
     {
         var response = await _taskApi
-            .DeleteTaskAsync(projectId, taskId);
+            .DeleteAsync(projectId, taskId);
 
         return response
             .HandleResponse();
     }
 
-    public async Task<Result<TaskDto>> GetTaskAsync(Guid projectId, Guid taskId)
+    public async Task<Result<TaskDto>> GetAsync(Guid projectId, Guid taskId)
     {
         var response = await _taskApi
-            .GetTaskAsync(projectId, taskId);
+            .GetAsync(projectId, taskId);
 
         return response
             .HandleResponse();
     }
 
-    public async Task<Result<IEnumerable<TaskDto>>> GetTasksAsync(Guid projectId)
+    public async Task<Result<IEnumerable<TaskDto>>> GetAllAsync(Guid projectId)
     {
         var response = await _taskApi
-            .GetTasksAsync(projectId);
+            .GetAllAsync(projectId);
 
         return response
             .HandleResponse();
     }
 
-    public async Task<Result> UpdateTaskAsync(TaskModel model, Guid projectId)
+    public async Task<Result> UpdateAsync(TaskModel model, Guid projectId)
     {
         var response = await _taskApi
-            .UpdateTaskAsync(model, projectId);
+            .UpdateAsync(model, projectId);
+
+        return response
+            .HandleResponse();
+    }
+
+    public async Task<Result> UpdateStateAsync(
+        Guid projectId,
+        Guid taskId,
+        UpdateTaskStateModel model)
+    {
+        var response = await _taskApi
+            .UpdateStateAsync(projectId, taskId, model);
+
+        return response
+            .HandleResponse();
+    }
+
+    public async Task<Result> ReorderAsync(
+        Guid projectId,
+        Guid taskId,
+        ReorderTasksModel model)
+    {
+        var response = await _taskApi
+            .ReorderAsync(projectId, taskId, model);
 
         return response
             .HandleResponse();

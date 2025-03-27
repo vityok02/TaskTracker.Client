@@ -18,6 +18,9 @@ public interface IStateApi : IApi
     [Put("/projects/{projectId}/states/{stateId}")]
     Task<IApiResponse> UpdateAsync(Guid projectId, Guid stateId, StateModel model);
 
+    [Patch("/projects/{projectId}/states/{stateId}/order")]
+    Task<IApiResponse> ReorderAsync(Guid projectId, Guid stateId, ReorderStateModel model);
+
     [Delete("/projects/{projectId}/states/{stateId}")]
     Task<IApiResponse> DeleteAsync(Guid projectId, Guid stateId);
 }
