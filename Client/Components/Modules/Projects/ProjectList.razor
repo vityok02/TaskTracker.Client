@@ -1,11 +1,10 @@
 ﻿@page "/projects"
-@using Client.Components.Modules.Projects.Components
 
 @attribute [Authorize]
 
 <PageTitle>Projects</PageTitle>
 
-<div class="container mt-4">
+<div class="container mt-4 pb-3">
     <div class="d-flex justify-content-between align-items-center mb-3">
         <h4 class="mb-0">
             Projects
@@ -20,14 +19,14 @@
 
     <Divider />
 
-    @if (Projects == null || Projects.Count() == 0)
+    @if (PagedProjects == null || PagedProjects.Items.Count() == 0)
     {
         <Empty Description=@("You have not added any projects yet") />
     }
     else
     {
         <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
-            @foreach (var project in Projects)
+            @foreach (var project in PagedProjects.Items)
             {
                 <div class="col">
                     <div class="card shadow-lg h-100 p-3">
@@ -68,4 +67,15 @@
                  IsEdit=@_isEdit
                  ProjectModel=@_selectedProjectModel
                  OnProjectSaved=@LoadDataAsync />
+
+    <div class="d-flex justify-content-center mt-4 mb-4">
+        <Pagination class="pagination justify-content-center"
+                    Total=@PagedProjects!.TotalCount
+                    PageSize=@PagedProjects.PageSize
+                    PageSizeOptions=@([3, 6, 9, 12])
+                    ShowQuickJumper
+                    ShowSizeChanger
+                    OnChange=@OnPageChanged />
+    </div>
 </div>
+

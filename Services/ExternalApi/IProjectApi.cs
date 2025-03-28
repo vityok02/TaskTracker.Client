@@ -1,4 +1,5 @@
-﻿using Domain.Dtos;
+﻿using Domain.Abstract;
+using Domain.Dtos;
 using Domain.Models;
 using Refit;
 
@@ -7,7 +8,9 @@ namespace Services.ExternalApi;
 public interface IProjectApi : IApi
 {
     [Get("/projects")]
-    Task<IApiResponse<IEnumerable<ProjectDto>>> GetProjectsAsync();
+    Task<IApiResponse<PagedList<ProjectDto>>> GetProjectsAsync(
+        [Query] int? page,
+        [Query] int? pageSize);
 
     [Get("/projects/{id}")]
     Task<IApiResponse<ProjectDto>> GetProjectAsync(Guid id);

@@ -44,7 +44,7 @@ public sealed partial class ProjectSettings
         }
 
         var projectResult = await ProjectService
-            .GetProjectAsync(ProjectId);
+            .GetAsync(ProjectId);
 
         if (projectResult.IsFailure)
         {
@@ -101,7 +101,7 @@ public sealed partial class ProjectSettings
     private async Task UpdateProject()
     {
         var result = await ProjectService
-            .UpdateProjectAsync(ProjectModel);
+            .UpdateAsync(ProjectModel);
 
         if (result.IsFailure)
         {

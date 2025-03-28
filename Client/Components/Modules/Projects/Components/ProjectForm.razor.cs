@@ -38,9 +38,9 @@ public sealed partial class ProjectForm
     {
         var result = IsEdit
             ? await ProjectService
-                .UpdateProjectAsync(ProjectModel)
+                .UpdateAsync(ProjectModel)
             : await ProjectService
-                .CreateProjectAsync(ProjectModel);
+                .CreateAsync(ProjectModel);
 
         if (result.IsFailure)
         {
