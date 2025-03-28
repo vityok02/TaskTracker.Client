@@ -94,7 +94,7 @@ public partial class TaskList
 
     private async Task LoadDataAsync()
     {
-        var projectResult = await ProjectService.GetProjectAsync(ProjectId);
+        var projectResult = await ProjectService.GetAsync(ProjectId);
 
         if (projectResult.IsFailure)
         {

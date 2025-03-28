@@ -16,16 +16,18 @@ public class ProjectService : IProjectService
         _projectApi = projectApi;
     }
 
-    public async Task<Result<IEnumerable<ProjectDto>>> GetAllProjectsAsync()
+    public async Task<Result<PagedList<ProjectDto>>> GetAllAsync(
+        int? page, int? pageSize)
     {
         var response = await _projectApi
-            .GetProjectsAsync();
+            .GetProjectsAsync(page, pageSize);
 
         return response
             .HandleResponse();
     }
 
-    public async Task<Result> CreateProjectAsync(ProjectModel project)
+    public async Task<Result> CreateAsync(
+        ProjectModel project)
     {
         var response = await _projectApi
             .CreateProjectAsync(project);
@@ -34,7 +36,7 @@ public class ProjectService : IProjectService
             .HandleResponse();
     }
 
-    public async Task<Result<ProjectDto>> GetProjectAsync(Guid id)
+    public async Task<Result<ProjectDto>> GetAsync(Guid id)
     {
         var response = await _projectApi
             .GetProjectAsync(id);
@@ -43,7 +45,7 @@ public class ProjectService : IProjectService
             .HandleResponse();
     }
 
-    public async Task<Result> UpdateProjectAsync(ProjectModel projectModel)
+    public async Task<Result> UpdateAsync(ProjectModel projectModel)
     {
         var response = await _projectApi
             .UpdateProjectAsync(projectModel);
@@ -52,7 +54,7 @@ public class ProjectService : IProjectService
             .HandleResponse();
     }
 
-    public async Task<Result> DeleteProjectAsync(Guid id)
+    public async Task<Result> DeleteAsync(Guid id)
     {
         var response = await _projectApi
             .DeleteProjectAsync(id);

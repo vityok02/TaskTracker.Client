@@ -6,13 +6,13 @@ namespace Services.Interfaces.ApiServices;
 
 public interface IProjectService
 {
-    Task<Result> CreateProjectAsync(ProjectModel project);
+    Task<Result> CreateAsync(ProjectModel project);
 
-    Task<Result<ProjectDto>> GetProjectAsync(Guid id);
+    Task<Result<ProjectDto>> GetAsync(Guid id);
 
-    Task<Result<IEnumerable<ProjectDto>>> GetAllProjectsAsync();
+    Task<Result<PagedList<ProjectDto>>> GetAllAsync(int? page = 1, int? pageSize = 10);
 
-    Task<Result> UpdateProjectAsync(ProjectModel projectModel);
+    Task<Result> UpdateAsync(ProjectModel projectModel);
 
-    Task<Result> DeleteProjectAsync(Guid id);
+    Task<Result> DeleteAsync(Guid id);
 }

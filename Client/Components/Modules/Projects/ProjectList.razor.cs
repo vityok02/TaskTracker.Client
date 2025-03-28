@@ -1,4 +1,6 @@
-﻿using Domain.Dtos;
+﻿using AntDesign;
+using Domain.Abstract;
+using Domain.Dtos;
 using Domain.Models;
 using Microsoft.AspNetCore.Components;
 using Services.Interfaces.ApiServices;
@@ -13,7 +15,15 @@ public sealed partial class ProjectList
     [CascadingParameter]
     public required ApplicationState AppState { get; set; }
 
-    private IEnumerable<ProjectDto> Projects { get; set; } = [];
+    [Parameter]
+    [SupplyParameterFromQuery]
+    public int? Page { get; set; }
+
+    [Parameter]
+    [SupplyParameterFromQuery]
+    public int? PageSize { get; set; }
+
+    private PagedList<ProjectDto> PagedProjects { get; set; } = new();
 
     private ProjectModel _selectedProjectModel = new();
 
@@ -48,7 +58,7 @@ public sealed partial class ProjectList
     private async Task Delete(Guid id)
     {
         var result = await ProjectService
-            .DeleteProjectAsync(id);
+            .DeleteAsync(id);
 
         if (result.IsFailure)
         {
@@ -59,10 +69,26 @@ public sealed partial class ProjectList
         await LoadDataAsync();
     }
 
+    public async Task OnPageChanged(PaginationEventArgs args)
+    {
+        Page = args.Page > 0
+            ? args.Page
+            : Page;
+
+        PageSize = args.PageSize > 0
+            ? args.PageSize
+            : PageSize;
+
+        await LoadDataAsync();
+    }
+
     private async Task LoadDataAsync()
     {
+        Page ??= 1;
+        PageSize ??= 9;
+
         var result = await ProjectService
-            .GetAllProjectsAsync();
+            .GetAllAsync(Page, PageSize);
 
         if (result.IsFailure)
         {
@@ -70,6 +96,6 @@ public sealed partial class ProjectList
             return;
         }
 
-        Projects = result.Value;
+        PagedProjects = result.Value;
     }
 }
