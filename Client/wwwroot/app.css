@@ -10,6 +10,10 @@ a, .btn-link {
     height: auto;
 }
 
+.ant-input-search-button {
+    height: 32px;
+}
+
 .btn {
     box-shadow: none !important;
 }

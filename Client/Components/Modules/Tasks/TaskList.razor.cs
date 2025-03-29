@@ -36,9 +36,11 @@ public partial class TaskList
 
     private bool _detailsVisible = false;
 
-    private Guid? _selectedStateId { get; set; }
+    private Guid? _selectedStateId;
 
-    private Guid SelectedTaskId { get; set; }
+    private Guid _selectedTaskId;
+
+    private string? _searchTerm;
 
     protected override async Task OnInitializedAsync()
     {
@@ -88,13 +90,28 @@ public partial class TaskList
 
     private void OpenDetails(Guid taskId)
     {
-        SelectedTaskId = taskId;
+        _selectedTaskId = taskId;
         _detailsVisible = true;
+    }
+
+    private async Task SearchTasksByNameAsync(string searchTerm)
+    {
+        _searchTerm = searchTerm;
+
+        await LoadTasksAsync();
+    }
+
+    private async Task ClearSearchAsync()
+    {
+        _searchTerm = null;
+
+        await LoadTasksAsync();
     }
 
     private async Task LoadDataAsync()
     {
-        var projectResult = await ProjectService.GetAsync(ProjectId);
+        var projectResult = await ProjectService
+            .GetAsync(ProjectId);
 
         if (projectResult.IsFailure)
         {
@@ -108,14 +125,20 @@ public partial class TaskList
             .OrderBy(x => x.SortOrder)
             .ToList();
 
-        var taskResult = await TaskService.GetAllAsync(ProjectId);
+        await LoadTasksAsync();
+    }
 
-        if (taskResult.IsFailure)
+    private async Task LoadTasksAsync()
+    {
+        var result = await TaskService
+            .GetAllAsync(ProjectId, _searchTerm);
+
+        if (result.IsFailure)
         {
-            AppState.ErrorMessage = taskResult.Error!.Message;
+            AppState.ErrorMessage = result.Error!.Message;
             return;
         }
 
-        Tasks = taskResult.Value.ToList();
+        Tasks = result.Value;
     }
 }

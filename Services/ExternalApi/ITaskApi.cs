@@ -7,7 +7,9 @@ namespace Services.ExternalApi;
 public interface ITaskApi : IApi
 {
     [Get("/projects/{projectId}/tasks")]
-    Task<IApiResponse<IEnumerable<TaskDto>>> GetAllAsync(Guid projectId);
+    Task<IApiResponse<IEnumerable<TaskDto>>> GetAllAsync(
+        Guid projectId,
+        [Query] string? searchTerm);
 
     [Get("/projects/{projectId}/tasks/{taskId}")]
     Task<IApiResponse<TaskDto>> GetAsync(Guid projectId, Guid taskId);

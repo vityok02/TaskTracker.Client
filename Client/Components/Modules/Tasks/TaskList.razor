@@ -25,10 +25,18 @@
     </Button>
 </div>
 
+<div class="mb-3">
+    <Search OnSearch=@SearchTasksByNameAsync
+            Placeholder="Search by task name"
+            AllowClear
+            OnClear=@ClearSearchAsync
+            Class="w-100" />
+</div>
+
 <div class="overflow-auto"
      style="width: 100%;">
     <div class="row g-4 flex-nowrap cards"
-         style="min-width: 100%; height: calc(100vh - 200px);">
+         style="min-width: 100%; height: calc(100vh - 250px);">
         @foreach (var state in Project.States)
         {
             <TasksColumn Tasks=@Tasks.Where(t => t.StateId == state.Id).ToList()
@@ -74,6 +82,6 @@
            StateModel=@Project.States.FirstOrDefault(s => s.Id == _selectedStateId)?.ToStateModel()
            OnCreate=@LoadDataAsync />
 
-<TaskDetails TaskId=@SelectedTaskId
+<TaskDetails TaskId=@_selectedTaskId
              ProjectId=@ProjectId
              @bind-Visible="@_detailsVisible" />

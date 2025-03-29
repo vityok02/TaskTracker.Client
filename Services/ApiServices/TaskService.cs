@@ -16,7 +16,9 @@ public class TaskService : ITaskService
         _taskApi = taskApi;
     }
 
-    public async Task<Result<TaskDto>> CreateAsync(TaskModel model, Guid projectId)
+    public async Task<Result<TaskDto>> CreateAsync(
+        TaskModel model,
+        Guid projectId)
     {
         var response = await _taskApi
             .CreateAsync(model, projectId);
@@ -25,7 +27,9 @@ public class TaskService : ITaskService
             .HandleResponse();
     }
 
-    public async Task<Result> DeleteAsync(Guid projectId, Guid taskId)
+    public async Task<Result> DeleteAsync(
+        Guid projectId,
+        Guid taskId)
     {
         var response = await _taskApi
             .DeleteAsync(projectId, taskId);
@@ -34,7 +38,9 @@ public class TaskService : ITaskService
             .HandleResponse();
     }
 
-    public async Task<Result<TaskDto>> GetAsync(Guid projectId, Guid taskId)
+    public async Task<Result<TaskDto>> GetAsync(
+        Guid projectId,
+        Guid taskId)
     {
         var response = await _taskApi
             .GetAsync(projectId, taskId);
@@ -43,16 +49,20 @@ public class TaskService : ITaskService
             .HandleResponse();
     }
 
-    public async Task<Result<IEnumerable<TaskDto>>> GetAllAsync(Guid projectId)
+    public async Task<Result<IEnumerable<TaskDto>>> GetAllAsync(
+        Guid projectId,
+        string? searchTerm)
     {
         var response = await _taskApi
-            .GetAllAsync(projectId);
+            .GetAllAsync(projectId, searchTerm);
 
         return response
             .HandleResponse();
     }
 
-    public async Task<Result> UpdateAsync(TaskModel model, Guid projectId)
+    public async Task<Result> UpdateAsync(
+        TaskModel model,
+        Guid projectId)
     {
         var response = await _taskApi
             .UpdateAsync(model, projectId);
