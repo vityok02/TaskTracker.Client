@@ -39,15 +39,9 @@ public sealed partial class ProjectList
 
     private string? _searchTerm;
 
-    private string? _sortColumn;
+    private SortOptions _sortOptions = new();
 
-    private string? _sortOrder;
-
-    private readonly IEnumerable<string> _sortColumns = ["Name", "CreatedAt"];
-
-    private bool _isDescending = false;
-
-    private string OrderButtonIconClass => _isDescending
+    private string OrderButtonIconClass => _sortOptions.IsDescending
         ? "bi-sort-down"
         : "bi-sort-up";
 
@@ -104,32 +98,32 @@ public sealed partial class ProjectList
 
         await GetProjectsAsync();
 
-        _isDescending = false;
+        _sortOptions.IsDescending = false;
+    }
+
+    private async Task ClearSearchAsync()
+    {
+        _searchTerm = null;
+
+        await GetProjectsAsync();
+
+        _sortOptions.IsDescending = false;
     }
 
     private async Task SortProjectsByColumnAsync(string sortColumn)
     {
-        _sortColumn = sortColumn;
-
-        if (_sortOrder == "asc")
-        {
-            _sortOrder = "desc";
-        }
-        else
-        {
-            _sortOrder = "asc";
-        }
+        _sortOptions.Column = sortColumn;
 
         await GetProjectsAsync();
 
-        _isDescending = false;
+        _sortOptions.IsDescending = false;
     }
 
     private async Task ChangeSortOrderAsync()
     {
-        _isDescending = !_isDescending;
+        _sortOptions.SwitchSortOrder();
 
-        _sortOrder = _isDescending
+        _sortOptions.Order = _sortOptions.IsDescending
             ? "desc"
             : "asc";
 
@@ -146,8 +140,8 @@ public sealed partial class ProjectList
             Page,
             PageSize,
             _searchTerm,
-            _sortColumn,
-            _sortOrder);
+            _sortOptions.Column,
+            _sortOptions.Order);
 
         if (result.IsFailure)
         {
@@ -165,12 +159,17 @@ public sealed partial class ProjectList
 
     private class SortOptions
     {
-        public string Column { get; set; } = string.Empty;
+        public string? Column { get; set; }
 
-        public string Order { get; set; } = string.Empty;
+        public string? Order { get; set; }
 
         public IEnumerable<string> AvailableColumns { get; set; } = ["Name", "CreatedAt"];
 
         public bool IsDescending { get; set; }
+
+        public void SwitchSortOrder()
+        {
+            IsDescending = !IsDescending;
+        }
     }
 }
