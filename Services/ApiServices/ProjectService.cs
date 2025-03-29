@@ -17,10 +17,19 @@ public class ProjectService : IProjectService
     }
 
     public async Task<Result<PagedList<ProjectDto>>> GetAllAsync(
-        int? page, int? pageSize)
+        int? page,
+        int? pageSize,
+        string? searchTerm,
+        string? sortColumn,
+        string? sortOrder)
     {
         var response = await _projectApi
-            .GetProjectsAsync(page, pageSize);
+            .GetProjectsAsync(
+                page,
+                pageSize,
+                searchTerm,
+                sortColumn,
+                sortOrder);
 
         return response
             .HandleResponse();

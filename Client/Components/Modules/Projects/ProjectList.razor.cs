@@ -32,8 +32,24 @@ public sealed partial class ProjectList
     private bool _formVisible = false;
 
     private Guid _deleteProjectId;
+
     private string _deleteProjectName = string.Empty;
+
     private bool _deleteModalVisible = false;
+
+    private string? _searchTerm;
+
+    private string? _sortColumn;
+
+    private string? _sortOrder;
+
+    private readonly IEnumerable<string> _sortColumns = ["Name", "CreatedAt"];
+
+    private bool _isDescending = false;
+
+    private string OrderButtonIconClass => _isDescending
+        ? "bi-sort-down"
+        : "bi-sort-up";
 
     protected override async Task OnInitializedAsync()
     {
@@ -82,13 +98,56 @@ public sealed partial class ProjectList
         await LoadDataAsync();
     }
 
-    private async Task LoadDataAsync()
+    private async Task SearchProjectsByNameAsync(string searchTerm)
+    {
+        _searchTerm = searchTerm;
+
+        await GetProjectsAsync();
+
+        _isDescending = false;
+    }
+
+    private async Task SortProjectsByColumnAsync(string sortColumn)
+    {
+        _sortColumn = sortColumn;
+
+        if (_sortOrder == "asc")
+        {
+            _sortOrder = "desc";
+        }
+        else
+        {
+            _sortOrder = "asc";
+        }
+
+        await GetProjectsAsync();
+
+        _isDescending = false;
+    }
+
+    private async Task ChangeSortOrderAsync()
+    {
+        _isDescending = !_isDescending;
+
+        _sortOrder = _isDescending
+            ? "desc"
+            : "asc";
+
+        await GetProjectsAsync();
+    }
+
+    private async Task GetProjectsAsync()
     {
         Page ??= 1;
         PageSize ??= 9;
 
         var result = await ProjectService
-            .GetAllAsync(Page, PageSize);
+            .GetAllAsync(
+            Page,
+            PageSize,
+            _searchTerm,
+            _sortColumn,
+            _sortOrder);
 
         if (result.IsFailure)
         {
@@ -97,5 +156,21 @@ public sealed partial class ProjectList
         }
 
         PagedProjects = result.Value;
+    }
+
+    private async Task LoadDataAsync()
+    {
+        await GetProjectsAsync();
+    }
+
+    private class SortOptions
+    {
+        public string Column { get; set; } = string.Empty;
+
+        public string Order { get; set; } = string.Empty;
+
+        public IEnumerable<string> AvailableColumns { get; set; } = ["Name", "CreatedAt"];
+
+        public bool IsDescending { get; set; }
     }
 }

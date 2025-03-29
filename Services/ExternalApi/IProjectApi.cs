@@ -10,7 +10,10 @@ public interface IProjectApi : IApi
     [Get("/projects")]
     Task<IApiResponse<PagedList<ProjectDto>>> GetProjectsAsync(
         [Query] int? page,
-        [Query] int? pageSize);
+        [Query] int? pageSize,
+        [Query] string? searchTerm = null,
+        [Query] string? sortColumn = null,
+        [Query] string? sortOrder = null);
 
     [Get("/projects/{id}")]
     Task<IApiResponse<ProjectDto>> GetProjectAsync(Guid id);

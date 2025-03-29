@@ -10,7 +10,12 @@ public interface IProjectService
 
     Task<Result<ProjectDto>> GetAsync(Guid id);
 
-    Task<Result<PagedList<ProjectDto>>> GetAllAsync(int? page = 1, int? pageSize = 10);
+    Task<Result<PagedList<ProjectDto>>> GetAllAsync(
+        int? page = 1,
+        int? pageSize = 10,
+        string? searchTerm = null,
+        string? sortColumn = null,
+        string? sortOrder = null);
 
     Task<Result> UpdateAsync(ProjectModel projectModel);
 

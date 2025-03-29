@@ -2,6 +2,12 @@
 
 @attribute [Authorize]
 
+<style>
+    .ant-input-search-button {
+        height: 32px;
+    }
+</style>
+
 <PageTitle>Projects</PageTitle>
 
 <div class="container mt-4 pb-3">
@@ -18,6 +24,23 @@
     </div>
 
     <Divider />
+
+    <div class="d-flex align-items-center gap-2 mb-3">
+        <Search OnSearch=@SearchProjectsByNameAsync
+                Placeholder="Search by project name"
+                AllowClear
+                Class="flex-grow-1" />
+
+        <Select DataSource="_sortColumns"
+                @bind-Value=@_sortColumn
+                OnSelectedItemChanged=@((string sortColumn) => SortProjectsByColumnAsync(sortColumn))
+                Class="form-select-sm"
+                Style="min-width: 150px"/>
+
+        <Button @onclick=@ChangeSortOrderAsync class="btn btn-outline-secondary">
+            <i class=@OrderButtonIconClass></i>
+        </Button>
+    </div>
 
     @if (PagedProjects == null || PagedProjects.Items.Count() == 0)
     {
@@ -69,12 +92,15 @@
                  OnProjectSaved=@LoadDataAsync />
 
     <div class="d-flex justify-content-center mt-4 mb-4">
-        <Pagination class="pagination justify-content-center"
+        <Pagination Class="pagination justify-content-center"
                     Total=@PagedProjects!.TotalCount
                     PageSize=@PagedProjects.PageSize
                     PageSizeOptions=@([3, 6, 9, 12])
                     ShowQuickJumper
                     ShowSizeChanger
+                    DefaultPageSize=9
+                    DefaultCurrent=1
+                    Current=@PagedProjects.CurrentPageNumber
                     OnChange=@OnPageChanged />
     </div>
 </div>
