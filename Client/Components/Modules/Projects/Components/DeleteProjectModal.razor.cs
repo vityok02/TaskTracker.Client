@@ -35,6 +35,8 @@ public partial class DeleteProjectModal
     {
         await ProjectNameChanged.InvokeAsync(string.Empty);
         await VisibleChanged.InvokeAsync(false);
+
+        ConfirmModel = new();
     }
 
     private bool CanDelete()
@@ -42,9 +44,8 @@ public partial class DeleteProjectModal
         return ProjectName == ConfirmModel.Input;
     }
 
-    private void UpdateState(ChangeEventArgs e)
+    private void UpdateConfirmInput(ChangeEventArgs e)
     {
         ConfirmModel.Input = e.Value?.ToString() ?? string.Empty;
-        StateHasChanged();
     }
 }
