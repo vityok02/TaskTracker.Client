@@ -126,7 +126,7 @@ public sealed partial class Profile
         const long maxFileSize = 10 * 1024 * 1024;
 
         var isValidExtension = allowedExtensions
-            .Contains(Path.GetExtension(file.Name));
+            .Contains(Path.GetExtension(file.Name.ToLower()));
 
         if (!isValidExtension)
         {
