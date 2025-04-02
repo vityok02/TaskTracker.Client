@@ -5,6 +5,9 @@ namespace Services.ExternalApi;
 
 public interface IUserApi : IApi
 {
+    [Post("/users/avatar")]
+    Task<IApiResponse<FileUrlDto>> UploadAvatarAsync(MultipartFormDataContent avatar);
+
     [Get("/users")]
     Task<IApiResponse<IEnumerable<UserDto>>> GetUsersAsync();
 

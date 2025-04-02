@@ -1,4 +1,5 @@
 ﻿using AntDesign;
+using Blazored.LocalStorage;
 using Client.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Components.Authorization;
@@ -25,7 +26,8 @@ public static class ServiceCollectionExtensions
         services.AddScoped<AuthenticationStateProvider, CustomAuthStateProvider>();
         services.AddAntDesign();
         services.AddBlazorDragDrop();
-
+        services.AddBlazoredLocalStorage();
+        
         LocaleProvider.DefaultLanguage = "en-US";
         LocaleProvider.SetLocale("en-US");
 

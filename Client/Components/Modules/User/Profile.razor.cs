@@ -1,18 +1,22 @@
+using Blazored.LocalStorage;
 using Domain.Dtos;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
+using Microsoft.AspNetCore.Components.Forms;
+using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage;
 using Services.Interfaces.ApiServices;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 
 namespace Client.Components.Modules.User;
 
-[Authorize]
 public sealed partial class Profile
 {
     [Inject]
     public required IUserService UserService { get; init; }
+
+    [Inject]
+    public required ILocalStorageService Storage { get; init; }
 
     [Inject]
     public required AuthenticationStateProvider AuthStateProvider { get; init; }
@@ -58,7 +62,7 @@ public sealed partial class Profile
     private async Task<bool> IsUserAuthorizedAsync()
     {
         var authState = await AuthStateProvider
-                    .GetAuthenticationStateAsync();
+            .GetAuthenticationStateAsync();
 
         var user = authState.User;
 
@@ -74,5 +78,68 @@ public sealed partial class Profile
         }
 
         return false;
+    }
+
+    private async Task UploadFileAsync(InputFileChangeEventArgs args)
+    {
+        var file = args.File;
+
+        if (!IsFileValid(file))
+        {
+            return;
+        }
+
+        using var content = new MultipartFormDataContent();
+        {
+            content.Add(new StreamContent(file.OpenReadStream(file.Size)),
+                "file",
+                file.Name);
+        }
+
+        var response = await UserService
+            .UploadAvatarAsync(content);
+
+        if (response.IsFailure)
+        {
+            AppState.ErrorMessage = response.Error!.Message;
+            return;
+        }
+
+        await Storage
+            .SetItemAsStringAsync("AvatarUrl", response.Value.FileUrl);
+
+        User!.AvatarUrl = response.Value.FileUrl;
+
+        StateHasChanged();
+    }
+
+    private bool IsFileValid(IBrowserFile file)
+    {
+        string[] allowedExtensions = [".jpg", ".jpeg", ".png"];
+
+        if (file is null)
+        {
+            AppState.ErrorMessage = "No file selected.";
+            return false;
+        }
+
+        const long maxFileSize = 10 * 1024 * 1024;
+
+        var isValidExtension = allowedExtensions
+            .Contains(Path.GetExtension(file.Name));
+
+        if (!isValidExtension)
+        {
+            AppState.ErrorMessage = "Such file type is not allowed.";
+            return false;
+        }
+
+        if (file.Size > maxFileSize)
+        {
+            AppState.ErrorMessage = "The file exceeds the maximum allowed size of 10 MB.";
+            return false;
+        }
+
+        return true;
     }
 }

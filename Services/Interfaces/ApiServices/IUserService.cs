@@ -10,4 +10,6 @@ public interface IUserService
     Task<Result<IEnumerable<UserDto>>> GetUsersAsync();
 
     Task<Result<IEnumerable<UserDto>>> SearchUsersAsync(string Username);
+
+    Task<Result<FileUrlDto>> UploadAvatarAsync(MultipartFormDataContent avatar);
 }
