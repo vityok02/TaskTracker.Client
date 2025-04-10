@@ -1,11 +1,10 @@
 ﻿using AntDesign;
-using Domain.Abstract;
 using Domain.Dtos;
 using Domain.Models;
 using Microsoft.AspNetCore.Components;
 using Services.Interfaces.ApiServices;
 
-namespace Client.Components.Modules.Projects;
+namespace Client.Components.Modules.Projects.ProjectSettings;
 
 public sealed partial class ProjectSettings
 {
@@ -19,6 +18,9 @@ public sealed partial class ProjectSettings
     public required IRoleService RoleService { get; init; }
 
     [Inject]
+    public required IStateService StateService { get; init; }
+
+    [Inject]
     public required NotificationService Notice { get; init; }
 
     [CascadingParameter]
@@ -29,6 +31,8 @@ public sealed partial class ProjectSettings
 
     [Parameter]
     public ProjectModel ProjectModel { get; set; } = new ProjectModel();
+
+    public List<StateDto> States { get; set; } = [];
 
     public ProjectDto Project { get; set; } = new();
 
@@ -61,41 +65,16 @@ public sealed partial class ProjectSettings
             Description = Project.Description,
         };
 
-        var projectMembersResult = await ProjectMemberService
-            .GetProjectMembersAsync(ProjectId);
+        var statesResult = await StateService
+            .GetAllAsync(ProjectId);
 
-        if (projectMembersResult.IsFailure)
+        if (statesResult.IsFailure)
         {
-            ApplicationState.ErrorMessage = projectMembersResult.Error!.Message;
+            ApplicationState.ErrorMessage = statesResult.Error!.Message;
             return;
         }
 
-        Members = projectMembersResult.Value;
-
-        var rolesResult = await RoleService
-            .GetRolesAsync();
-
-        if (rolesResult.IsFailure)
-        {
-            ApplicationState.ErrorMessage = rolesResult.Error!.Message;
-            return;
-        }
-
-        Roles = rolesResult.Value;
-    }
-
-    private async Task LoadMembersAsync()
-    {
-        var result = await ProjectMemberService
-            .GetProjectMembersAsync(ProjectId);
-
-        if (result.IsFailure)
-        {
-            ApplicationState.ErrorMessage = result.Error!.Message;
-            return;
-        }
-
-        Members = result.Value;
+        States = statesResult.Value.ToList();
     }
 
     private async Task UpdateProject()

@@ -1,8 +1,8 @@
 ﻿<CascadingAuthenticationState>
-    <Router AppAssembly="typeof(Program).Assembly">
+    <Router AppAssembly="@typeof(Program).Assembly">
         <Found Context="routeData">
             <CascadingValue Value="@ApplicationState">
-                <AuthorizeRouteView RouteData="routeData" DefaultLayout="typeof(Layout.MainLayout)">
+                <AuthorizeRouteView RouteData="routeData" DefaultLayout="@typeof(Layout.MainLayout)">
                     <NotAuthorized>
                         <p>Sorry, but you are not allowed to see this</p>
                     </NotAuthorized>
@@ -12,7 +12,7 @@
         </Found>
         <NotFound>
             <PageTitle>Not found</PageTitle>
-            <LayoutView Layout="typeof(Layout.MainLayout)">
+            <LayoutView Layout="@typeof(Layout.MainLayout)">
                 <p role="alert">Sorry, there's nothing at this address.</p>
             </LayoutView>
         </NotFound>

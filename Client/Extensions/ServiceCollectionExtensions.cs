@@ -1,6 +1,7 @@
 ﻿using AntDesign;
 using Blazored.LocalStorage;
 using Client.Authentication;
+using Client.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.Extensions.Caching.Memory;
@@ -27,6 +28,7 @@ public static class ServiceCollectionExtensions
         services.AddAntDesign();
         services.AddBlazorDragDrop();
         services.AddBlazoredLocalStorage();
+        services.AddScoped<DeleteStateConfirmationService>();
         
         LocaleProvider.DefaultLanguage = "en-US";
         LocaleProvider.SetLocale("en-US");
