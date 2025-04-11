@@ -100,10 +100,17 @@ public partial class StateList
         States.RemoveAll(s => s.Id == stateId);
     }
 
-    private void ShowUpdateFormAsync(Guid stateId)
+    private void ShowUpdateForm(Guid stateId)
     {
         StateFormVisible = true;
         SelectedStateId = stateId;
+    }
+
+    public void UpdateState(StateDto updatedState)
+    {
+        var index = States.FindIndex(s => s.Id == updatedState.Id);
+
+        States[index] = updatedState;
     }
 
     private async Task CreateStateAsync()

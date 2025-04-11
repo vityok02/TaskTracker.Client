@@ -33,7 +33,7 @@ public partial class StateForm
     public StateModel StateModel { get; set; } = new();
 
     [Parameter]
-    public EventCallback OnCreate { get; set; }
+    public EventCallback<StateDto> OnSubmit { get; set; }
 
     public bool IsEdit => StateId.HasValue;
 
@@ -63,9 +63,9 @@ public partial class StateForm
         }
     }
 
-    public async Task CreateState()
+    public async Task SubmitAsync()
     {
-        Result result = IsEdit && StateId is not null
+        Result<StateDto> result = IsEdit && StateId is not null
             ? await StateService.UpdateAsync(ProjectId, StateId.Value, _stateModel)
             : await StateService.CreateAsync(ProjectId, _stateModel);
 
@@ -76,7 +76,7 @@ public partial class StateForm
         }
 
         _stateModel = new();
-        await OnCreate.InvokeAsync();
+        await OnSubmit.InvokeAsync(result.Value);
 
         await Close();
     }

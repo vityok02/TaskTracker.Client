@@ -12,14 +12,14 @@
 
     <FormItem Label="Description">
         <TextArea @bind-Value=@ProjectModel.Description
-                  Rows="4"
+                  Rows="3"
                   Class="form-control" />
     </FormItem>
 
     <div class="d-flex justify-content-end">
         <Button Type=@ButtonType.Primary
                 HtmlType="submit"
-                Class="btn btn-primary">
+                Class="btn btn-primary btn-sm">
             Save Changes
         </Button>
     </div>

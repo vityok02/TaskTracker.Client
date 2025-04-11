@@ -1,4 +1,6 @@
 <div class="d-flex flex-column flex-grow-1">
+    <h5>States</h5>
+
     <SortableList Id="sortable"
                   Handle=".drag-handle"
                   Items=@States
@@ -14,11 +16,11 @@
                 </span>
 
                 <div class="d-flex gap-3">
-                    <a @onclick=@(() => ShowUpdateFormAsync(item.Id))>
+                    <a @onclick=@(() => ShowUpdateForm(item.Id))>
                         <i class="bi bi-pencil-square"></i>
                     </a>
 
-                    <a @onclick=@(() => ShowDeleteConfirmationAsync(item.Id) )
+                    <a @onclick="async () => await ShowDeleteConfirmationAsync(item.Id)"
                        class="text-danger mr-4"
                        style="cursor: pointer;">
                         <i class="bi bi-trash-fill is-size-5"></i>
@@ -28,17 +30,21 @@
         </SortableItemTemplate>
     </SortableList>
 
-    <Form Model="StateModel" OnFinish="CreateStateAsync" Class="d-flex flex-row gap-2 mt-3">
+    <Form Model=@StateModel
+          OnFinish=@CreateStateAsync
+          Class="d-flex flex-row gap-2 mt-3">
         <FluentValidationValidator />
 
         <Input @bind-Value=@StateModel.Name
-               Placeholder="Add state..." />
+               Placeholder="Add state..."
+               Class="form-control"/>
 
-        <Button HtmlType="submit">Add</Button>
+        <Button HtmlType="submit" Class="btn btn-primary btn-sm">Add</Button>
     </Form>
 </div>
 
 <StateForm @bind-Visible=@StateFormVisible
            ProjectId=@ProjectId
            @bind-StateId=@SelectedStateId
+           OnSubmit=@UpdateState
            StateModel=@States.FirstOrDefault(s => s.Id == SelectedStateId)?.ToStateModel() />
