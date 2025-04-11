@@ -9,11 +9,15 @@
                   Class="w-100">
         <SortableItemTemplate>
             <div class="card card-body d-flex flex-row justify-content-between align-items-center py-3 my-1">
-                <span>
+                <div class="d-flex align-items-center">
                     <i class="bi bi-grip-vertical drag-handle"
-                       style="cursor:grab"></i>
-                    @item.Name
-                </span>
+                       style="cursor: grab"></i>
+
+                    <span class="rounded-5 px-3 py-1 mx-2 small"
+                          style="@GetStateTitleStyle(item.Color)">
+                        @item.Name
+                    </span>
+                </div>
 
                 <div class="d-flex gap-3">
                     <a @onclick=@(() => ShowUpdateForm(item.Id))>
@@ -37,7 +41,7 @@
 
         <Input @bind-Value=@StateModel.Name
                Placeholder="Add state..."
-               Class="form-control"/>
+               Class="form-control" />
 
         <Button HtmlType="submit" Class="btn btn-primary btn-sm">Add</Button>
     </Form>

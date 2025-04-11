@@ -54,7 +54,9 @@ public partial class StateForm
             _stateModel = new StateModel
             {
                 Name = StateModel.Name,
-                Number = StateModel.Number
+                Number = StateModel.Number,
+                Description = StateModel.Description,
+                Color = StateModel.Color,
             };
         }
         else
@@ -63,7 +65,7 @@ public partial class StateForm
         }
     }
 
-    public async Task SubmitAsync()
+    private async Task SubmitAsync()
     {
         Result<StateDto> result = IsEdit && StateId is not null
             ? await StateService.UpdateAsync(ProjectId, StateId.Value, _stateModel)
@@ -81,14 +83,24 @@ public partial class StateForm
         await Close();
     }
 
-    public async Task Close()
+    private async Task Close()
     {
         await ResetStateId();
         await VisibleChanged.InvokeAsync(false);
     }
 
-    public async Task ResetStateId()
+    private async Task ResetStateId()
     {
         await StateIdChanged.InvokeAsync(null);
+    }
+
+    private static string GetRadioButtonStyle(string color, string stateColor)
+    {
+        return $@"
+            background: {(color + "50")};
+            border: 3px solid {color};
+            border-radius: 20px; 
+            height: 41px;
+            width: 41px";
     }
 }

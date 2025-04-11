@@ -47,15 +47,10 @@ public partial class TasksColumn
     public EventCallback<List<TaskDto>> TasksChanged { get; set; }
 
     [Parameter]
-    public List<TaskDto> StateTasks { get; set; } = [];
-
-    [Parameter]
     public StateDto State { get; set; } = new();
 
     [Parameter]
     public EventCallback<(bool isEdit, Guid id)> OnOpenUpdateStateForm { get; set; }
-
-    public bool StateFormVisible { get; set; } = false;
 
     public async Task OnDrop(TaskDto task, List<TaskDto> tasks)
     {

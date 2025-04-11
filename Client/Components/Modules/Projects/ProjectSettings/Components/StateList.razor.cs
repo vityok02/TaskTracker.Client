@@ -1,4 +1,5 @@
 ﻿using Client.Services;
+using Domain.Constants;
 using Domain.Dtos;
 using Domain.Models;
 using Microsoft.AspNetCore.Components;
@@ -127,5 +128,13 @@ public partial class StateList
         StateModel = new();
 
         States.Add(result.Value);
+    }
+
+    public static string GetStateTitleStyle(string color)
+    {
+        return $@"
+            border: 1px solid {StateColors.GetDarkerColor(color)};
+            color: {StateColors.GetDarkerColor(color)};
+            background: {color + "10"}";
     }
 }
