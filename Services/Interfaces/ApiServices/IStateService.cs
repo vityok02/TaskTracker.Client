@@ -12,7 +12,7 @@ public interface IStateService
 
     public Task<Result<IEnumerable<StateDto>>> GetAllAsync(Guid projectId);
 
-    public Task<Result> UpdateAsync(Guid projectId, Guid stateId, StateModel model);
+    public Task<Result<StateDto>> UpdateAsync(Guid projectId, Guid stateId, StateModel model);
 
     Task<Result> ReorderAsync(Guid projectId, Guid stateId, ReorderStateModel model);
 

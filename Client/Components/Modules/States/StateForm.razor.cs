@@ -33,7 +33,7 @@ public partial class StateForm
     public StateModel StateModel { get; set; } = new();
 
     [Parameter]
-    public EventCallback OnCreate { get; set; }
+    public EventCallback<StateDto> OnSubmit { get; set; }
 
     public bool IsEdit => StateId.HasValue;
 
@@ -54,7 +54,9 @@ public partial class StateForm
             _stateModel = new StateModel
             {
                 Name = StateModel.Name,
-                Number = StateModel.Number
+                Number = StateModel.Number,
+                Description = StateModel.Description,
+                Color = StateModel.Color,
             };
         }
         else
@@ -63,9 +65,9 @@ public partial class StateForm
         }
     }
 
-    public async Task CreateState()
+    private async Task SubmitAsync()
     {
-        Result result = IsEdit && StateId is not null
+        Result<StateDto> result = IsEdit && StateId is not null
             ? await StateService.UpdateAsync(ProjectId, StateId.Value, _stateModel)
             : await StateService.CreateAsync(ProjectId, _stateModel);
 
@@ -76,19 +78,29 @@ public partial class StateForm
         }
 
         _stateModel = new();
-        await OnCreate.InvokeAsync();
+        await OnSubmit.InvokeAsync(result.Value);
 
         await Close();
     }
 
-    public async Task Close()
+    private async Task Close()
     {
         await ResetStateId();
         await VisibleChanged.InvokeAsync(false);
     }
 
-    public async Task ResetStateId()
+    private async Task ResetStateId()
     {
         await StateIdChanged.InvokeAsync(null);
+    }
+
+    private static string GetRadioButtonStyle(string color, string stateColor)
+    {
+        return $@"
+            background: {(color + "50")};
+            border: 3px solid {color};
+            border-radius: 20px; 
+            height: 41px;
+            width: 41px";
     }
 }

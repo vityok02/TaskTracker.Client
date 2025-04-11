@@ -16,7 +16,7 @@ public interface IStateApi : IApi
     Task<IApiResponse<IEnumerable<StateDto>>> GetListAsync(Guid projectId);
 
     [Put("/projects/{projectId}/states/{stateId}")]
-    Task<IApiResponse> UpdateAsync(Guid projectId, Guid stateId, StateModel model);
+    Task<IApiResponse<StateDto>> UpdateAsync(Guid projectId, Guid stateId, StateModel model);
 
     [Patch("/projects/{projectId}/states/{stateId}/order")]
     Task<IApiResponse> ReorderAsync(Guid projectId, Guid stateId, ReorderStateModel model);

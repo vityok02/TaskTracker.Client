@@ -1,4 +1,5 @@
 ﻿using AntDesign;
+using Client.Services;
 using Domain.Dtos;
 using Domain.Models;
 using Microsoft.AspNetCore.Components;
@@ -17,6 +18,9 @@ public partial class TasksColumn
 
     [Inject]
     public required ModalService ModalService { get; init; }
+
+    [Inject]
+    public required DeleteStateConfirmationService DeleteConfirmationService { get; set; }
 
     [CascadingParameter]
     public required ApplicationState AppState { get; init; }
@@ -43,15 +47,10 @@ public partial class TasksColumn
     public EventCallback<List<TaskDto>> TasksChanged { get; set; }
 
     [Parameter]
-    public List<TaskDto> StateTasks { get; set; } = [];
-
-    [Parameter]
     public StateDto State { get; set; } = new();
 
     [Parameter]
     public EventCallback<(bool isEdit, Guid id)> OnOpenUpdateStateForm { get; set; }
-
-    public bool StateFormVisible { get; set; } = false;
 
     public async Task OnDrop(TaskDto task, List<TaskDto> tasks)
     {
@@ -166,44 +165,7 @@ public partial class TasksColumn
 
     private async Task ShowStateDeleteConfirm(Guid stateId)
     {
-        await ModalService.ConfirmAsync(new ConfirmOptions()
-        {
-            Title = "Delete confirmation",
-            Content = GetContentFragment(),
-            Icon = RenderFragments.DeleteIcon,
-            OnOk = (e) => DeleteState(stateId),
-            OnCancel = (e) => Task.CompletedTask,
-            OkText = "Delete",
-            CancelText = "Cancel",
-            OkButtonProps = new ButtonProps
-            {
-                Danger = true
-            }
-        });
-
-        static RenderFragment GetContentFragment()
-        {
-            return builder =>
-            {
-                builder.OpenElement(0, "div");
-                builder.AddContent(1, "This will permanently delete this option from the \"Status\" field.");
-
-                builder.OpenElement(2, "span");
-                builder.AddAttribute(3, "class", "fw-bold");
-                builder.AddContent(4, " This cannot be undone.");
-                builder.CloseElement();
-
-                builder.CloseElement();
-
-                builder.OpenElement(5, "div");
-                builder.AddAttribute(6, "class", "custom-description bg-light border border-danger text-danger p-2 rounded mt-2");
-                builder.OpenElement(7, "span");
-                builder.AddAttribute(8, "class", "text-danger");
-                builder.AddContent(9, "Warning:");
-                builder.CloseElement();
-                builder.AddContent(10, " The option will be permanently deleted from any items in this project.");
-                builder.CloseElement();
-            };
-        }
+        await DeleteConfirmationService
+            .ShowStateDeleteConfirmAsync(stateId, DeleteState);
     }
 }

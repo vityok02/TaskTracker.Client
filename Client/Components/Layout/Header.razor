@@ -2,7 +2,7 @@
     <div class="d-flex align-items-center">
         <NavLink href=@($"users/{UserId}")
                  class="text-dark text-decoration-none d-flex me-4 align-items-center">
-            <Avatar Src=@AvatarUrl
+            <Avatar Src=@(AvatarUrl + "?t=" + DateTime.UtcNow.Ticks)
                     Icon=@IconType.Outline.User
                     Size=@("45px") />
 

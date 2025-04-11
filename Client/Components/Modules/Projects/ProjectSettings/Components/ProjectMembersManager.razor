@@ -1,0 +1,12 @@
+﻿<h5>Members</h5>
+
+<ProjectMemberForm Roles=@Roles
+                   ProjectId=@ProjectId
+                   OnMemberAdded=@LoadMembersAsync />
+
+<Divider />
+
+<ProjectMemberList ProjectId=@ProjectId
+                   Members=@Members
+                   Roles=@Roles
+                   OnMemberChanged=@LoadMembersAsync />

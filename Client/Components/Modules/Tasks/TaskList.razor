@@ -82,7 +82,7 @@
            ProjectId=@ProjectId
            @bind-StateId=@_selectedStateId
            StateModel=@Project.States.FirstOrDefault(s => s.Id == _selectedStateId)?.ToStateModel()
-           OnCreate=@LoadDataAsync />
+           OnSubmit=@LoadDataAsync />
 
 <TaskDetails TaskId=@_selectedTaskId
              ProjectId=@ProjectId

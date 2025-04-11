@@ -1,0 +1,14 @@
+﻿@using System.Collections.Generic
+@using System.Diagnostics.CodeAnalysis
+
+@typeparam T
+
+<div id=@Id class=@Class>
+    @foreach (var item in Items)
+    {
+        @if (SortableItemTemplate is not null)
+        {
+            @SortableItemTemplate(item)
+        }
+    }
+</div>

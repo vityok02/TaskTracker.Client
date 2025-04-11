@@ -1,4 +1,12 @@
-﻿<Modal @bind-Visible=@Visible
+﻿<HeadContent>
+    <style>
+        .ant-radio-button-wrapper:not(:first-child)::before {
+            display: none !important;
+        }
+    </style>
+</HeadContent>
+
+<Modal @bind-Visible=@Visible
        Closable=@false
        Footer=@null
        DestroyOnClose=@true>
@@ -9,7 +17,7 @@
 
     <div class="modal-content p-4">
         <Form Model=@_stateModel
-              OnFinish=@CreateState
+              OnFinish=@SubmitAsync
               Layout=@FormLayout.Vertical
               Autocomplete="off">
 
@@ -26,6 +34,23 @@
                 <TextArea @bind-Value=@context.Description
                           Class="form-control"
                           Rows="4" />
+            </FormItem>
+
+            <FormItem Label="Color">
+                <RadioGroup @bind-Value=@_stateModel.Color Class="d-flex gap-1 justify-content-center">
+                    @foreach (var color in StateColors.Colors)
+                    {
+                        <Radio RadioButton Value=@color.Value
+                               Class="d-flex align-items-center justify-content-center"
+                               Style=@GetRadioButtonStyle(color.Value, context.Color)
+                               Checked=@(color.Value == context.Color)>
+                            @if (color.Value == context.Color)
+                            {
+                                <i class="bi bi-check-lg text-dark"></i>
+                            }
+                        </Radio>
+                    }
+                </RadioGroup>
             </FormItem>
 
             <div class="d-flex justify-content-end gap-2">

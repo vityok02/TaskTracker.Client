@@ -1,0 +1,37 @@
+﻿@page "/projects/{projectId:guid}/settings"
+
+@attribute [Authorize]
+
+<PageTitle>@Project.Name</PageTitle>
+
+<div class="container mt-4 pb-3">
+    <div class="d-flex align-items-center mb-4">
+        <NavLink href=@($"projects/{ProjectId}/tasks")
+                 class="text-dark me-3">
+            <i class="bi bi-arrow-left fs-4" />
+        </NavLink>
+
+        <h4 class="mb-0">
+            @Project.Name - settings
+        </h4>
+    </div>
+
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <ProjectSettingsForm ProjectModel=@ProjectModel
+                                 OnSubmitSuccess=@UpdateProject />
+        </div>
+    </div>
+
+    <div class="card shadow-sm mt-3">
+        <div class="card-body d-flex user-select-none">
+            <StateList ProjectId=@ProjectId />
+        </div>
+    </div>
+
+    <div class="card shadow-sm mt-3">
+        <div class="card-body">
+            <ProjectMembersManager ProjectId=@ProjectId />
+        </div>
+    </div>
+</div>

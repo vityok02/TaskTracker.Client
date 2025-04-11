@@ -40,7 +40,7 @@ public class StateService : IStateService
         return response.HandleResponse();
     }
 
-    public async Task<Result> UpdateAsync(Guid projectId, Guid stateId, StateModel model)
+    public async Task<Result<StateDto>> UpdateAsync(Guid projectId, Guid stateId, StateModel model)
     {
         var response = await _stateApi
             .UpdateAsync(projectId, stateId, model);

@@ -1,0 +1,54 @@
+<div class="d-flex flex-column flex-grow-1">
+    <h5>States</h5>
+
+    <SortableList Id="sortable"
+                  Handle=".drag-handle"
+                  Items=@States
+                  OnUpdate=@ReorderAsync
+                  Context="item"
+                  Class="w-100">
+        <SortableItemTemplate>
+            <div class="card card-body d-flex flex-row justify-content-between align-items-center py-3 my-1">
+                <div class="d-flex align-items-center">
+                    <i class="bi bi-grip-vertical drag-handle"
+                       style="cursor: grab"></i>
+
+                    <span class="rounded-5 px-3 py-1 mx-2 small"
+                          style="@GetStateTitleStyle(item.Color)">
+                        @item.Name
+                    </span>
+                </div>
+
+                <div class="d-flex gap-3">
+                    <a @onclick=@(() => ShowUpdateForm(item.Id))>
+                        <i class="bi bi-pencil-square"></i>
+                    </a>
+
+                    <a @onclick="async () => await ShowDeleteConfirmationAsync(item.Id)"
+                       class="text-danger mr-4"
+                       style="cursor: pointer;">
+                        <i class="bi bi-trash-fill is-size-5"></i>
+                    </a>
+                </div>
+            </div>
+        </SortableItemTemplate>
+    </SortableList>
+
+    <Form Model=@StateModel
+          OnFinish=@CreateStateAsync
+          Class="d-flex flex-row gap-2 mt-3">
+        <FluentValidationValidator />
+
+        <Input @bind-Value=@StateModel.Name
+               Placeholder="Add state..."
+               Class="form-control" />
+
+        <Button HtmlType="submit" Class="btn btn-primary btn-sm">Add</Button>
+    </Form>
+</div>
+
+<StateForm @bind-Visible=@StateFormVisible
+           ProjectId=@ProjectId
+           @bind-StateId=@SelectedStateId
+           OnSubmit=@UpdateState
+           StateModel=@States.FirstOrDefault(s => s.Id == SelectedStateId)?.ToStateModel() />

@@ -10,6 +10,7 @@ public static class StateDtoExtensions
         return new StateModel
         {
             Name = dto.Name,
+            Color = dto.Color,
             Description = dto.Description
         };
     }

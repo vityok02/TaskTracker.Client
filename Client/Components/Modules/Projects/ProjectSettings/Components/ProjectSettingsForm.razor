@@ -1,0 +1,26 @@
+<Form Model=@ProjectModel
+      OnFinish=@UpdateAsync
+      Layout=@FormLayout.Vertical
+      Autocomplete="off">
+
+    <FluentValidationValidator />
+
+    <FormItem Label="Project Name">
+        <Input @bind-Value=@ProjectModel.Name
+               Class="form-control" />
+    </FormItem>
+
+    <FormItem Label="Description">
+        <TextArea @bind-Value=@ProjectModel.Description
+                  Rows="3"
+                  Class="form-control" />
+    </FormItem>
+
+    <div class="d-flex justify-content-end">
+        <Button Type=@ButtonType.Primary
+                HtmlType="submit"
+                Class="btn btn-primary btn-sm">
+            Save Changes
+        </Button>
+    </div>
+</Form>
