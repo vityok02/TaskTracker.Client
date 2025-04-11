@@ -12,15 +12,6 @@ public sealed partial class ProjectSettings
     public required IProjectService ProjectService { get; init; }
 
     [Inject]
-    public required IProjectMemberService ProjectMemberService { get; init; }
-
-    [Inject]
-    public required IRoleService RoleService { get; init; }
-
-    [Inject]
-    public required IStateService StateService { get; init; }
-
-    [Inject]
     public required NotificationService Notice { get; init; }
 
     [CascadingParameter]
@@ -32,13 +23,7 @@ public sealed partial class ProjectSettings
     [Parameter]
     public ProjectModel ProjectModel { get; set; } = new ProjectModel();
 
-    public List<StateDto> States { get; set; } = [];
-
     public ProjectDto Project { get; set; } = new();
-
-    public IEnumerable<ProjectMemberDto> Members { get; set; } = [];
-
-    public IEnumerable<RoleDto> Roles { get; set; } = [];
 
     protected override async Task OnParametersSetAsync()
     {
@@ -64,17 +49,6 @@ public sealed partial class ProjectSettings
             Name = Project.Name,
             Description = Project.Description,
         };
-
-        var statesResult = await StateService
-            .GetAllAsync(ProjectId);
-
-        if (statesResult.IsFailure)
-        {
-            ApplicationState.ErrorMessage = statesResult.Error!.Message;
-            return;
-        }
-
-        States = statesResult.Value.ToList();
     }
 
     private async Task UpdateProject()
