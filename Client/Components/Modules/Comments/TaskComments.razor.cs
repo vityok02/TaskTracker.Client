@@ -87,7 +87,7 @@ public partial class TaskComments : IAsyncDisposable
         }
     }
 
-    private string GetCommentDate(CommentDto comment)
+    private static string GetCommentDate(CommentDto comment)
     {
         return comment.UpdatedAt?.ToLocalTime().ToString("yyyy-MM-dd | HH:mm")
             ?? comment.CreatedAt.ToLocalTime().ToString("yyyy-MM-dd | HH:mm");
@@ -131,12 +131,6 @@ public partial class TaskComments : IAsyncDisposable
         UpdateCommentId = null;
     }
 
-    public async ValueTask DisposeAsync()
-    {
-        CommentHubService.OnCommentCreated -= HandleCommentReceived;
-        await CommentHubService.DisposeAsync();
-    }
-
     private bool IsUsersComment(CommentDto comment)
     {
         return UserId == comment.CreatedBy.Id;
@@ -164,5 +158,16 @@ public partial class TaskComments : IAsyncDisposable
     {
         Comments.RemoveAll(c => c.Id == id);
         InvokeAsync(StateHasChanged);
+    }
+
+    public async ValueTask DisposeAsync()
+    {
+        GC.SuppressFinalize(this);
+
+        CommentHubService.OnCommentCreated -= HandleCommentReceived;
+        CommentHubService.OnCommentUpdated -= HandleUpdatedComment;
+        CommentHubService.OnCommentDeleted -= HandleDeletedComment;
+
+        await CommentHubService.DisposeAsync();
     }
 }

@@ -64,6 +64,8 @@ public class CommentsHubService : IAsyncDisposable
 
     public async ValueTask DisposeAsync()
     {
+        GC.SuppressFinalize(this);
+
         if (_hubConnection is not null)
         {
             await _hubConnection.DisposeAsync();
