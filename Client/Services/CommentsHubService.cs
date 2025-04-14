@@ -2,15 +2,13 @@
 using Domain.Dtos;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.SignalR.Client;
+using Microsoft.Extensions.Options;
 
 namespace Client.Services;
 
 public class CommentsHubService : IAsyncDisposable
 {
-    private const string CommentCreatedMethod = "ReceiveCommentCreated";
-    private const string CommentUpdatedMethod = "ReceiveCommentUpdated";
-    private const string CommentDeletedMethod = "ReceiveCommentDeleted";
-    private const string CommentsHubUrl = "https://localhost:5001/hubs/comments";
+    private readonly CommentsHubOptions _hubOptions;
     private readonly NavigationManager _navigationManager;
     private readonly ILogger<CommentsHubService> _logger;
 
@@ -21,9 +19,11 @@ public class CommentsHubService : IAsyncDisposable
     public event Action<Guid>? OnCommentDeleted;
 
     public CommentsHubService(
+        IOptions<CommentsHubOptions> hubOptions,
         NavigationManager navigationManager,
         ILogger<CommentsHubService> logger)
     {
+        _hubOptions = hubOptions.Value;
         _navigationManager = navigationManager;
         _logger = logger;
     }
@@ -38,7 +38,7 @@ public class CommentsHubService : IAsyncDisposable
         var hubUrl = Environment
             .GetEnvironmentVariable(EnvironmentKeys.CommentsHubUrl)
             ?? _navigationManager
-                .ToAbsoluteUri(CommentsHubUrl)
+                .ToAbsoluteUri(_hubOptions.HubUrl)
                 .ToString();
 
         _hubConnection = new HubConnectionBuilder()
@@ -74,17 +74,17 @@ public class CommentsHubService : IAsyncDisposable
 
     private void RegisterEventHandlers()
     {
-        _hubConnection!.On<CommentDto>(CommentCreatedMethod, comment =>
+        _hubConnection!.On<CommentDto>(_hubOptions.CreatedMethod, comment =>
         {
             OnCommentCreated?.Invoke(comment);
         });
 
-        _hubConnection!.On<CommentDto>(CommentUpdatedMethod, comment =>
+        _hubConnection!.On<CommentDto>(_hubOptions.UpdatedMethod, comment =>
         {
             OnCommentUpdated?.Invoke(comment);
         });
 
-        _hubConnection!.On<Guid>(CommentDeletedMethod, id =>
+        _hubConnection!.On<Guid>(_hubOptions.DeletedMethod, id =>
         {
             OnCommentDeleted?.Invoke(id);
         });
