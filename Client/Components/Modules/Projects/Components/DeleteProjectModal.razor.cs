@@ -41,7 +41,7 @@ public partial class DeleteProjectModal
 
     private bool CanDelete()
     {
-        return ProjectName == ConfirmModel.Input;
+        return ProjectName == ConfirmModel.Input.Trim();
     }
 
     private void UpdateConfirmInput(ChangeEventArgs e)

@@ -60,12 +60,13 @@ public class TaskService : ITaskService
             .HandleResponse();
     }
 
-    public async Task<Result> UpdateAsync(
-        TaskModel model,
-        Guid projectId)
+    public async Task<Result> PartialUpdateAsync(
+        Guid projectId,
+        Guid taskId,
+        TaskModel model)
     {
         var response = await _taskApi
-            .UpdateAsync(model, projectId);
+            .PartialUpdateAsync(projectId, taskId, model);
 
         return response
             .HandleResponse();

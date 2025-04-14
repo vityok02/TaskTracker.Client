@@ -45,16 +45,17 @@ public sealed partial class ProjectSettings
 
         ProjectModel = new ProjectModel
         {
-            Id = Project.Id,
             Name = Project.Name,
             Description = Project.Description,
+            StartDate = Project.StartDate,
+            EndDate = Project.EndDate,
         };
     }
 
     private async Task UpdateProject()
     {
         var result = await ProjectService
-            .UpdateAsync(ProjectModel);
+            .UpdateAsync(ProjectId, ProjectModel);
 
         if (result.IsFailure)
         {

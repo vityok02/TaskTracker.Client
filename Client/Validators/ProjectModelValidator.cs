@@ -19,5 +19,9 @@ public sealed class ProjectModelValidator
             RuleFor(x => x.Description ?? "")
                 .ApplyDescriptionRules();
         });
+
+        RuleFor(x => x.EndDate)
+            .GreaterThanOrEqualTo(x => x.StartDate)
+            .WithMessage("End date cannot be less than start date");
     }
 }

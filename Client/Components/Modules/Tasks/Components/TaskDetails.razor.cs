@@ -2,6 +2,7 @@
 using Domain.Dtos;
 using Domain.Models;
 using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.JsonPatch;
 using Services.Interfaces.ApiServices;
 
 namespace Client.Components.Modules.Tasks.Components;
@@ -61,8 +62,35 @@ public partial class TaskDetails
 
     private async Task Update()
     {
+        var patch = new JsonPatchDocument<TaskModel>();
+
+        if (TaskModel.Name != Task!.Name)
+        {
+            patch.Replace(t => t.Name, TaskModel.Name);
+        }
+
+        if (TaskModel.Description != Task.Description)
+        {
+            patch.Replace(t => t.Description, TaskModel.Description);
+        }
+
+        if (TaskModel.StateId != Task.StateId)
+        {
+            patch.Replace(t => t.StateId, TaskModel.StateId);
+        }
+
+        if (TaskModel.StartDate != Task.StartDate)
+        {
+            patch.Replace(t => t.StartDate, TaskModel.StartDate);
+        }
+
+        if (TaskModel.EndDate != Task.EndDate)
+        {
+            patch.Replace(t => t.EndDate, TaskModel.EndDate);
+        }
+
         var result = await TaskService
-            .UpdateAsync(TaskModel, ProjectId);
+            .PartialUpdateAsync(ProjectId, TaskId, TaskModel);
 
         if (result.IsFailure)
         {
@@ -119,7 +147,6 @@ public partial class TaskDetails
 
         TaskModel = new TaskModel
         {
-            Id = Task.Id,
             Name = Task.Name,
             Description = Task.Description,
             StateId = Task.StateId

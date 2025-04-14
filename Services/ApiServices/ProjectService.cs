@@ -54,10 +54,10 @@ public class ProjectService : IProjectService
             .HandleResponse();
     }
 
-    public async Task<Result> UpdateAsync(ProjectModel projectModel)
+    public async Task<Result> UpdateAsync(Guid id, ProjectModel projectModel)
     {
         var response = await _projectApi
-            .UpdateProjectAsync(projectModel);
+            .UpdateProjectAsync(id, projectModel);
 
         return response
             .HandleResponse();
