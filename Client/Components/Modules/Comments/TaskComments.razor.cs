@@ -1,14 +1,23 @@
-﻿using Domain.Dtos;
+﻿using Client.Extensions;
+using Client.Services;
+using Domain.Dtos;
 using Domain.Models;
 using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Authorization;
 using Services.Interfaces.ApiServices;
 
 namespace Client.Components.Modules.Comments;
 
-public partial class TaskComments
+public partial class TaskComments : IAsyncDisposable
 {
     [Inject]
     public required ICommentService CommentService { get; init; }
+
+    [Inject]
+    public required CommentsHubService CommentHubService { get; init; }
+
+    [Inject]
+    public required AuthenticationStateProvider StateProvider { get; init; }
 
     [CascadingParameter]
     public required ApplicationState AppState { get; init; }
@@ -19,7 +28,9 @@ public partial class TaskComments
     [Parameter]
     public Guid TaskId { get; set; }
 
-    public CommentModel CommentModel { get; set; } = new();
+    private Guid UserId { get; set; }
+
+    private CommentModel CommentModel { get; set; } = new();
 
     private List<CommentDto> Comments { get; set; } = [];
 
@@ -29,6 +40,12 @@ public partial class TaskComments
 
     protected override async Task OnParametersSetAsync()
     {
+        CommentHubService.OnCommentCreated += HandleCommentReceived;
+        CommentHubService.OnCommentUpdated += HandleUpdatedComment;
+        CommentHubService.OnCommentDeleted += HandleDeletedComment;
+
+        await CommentHubService.StartConnection();
+
         var commentsResult = await CommentService
             .GetAllByTaskIdAsync(ProjectId, TaskId);
 
@@ -37,7 +54,11 @@ public partial class TaskComments
             AppState.ErrorMessage = commentsResult.Error!.Code;
         }
 
-        Comments = commentsResult.Value.ToList();
+        Comments = commentsResult.Value
+            .ToList();
+
+        UserId = (await StateProvider
+            .GetUserIdAsync()).Value;
     }
 
     private async Task CreateCommentAsync()
@@ -50,8 +71,6 @@ public partial class TaskComments
             AppState.ErrorMessage = result.Error!.Message;
             return;
         }
-
-        Comments.Add(result.Value);
 
         CommentModel = new CommentModel();
     }
@@ -66,20 +85,12 @@ public partial class TaskComments
             AppState.ErrorMessage = result.Error!.Message;
             return;
         }
-
-        var commentToRemove = Comments
-            .SingleOrDefault(c => c.Id == id);
-
-        if (commentToRemove is not null)
-        {
-            Comments.Remove(commentToRemove);
-        }
     }
 
-    private string GetCommentDate(CommentDto comment)
+    private static string GetCommentDate(CommentDto comment)
     {
-        return comment.UpdatedAt?.ToString("yyyy-MM-dd | HH:mm")
-            ?? comment.CreatedAt.ToString("yyyy-MM-dd | HH:mm");
+        return comment.UpdatedAt?.ToLocalTime().ToString("yyyy-MM-dd | HH:mm")
+            ?? comment.CreatedAt.ToLocalTime().ToString("yyyy-MM-dd | HH:mm");
     }
 
     private async Task UpdateCommentAsync()
@@ -96,15 +107,6 @@ public partial class TaskComments
         {
             AppState.ErrorMessage = result.Error!.Message;
             return;
-        }
-
-        var comment = Comments
-            .FirstOrDefault(c => c.Id == UpdateCommentId);
-
-        if (comment is not null)
-        {
-            comment.Comment = UpdateCommentModel.Comment;
-            comment.UpdatedAt = DateTime.Now;
         }
 
         DeleteUpdateCommentId();
@@ -127,5 +129,45 @@ public partial class TaskComments
     private void DeleteUpdateCommentId()
     {
         UpdateCommentId = null;
+    }
+
+    private bool IsUsersComment(CommentDto comment)
+    {
+        return UserId == comment.CreatedBy.Id;
+    }
+
+    private void HandleCommentReceived(CommentDto commentDto)
+    {
+        Comments.Add(commentDto);
+        InvokeAsync(StateHasChanged);
+    }
+
+    private void HandleUpdatedComment(CommentDto commentDto)
+    {
+        var index = Comments
+            .FindIndex(c => c.Id == commentDto.Id);
+
+        if (index != -1)
+        {
+            Comments[index] = commentDto;
+            InvokeAsync(StateHasChanged);
+        }
+    }
+
+    private void HandleDeletedComment(Guid id)
+    {
+        Comments.RemoveAll(c => c.Id == id);
+        InvokeAsync(StateHasChanged);
+    }
+
+    public async ValueTask DisposeAsync()
+    {
+        GC.SuppressFinalize(this);
+
+        CommentHubService.OnCommentCreated -= HandleCommentReceived;
+        CommentHubService.OnCommentUpdated -= HandleUpdatedComment;
+        CommentHubService.OnCommentDeleted -= HandleDeletedComment;
+
+        await CommentHubService.DisposeAsync();
     }
 }

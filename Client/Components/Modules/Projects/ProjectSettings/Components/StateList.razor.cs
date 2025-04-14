@@ -109,7 +109,8 @@ public partial class StateList
 
     public void UpdateState(StateDto updatedState)
     {
-        var index = States.FindIndex(s => s.Id == updatedState.Id);
+        var index = States
+            .FindIndex(s => s.Id == updatedState.Id);
 
         States[index] = updatedState;
     }

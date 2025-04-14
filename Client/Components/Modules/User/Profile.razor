@@ -19,9 +19,13 @@
         }
         else
         {
-            <Avatar Src=@(User.AvatarUrl + "?t=" + DateTime.UtcNow.Ticks)
+            <Avatar Src=@(string.IsNullOrWhiteSpace(User.AvatarUrl)
+                ? null
+                : User.AvatarUrl + "?t=" + DateTime.UtcNow.Ticks)
                     Size=@("150px")
-                    Class="mx-auto d-block mb-4" />
+                    Class="mx-auto d-block mb-4">
+                @User.Username.FirstOrDefault()
+            </Avatar>
 
             <label class="mb-3 mx-auto">
                 <span class="btn btn-outline-secondary">

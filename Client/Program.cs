@@ -1,6 +1,7 @@
 using Client;
 using Client.Components;
 using Client.Extensions;
+using Client.Services;
 using Services.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -8,6 +9,8 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddServices();
 
 builder.Services.AddClient(builder.Configuration);
+
+builder.Services.AddScoped<CommentsHubService>();
 
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents()

@@ -29,7 +29,11 @@ public static class ServiceCollectionExtensions
         services.AddBlazorDragDrop();
         services.AddBlazoredLocalStorage();
         services.AddScoped<DeleteStateConfirmationService>();
-        
+        services.AddSignalR();
+
+        services.Configure<CommentsHubOptions>(configuration
+            .GetSection("CommentsHub"));
+
         LocaleProvider.DefaultLanguage = "en-US";
         LocaleProvider.SetLocale("en-US");
 

@@ -1,7 +1,7 @@
 ﻿using AntDesign;
 using Microsoft.AspNetCore.Components;
 
-namespace Client;
+namespace Client.Extensions;
 
 public static class RenderFragments
 {
