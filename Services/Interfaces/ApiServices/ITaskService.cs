@@ -23,7 +23,7 @@ public interface ITaskService
         Guid taskId,
         UpdateTaskStateModel model);
 
-    Task<Result> PartialUpdateAsync(
+    Task<Result> UpdateAsync(
         Guid projectId,
         Guid taskId,
         TaskModel model);

@@ -1,6 +1,5 @@
 ﻿using Domain.Dtos;
 using Domain.Models;
-using Microsoft.AspNetCore.JsonPatch;
 using Refit;
 
 namespace Services.ExternalApi;
@@ -19,10 +18,7 @@ public interface ITaskApi : IApi
     Task<IApiResponse<TaskDto>> CreateAsync([Body] TaskModel model, Guid projectId);
 
     [Put("/projects/{projectId}/tasks/{taskId}")]
-    Task<IApiResponse> UpdateAsync(Guid projectId, Guid taskId, [Body] JsonPatchDocument<TaskModel> model);
-
-    [Patch("/projects/{projectId}/tasks/{taskId}")]
-    Task<IApiResponse> PartialUpdateAsync(Guid projectId, Guid taskId, [Body] object model);
+    Task<IApiResponse> UpdateAsync(Guid projectId, Guid taskId, [Body] TaskModel model);
 
     [Patch("/projects/{projectId}/tasks/{taskId}/state")]
     Task<IApiResponse> UpdateStateAsync(Guid projectId, Guid taskId, UpdateTaskStateModel model);

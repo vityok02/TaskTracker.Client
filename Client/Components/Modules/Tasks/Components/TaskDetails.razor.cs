@@ -34,9 +34,9 @@ public partial class TaskDetails
 
     private TaskDto? Task { get; set; }
 
-    private bool IsNameInput { get; set; }
+    private bool IsNameInput { get; set; } = false;
 
-    private bool IsDescriptionInput { get; set; }
+    private bool HasChanges { get; set; } = false;
 
     protected override async Task OnParametersSetAsync()
     {
@@ -62,35 +62,8 @@ public partial class TaskDetails
 
     private async Task Update()
     {
-        var patch = new JsonPatchDocument<TaskModel>();
-
-        if (TaskModel.Name != Task!.Name)
-        {
-            patch.Replace(t => t.Name, TaskModel.Name);
-        }
-
-        if (TaskModel.Description != Task.Description)
-        {
-            patch.Replace(t => t.Description, TaskModel.Description);
-        }
-
-        if (TaskModel.StateId != Task.StateId)
-        {
-            patch.Replace(t => t.StateId, TaskModel.StateId);
-        }
-
-        if (TaskModel.StartDate != Task.StartDate)
-        {
-            patch.Replace(t => t.StartDate, TaskModel.StartDate);
-        }
-
-        if (TaskModel.EndDate != Task.EndDate)
-        {
-            patch.Replace(t => t.EndDate, TaskModel.EndDate);
-        }
-
         var result = await TaskService
-            .PartialUpdateAsync(ProjectId, TaskId, TaskModel);
+            .UpdateAsync(ProjectId, TaskId, TaskModel);
 
         if (result.IsFailure)
         {
@@ -102,7 +75,6 @@ public partial class TaskDetails
         Task.Description = TaskModel.Description;
 
         HideNameInput();
-        HideDescriptionInput();
 
         await Notification.Success(new NotificationConfig()
         {
@@ -116,25 +88,9 @@ public partial class TaskDetails
         IsNameInput = true;
     }
 
-    private void ShowDescriptionInput()
-    {
-        if (Task is null)
-        {
-            return;
-        }
-
-        IsDescriptionInput = true;
-    }
-
     private void HideNameInput()
     {
         IsNameInput = false;
-        StateHasChanged();
-    }
-
-    private void HideDescriptionInput()
-    {
-        IsDescriptionInput = false;
         StateHasChanged();
     }
 
@@ -149,8 +105,17 @@ public partial class TaskDetails
         {
             Name = Task.Name,
             Description = Task.Description,
+            StartDate = Task.StartDate,
+            EndDate = Task.EndDate,
             StateId = Task.StateId
         };
+    }
+
+    private void CheckForChanges()
+    {
+        HasChanges = TaskModel.Description != Task!.Description
+                || TaskModel.StartDate != Task.StartDate
+                || TaskModel.EndDate != Task.EndDate;
     }
 
     private void Close()

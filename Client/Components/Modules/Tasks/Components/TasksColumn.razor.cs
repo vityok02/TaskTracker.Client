@@ -53,6 +53,10 @@ public partial class TasksColumn
     [Parameter]
     public EventCallback<(bool isEdit, Guid id)> OnOpenUpdateStateForm { get; set; }
 
+    protected override void OnInitialized()
+    {
+    }
+
     public async Task OnDrop(TaskDto task, List<TaskDto> tasks)
     {
         int index = tasks.IndexOf(task);

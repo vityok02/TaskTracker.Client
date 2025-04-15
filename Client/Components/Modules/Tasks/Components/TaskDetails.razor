@@ -1,4 +1,4 @@
-﻿@if (Task is null)
+﻿@if(Task is null)
 {
     return;
 }
@@ -14,7 +14,10 @@
             {
                 <Form Model=@TaskModel
                       OnFinish=@Update
-                      Class="w-100 d-flex align-items-center gap-2">
+                      Class="w-100 d-flex align-items-center gap-2"
+                      ValidateOnChange>
+                    <FluentValidationValidator />
+
                     <Input @bind-Value=@TaskModel.Name
                            Class="form-control" />
 
@@ -42,7 +45,7 @@
             }
         </div>
 
-        <Divider Class="my-0"/>
+        <Divider Class="my-0" />
 
         <div class="d-flex flex-grow-1 pt-2" style="min-height: 0;">
             <div class="w-50" style="overflow-y: auto; min-height: 0;">
@@ -53,41 +56,40 @@
 
             <div class="w-50 ps-2" style="overflow: hidden;">
                 <div class="mb-3">
-                    @if (IsDescriptionInput)
-                    {
-                        <Form Model=@TaskModel OnFinish=@Update>
+                    <Form Model=@TaskModel
+                          OnFinish=@Update
+                          OnFieldChanged=@CheckForChanges
+                          ValidateOnChange>
+                        <FluentValidationValidator />
+
+                        <FormItem>
                             <TextArea @bind-Value=@TaskModel.Description
                                       Class="form-control mb-2"
                                       Rows="3" />
-                            <div class="d-flex gap-2 mt-2">
-                                <Button HtmlType="button"
-                                        OnClick=@HideDescriptionInput
-                                        Class="btn btn-secondary btn-sm">
-                                    Cancel
-                                </Button>
-                                <Button HtmlType="submit"
-                                        Class="btn btn-primary btn-sm">
-                                    Save
-                                </Button>
-                            </div>
-                        </Form>
-                    }
-                    else
-                    {
-                        <div class="border p-3 bg-white rounded mb-2">
-                            @(TaskModel.Description ?? "No description provided")
+                        </FormItem>
+
+                        <div class="d-flex flex-column mt-3">
+                            <FormItem Label="Start date" LabelStyle="width:80px">
+                                <DatePicker @bind-Value=@TaskModel.StartDate Placeholder=@("Set start date...") />
+                            </FormItem>
+
+                            <FormItem Label="End date" LabelStyle="width:80px">
+                                <DatePicker @bind-Value=@TaskModel.EndDate Placeholder=@("Set end date...") />
+                            </FormItem>
                         </div>
-                        <Button OnClick=@ShowDescriptionInput
+
+                        <Button HtmlType="submit"
+                                Disabled=@(!HasChanges)
                                 Class="btn btn-primary btn-sm">
-                            Edit
+                            Save
                         </Button>
-                    }
+                    </Form>
                 </div>
 
                 <div class="border p-3 bg-white rounded">
                     <div class="mb-2">
                         <span class="fw-bold">State: </span>
-                        @Task.StateName
+                        @Task!.StateName
                     </div>
 
                     <div class="mb-2">
