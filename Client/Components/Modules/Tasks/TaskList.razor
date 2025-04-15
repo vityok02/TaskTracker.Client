@@ -41,7 +41,7 @@
          style="min-width: 100%; height: calc(100vh - 250px);">
         @foreach (var state in Project.States)
         {
-            <TasksColumn Tasks=@Tasks.Where(t => t.StateId == state.Id).ToList()
+            <TasksColumn Tasks=@Tasks.Where(t => t.StateId == state.Id).OrderBy(t => t.SortOrder).ToList()
                          TaskModel=@TaskModel
                          State=@state
                          ProjectId=@ProjectId

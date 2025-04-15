@@ -61,11 +61,12 @@ public class TaskService : ITaskService
     }
 
     public async Task<Result> UpdateAsync(
-        TaskModel model,
-        Guid projectId)
+        Guid projectId,
+        Guid taskId,
+        TaskModel model)
     {
         var response = await _taskApi
-            .UpdateAsync(model, projectId);
+            .UpdateAsync(projectId, taskId, model);
 
         return response
             .HandleResponse();

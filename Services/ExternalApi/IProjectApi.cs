@@ -21,8 +21,8 @@ public interface IProjectApi : IApi
     [Post("/projects")]
     Task<IApiResponse<ProjectDto>> CreateProjectAsync([Body] ProjectModel model);
 
-    [Put("/projects/{model.Id}")]
-    Task<IApiResponse> UpdateProjectAsync(ProjectModel model);
+    [Put("/projects/{id}")]
+    Task<IApiResponse> UpdateProjectAsync(Guid id, ProjectModel model);
 
     [Delete("/projects/{id}")]
     Task<IApiResponse> DeleteProjectAsync(Guid id);

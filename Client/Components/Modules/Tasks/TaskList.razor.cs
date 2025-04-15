@@ -139,6 +139,6 @@ public partial class TaskList
             return;
         }
 
-        Tasks = result.Value;
+        Tasks = result.Value.OrderBy(t => t.SortOrder);
     }
 }

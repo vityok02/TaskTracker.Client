@@ -16,6 +16,16 @@
                   Class="form-control" />
     </FormItem>
 
+    <div class="d-flex flex-row gap-2">
+        <FormItem Label="Start date">
+            <DatePicker @bind-Value=@ProjectModel.StartDate Placeholder=@("Set start date...") />
+        </FormItem>
+
+        <FormItem Label="End date">
+            <DatePicker @bind-Value=@ProjectModel.EndDate Placeholder=@("Set end date...") />
+        </FormItem>
+    </div>
+
     <div class="d-flex justify-content-end">
         <Button Type=@ButtonType.Primary
                 HtmlType="submit"

@@ -17,7 +17,7 @@ public interface IProjectService
         string? sortColumn = null,
         string? sortOrder = null);
 
-    Task<Result> UpdateAsync(ProjectModel projectModel);
+    Task<Result> UpdateAsync(Guid id, ProjectModel projectModel);
 
     Task<Result> DeleteAsync(Guid id);
 }

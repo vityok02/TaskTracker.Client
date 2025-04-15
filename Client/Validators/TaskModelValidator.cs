@@ -19,5 +19,10 @@ public class TaskModelValidator
             RuleFor(x => x.Description ?? "")
                 .ApplyDescriptionRules();
         });
+
+        RuleFor(x => x.EndDate)
+            .GreaterThanOrEqualTo(x => x.StartDate)
+            .When(x => x.StartDate.HasValue && x.EndDate.HasValue)
+            .WithMessage("End date cannot be less than start date");
     }
 }

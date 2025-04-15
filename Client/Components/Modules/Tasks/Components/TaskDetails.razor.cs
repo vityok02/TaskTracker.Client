@@ -2,6 +2,7 @@
 using Domain.Dtos;
 using Domain.Models;
 using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.JsonPatch;
 using Services.Interfaces.ApiServices;
 
 namespace Client.Components.Modules.Tasks.Components;
@@ -33,9 +34,9 @@ public partial class TaskDetails
 
     private TaskDto? Task { get; set; }
 
-    private bool IsNameInput { get; set; }
+    private bool IsNameInput { get; set; } = false;
 
-    private bool IsDescriptionInput { get; set; }
+    private bool HasChanges { get; set; } = false;
 
     protected override async Task OnParametersSetAsync()
     {
@@ -62,7 +63,7 @@ public partial class TaskDetails
     private async Task Update()
     {
         var result = await TaskService
-            .UpdateAsync(TaskModel, ProjectId);
+            .UpdateAsync(ProjectId, TaskId, TaskModel);
 
         if (result.IsFailure)
         {
@@ -74,7 +75,6 @@ public partial class TaskDetails
         Task.Description = TaskModel.Description;
 
         HideNameInput();
-        HideDescriptionInput();
 
         await Notification.Success(new NotificationConfig()
         {
@@ -88,25 +88,9 @@ public partial class TaskDetails
         IsNameInput = true;
     }
 
-    private void ShowDescriptionInput()
-    {
-        if (Task is null)
-        {
-            return;
-        }
-
-        IsDescriptionInput = true;
-    }
-
     private void HideNameInput()
     {
         IsNameInput = false;
-        StateHasChanged();
-    }
-
-    private void HideDescriptionInput()
-    {
-        IsDescriptionInput = false;
         StateHasChanged();
     }
 
@@ -119,11 +103,19 @@ public partial class TaskDetails
 
         TaskModel = new TaskModel
         {
-            Id = Task.Id,
             Name = Task.Name,
             Description = Task.Description,
+            StartDate = Task.StartDate,
+            EndDate = Task.EndDate,
             StateId = Task.StateId
         };
+    }
+
+    private void CheckForChanges()
+    {
+        HasChanges = TaskModel.Description != Task!.Description
+                || TaskModel.StartDate != Task.StartDate
+                || TaskModel.EndDate != Task.EndDate;
     }
 
     private void Close()

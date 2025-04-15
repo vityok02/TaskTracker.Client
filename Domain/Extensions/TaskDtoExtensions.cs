@@ -10,7 +10,6 @@ public static class TaskDtoExtensions
     {
         return new()
         {
-            Id = dto.Id,
             Name = dto.Name,
             Description = dto.Description,
             StateId = dto.StateId

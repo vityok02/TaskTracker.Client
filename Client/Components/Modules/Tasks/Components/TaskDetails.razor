@@ -1,58 +1,28 @@
-﻿@if (Task is null)
+﻿@if(Task is null)
 {
     return;
 }
 
 <Drawer @bind-Visible=@Visible
-        Width="500px"
+        Width="900px"
         OnClose=@Close
-        Class="p-3">
+        Style="height: 100%;">
 
-    <div class="d-flex justify-content-between align-items-center mb-3">
-        @if (IsNameInput)
-        {
-            <Form Model=@TaskModel
-                  OnFinish=@Update
-                  Class="w-100 d-flex align-items-center gap-2">
-                <Input @bind-Value=@TaskModel.Name
-                       Class="form-control" />
+    <div class="d-flex flex-column" style="height: 100%; min-height: 0;">
+        <div class="mb-3">
+            @if (IsNameInput)
+            {
+                <Form Model=@TaskModel
+                      OnFinish=@Update
+                      Class="w-100 d-flex align-items-center gap-2"
+                      ValidateOnChange>
+                    <FluentValidationValidator />
 
-                <Button HtmlType="button"
-                        OnClick=@HideNameInput
-                        Class="btn btn-secondary btn-sm">
-                    Cancel
-                </Button>
+                    <Input @bind-Value=@TaskModel.Name
+                           Class="form-control" />
 
-                <Button HtmlType="submit"
-                        Class="btn btn-primary btn-sm">
-                    Save
-                </Button>
-            </Form>
-        }
-        else
-        {
-            <h3 class="m-0">@Task.Name</h3>
-            <Button OnClick=@ShowNameInput
-                    Class="btn btn-primary btn-sm">
-                Edit
-            </Button>
-        }
-    </div>
-
-    <Divider />
-
-    <div class="mb-3">
-        @if (IsDescriptionInput)
-        {
-            <Form Model=@TaskModel
-                  OnFinish=@Update>
-                <TextArea @bind-Value=@TaskModel.Description
-                          Class="form-control mb-2"
-                          Rows="3" />
-
-                <div class="d-flex gap-2 mt-2">
                     <Button HtmlType="button"
-                            OnClick=@HideDescriptionInput
+                            OnClick=@HideNameInput
                             Class="btn btn-secondary btn-sm">
                         Cancel
                     </Button>
@@ -61,53 +31,91 @@
                             Class="btn btn-primary btn-sm">
                         Save
                     </Button>
+                </Form>
+            }
+            else
+            {
+                <div class="d-flex justify-content-between align-items-center">
+                    <h3 class="m-0">@Task.Name</h3>
+                    <Button OnClick=@ShowNameInput
+                            Class="btn btn-primary btn-sm">
+                        Edit
+                    </Button>
                 </div>
-            </Form>
-        }
-        else
-        {
-            <div class="border p-3 bg-white rounded mb-2">
-                @(TaskModel.Description ?? "No description provided")
+            }
+        </div>
+
+        <Divider Class="my-0" />
+
+        <div class="d-flex flex-grow-1 pt-2" style="min-height: 0;">
+            <div class="w-50" style="overflow-y: auto; min-height: 0;">
+                <TaskComments ProjectId=@ProjectId TaskId=@TaskId />
             </div>
-            <Button OnClick=@ShowDescriptionInput
-                    Class="btn btn-primary btn-sm">
-                Edit
-            </Button>
-        }
+
+            <Divider Type=@DividerType.Vertical Class="h-100" />
+
+            <div class="w-50 ps-2" style="overflow: hidden;">
+                <div class="mb-3">
+                    <Form Model=@TaskModel
+                          OnFinish=@Update
+                          OnFieldChanged=@CheckForChanges
+                          ValidateOnChange>
+                        <FluentValidationValidator />
+
+                        <FormItem>
+                            <TextArea @bind-Value=@TaskModel.Description
+                                      Class="form-control mb-2"
+                                      Rows="3" />
+                        </FormItem>
+
+                        <div class="d-flex flex-column mt-3">
+                            <FormItem Label="Start date" LabelStyle="width:80px">
+                                <DatePicker @bind-Value=@TaskModel.StartDate Placeholder=@("Set start date...") />
+                            </FormItem>
+
+                            <FormItem Label="End date" LabelStyle="width:80px">
+                                <DatePicker @bind-Value=@TaskModel.EndDate Placeholder=@("Set end date...") />
+                            </FormItem>
+                        </div>
+
+                        <Button HtmlType="submit"
+                                Disabled=@(!HasChanges)
+                                Class="btn btn-primary btn-sm">
+                            Save
+                        </Button>
+                    </Form>
+                </div>
+
+                <div class="border p-3 bg-white rounded">
+                    <div class="mb-2">
+                        <span class="fw-bold">State: </span>
+                        @Task!.StateName
+                    </div>
+
+                    <div class="mb-2">
+                        <span class="fw-bold">Created by: </span>
+                        @Task.CreatedByName
+                    </div>
+
+                    <div class="mb-2">
+                        <span class="fw-bold">Created at: </span>
+                        @Task.CreatedAt
+                    </div>
+
+                    @if (Task.UpdatedBy is not null)
+                    {
+                        <div class="mb-2">
+                            <span class="fw-bold">Updated by: </span>
+                            @Task.UpdatedByName
+                        </div>
+
+                        <div class="mb-2">
+                            <span class="fw-bold">Updated at: </span>
+                            @Task.UpdatedAt
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
     </div>
-
-    <Divider />
-
-    <div class="border p-3 bg-white rounded">
-        <div class="mb-2">
-            <span class="fw-bold">State: </span>
-            @Task.StateName
-        </div>
-
-        <div class="mb-2">
-            <span class="fw-bold">Created by: </span>
-            @Task.CreatedByName
-        </div>
-
-        <div class="mb-2">
-            <span class="fw-bold">Created at: </span>
-            @Task.CreatedAt
-        </div>
-
-        @if (Task.UpdatedBy is not null)
-        {
-            <div class="mb-2">
-                <span class="fw-bold">Updated by: </span>
-                @Task.UpdatedByName
-            </div>
-
-            <div class="mb-2">
-                <span class="fw-bold">Updated at: </span>
-                @Task.UpdatedAt
-            </div>
-        }
-    </div>
-
-    <TaskComments ProjectId=@ProjectId
-                  TaskId=@TaskId />
 </Drawer>
