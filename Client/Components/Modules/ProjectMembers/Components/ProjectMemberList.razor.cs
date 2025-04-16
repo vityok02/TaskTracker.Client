@@ -1,4 +1,6 @@
-﻿using Domain.Dtos;
+﻿using AntDesign;
+using Domain.Dtos;
+using Domain.Models;
 using Microsoft.AspNetCore.Components;
 using Services.Interfaces.ApiServices;
 
@@ -8,6 +10,9 @@ public partial class ProjectMemberList
 {
     [Inject]
     public required IProjectMemberService ProjectMemberService { get; init; }
+
+    [Inject]
+    public required INotificationService NotificationService { get; init; }
 
     [CascadingParameter]
     public required ApplicationState AppState { get; init; }
@@ -24,7 +29,24 @@ public partial class ProjectMemberList
     [Parameter]
     public EventCallback OnMemberChanged { get; set; }
 
-    private async Task DeleteMember(Guid memberId)
+    private async Task UpdateMemberAsync(Guid roleId, Guid userId)
+    {
+        var result = await ProjectMemberService
+            .UpdateMemberAsync(ProjectId, userId, new ProjectMemberModel { RoleId = roleId });
+
+        if (result.IsFailure)
+        {
+            AppState.ErrorMessage = result.Error!.Message;
+            return;
+        }
+
+        await NotificationService.Success(new NotificationConfig()
+        {
+            Message = "Member updated successfully"
+        });
+    }
+
+    private async Task DeleteMemberAsync(Guid memberId)
     {
         var result = await ProjectMemberService
             .DeleteMemberAsync(ProjectId, memberId);
@@ -32,6 +54,7 @@ public partial class ProjectMemberList
         if (result.IsFailure)
         {
             AppState.ErrorMessage = result.Error!.Message;
+            return;
         }
 
         await OnMemberChanged.InvokeAsync();
