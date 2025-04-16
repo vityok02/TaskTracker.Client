@@ -118,6 +118,14 @@ public partial class TaskDetails
                 || TaskModel.EndDate != Task.EndDate;
     }
 
+    private void ResetChanges()
+    {
+        TaskModel.Description = Task!.Description;
+        TaskModel.StartDate = Task.StartDate;
+        TaskModel.EndDate = Task.EndDate;
+        HasChanges = false;
+    }
+
     private void Close()
     {
         VisibleChanged.InvokeAsync(false);

@@ -1,4 +1,4 @@
-﻿@if(Task is null)
+﻿@if (Task is null)
 {
     return;
 }
@@ -77,6 +77,12 @@
                                 <DatePicker @bind-Value=@TaskModel.EndDate Placeholder=@("Set end date...") />
                             </FormItem>
                         </div>
+
+                        <Button Disabled=@(!HasChanges)
+                                Class="btn btn-secondary btn-sm"
+                                @onclick=@ResetChanges>
+                            Cancel
+                        </Button>
 
                         <Button HtmlType="submit"
                                 Disabled=@(!HasChanges)
