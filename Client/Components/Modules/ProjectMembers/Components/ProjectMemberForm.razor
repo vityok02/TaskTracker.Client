@@ -16,9 +16,9 @@
         <Select DataSource=@Roles
                 @bind-Value=@MemberModel.RoleId
                 ItemValue=@(r => r.Id)
-                ItemLabel=@(r => r.Name)
+                ItemLabel=@(c => $"{c.Name} ({c.Description})")
                 Class="form-select"
-                Placeholder="Select Role" />
+                Placeholder="Select Role"></Select>
 
         <Button OnClick=@AddMember
                 Class="btn btn-primary btn-sm">

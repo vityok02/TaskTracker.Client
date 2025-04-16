@@ -21,18 +21,7 @@
         <ListItem Class="list-group-item border rounded px-3 py-2 shadow-sm bg-white mb-3">
 
             <div class="d-flex justify-content-between align-items-center gap-2 pb-2">
-                <NavLink class="d-flex align-items-center gap-2 text-decoration-none"
-                         href=@($"/users/{comment.CreatedBy.Id}")>
-                    <Avatar Src=@(
-                        string.IsNullOrWhiteSpace(comment.CreatedBy.AvatarUrl)
-                            ? null
-                            : $"{comment.CreatedBy.AvatarUrl}?t={DateTime.UtcNow.Ticks}")>
-                        @comment.CreatedBy.Name.FirstOrDefault()
-                    </Avatar>
-                    <strong class="text-primary">
-                        @comment.CreatedBy.Name
-                    </strong>
-                </NavLink>
+                <UserProfileLink User=@comment.CreatedBy />
 
                 <div class="d-flex align-items-center">
                     @if (comment.UpdatedAt is not null)
