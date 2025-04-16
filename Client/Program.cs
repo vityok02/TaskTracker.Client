@@ -16,6 +16,8 @@ builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents()
     .AddInteractiveWebAssemblyComponents();
 
+builder.Services.AddServerSideBlazor();
+
 var app = builder.Build();
 
 app.UseMiddleware<CookieMiddleware>();
@@ -37,9 +39,16 @@ app.UseAntiforgery();
 
 app.UseStaticFiles();
 
+//app.UseStatusCodePages();
+app.UseStatusCodePagesWithRedirects("/Error/{0}");
+
 app.MapStaticAssets();
 app.MapRazorComponents<App>()
     .AddInteractiveServerRenderMode()
     .AddInteractiveWebAssemblyRenderMode();
+
+//app.MapRazorPages();
+
+//app.MapFallbackToPage("/_Host");
 
 await app.RunAsync();

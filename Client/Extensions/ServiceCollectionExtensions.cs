@@ -30,6 +30,7 @@ public static class ServiceCollectionExtensions
         services.AddBlazoredLocalStorage();
         services.AddScoped<DeleteStateConfirmationService>();
         services.AddSignalR();
+        //services.AddRazorPages();
 
         services.Configure<CommentsHubOptions>(configuration
             .GetSection("CommentsHub"));
