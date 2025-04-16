@@ -1,17 +1,11 @@
-﻿<div class="comments-section p-3">
+﻿
     <h5 class="mb-3">Comments</h5>
 
     <Form Model=@CommentModel
           OnFinish=@CreateCommentAsync
           Class="comment-form p-3 bg-white rounded shadow-sm">
         <FluentValidationValidator />
-
-        <FormItem>
-            <TextArea @bind-Value="CommentModel.Comment"
-                      Class="form-control"
-                      Placeholder="Write a comment..."
-                      Rows="3" />
-        </FormItem>
+        <MarkdownEditor @bind-Value="@CommentModel.Comment" MaxHeight="150px"/>
 
         <div class="d-flex justify-content-end mt-2">
             <Button HtmlType="submit"
@@ -82,9 +76,8 @@
             }
             else
             {
-                <p class="mb-2 text-dark">
-                    @comment.Comment
-                </p>
+                    @((MarkupString)Markdown.ToHtml(comment.Comment))
+             
 
                 <div class="d-flex gap-2">
                     <Button Type=@ButtonType.Text
@@ -115,4 +108,3 @@
         </ListItem>
     </AntList>
 
-</div>

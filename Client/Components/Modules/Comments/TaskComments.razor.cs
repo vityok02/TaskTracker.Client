@@ -4,12 +4,16 @@ using Domain.Dtos;
 using Domain.Models;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
+using Microsoft.JSInterop;
 using Services.Interfaces.ApiServices;
 
 namespace Client.Components.Modules.Comments;
 
 public partial class TaskComments : IAsyncDisposable
 {
+    [Inject]
+    public required IJSRuntime Js { get; init; }
+
     [Inject]
     public required ICommentService CommentService { get; init; }
 
@@ -37,6 +41,14 @@ public partial class TaskComments : IAsyncDisposable
     private CommentModel UpdateCommentModel { get; set; } = new();
 
     private Guid? UpdateCommentId { get; set; }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await Js.InvokeVoidAsync("hljs.highlightAll");
+        }
+    }
 
     protected override async Task OnParametersSetAsync()
     {
