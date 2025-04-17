@@ -1,0 +1,13 @@
+﻿<NavLink href=@($"/users/{User.Id}")
+         class=@GetClass()
+         style=@Style>
+    <Avatar Src=@(
+            string.IsNullOrWhiteSpace(User.AvatarUrl)
+            ? null
+            : $"{User.AvatarUrl}?t={DateTime.UtcNow.Ticks}")>
+        @User.Name.FirstOrDefault()
+    </Avatar>
+    <strong>
+        @User.Name
+    </strong>
+</NavLink>

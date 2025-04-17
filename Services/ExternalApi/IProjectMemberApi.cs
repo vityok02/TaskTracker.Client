@@ -12,7 +12,7 @@ public interface IProjectMemberApi : IApi
     [Get("/projects/{projectId}/members")]
     Task<IApiResponse<IEnumerable<ProjectMemberDto>>> GetAllAsync(Guid projectId);
 
-    [Put("/projects/{projectId}/members{memberId}")]
+    [Put("/projects/{projectId}/members/{memberId}")]
     Task<IApiResponse> UpdateAsync(Guid projectId, Guid memberId, [Body] ProjectMemberModel model);
 
     [Delete("/projects/{projectId}/members/{memberId}")]

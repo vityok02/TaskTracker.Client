@@ -2,8 +2,7 @@
 
 public record ProjectMemberDto
 {
-    public Guid UserId { get; set; }
-    public string UserName { get; set; } = string.Empty;
+    public UserInfoDto User { get; set; } = new();
 
     public Guid ProjectId { get; set; }
     public string ProjectName { get; set; } = string.Empty;

@@ -4,17 +4,14 @@
             <CascadingValue Value="@ApplicationState">
                 <AuthorizeRouteView RouteData="routeData" DefaultLayout="@typeof(Layout.MainLayout)">
                     <NotAuthorized>
-                        <p>Sorry, but you are not allowed to see this</p>
+                        <LoginRedirect />
                     </NotAuthorized>
                 </AuthorizeRouteView>
                 <FocusOnNavigate RouteData="routeData" Selector="h1" />
             </CascadingValue>
         </Found>
         <NotFound>
-            <PageTitle>Not found</PageTitle>
-            <LayoutView Layout="@typeof(Layout.MainLayout)">
-                <p role="alert">Sorry, there's nothing at this address.</p>
-            </LayoutView>
+            <NotFoundPage />
         </NotFound>
     </Router>
 </CascadingAuthenticationState>

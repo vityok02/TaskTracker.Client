@@ -1,19 +1,22 @@
 ﻿<AntList DataSource=@Members>
     <ChildContent Context="item">
         <ListItem Class="d-flex justify-content-between align-items-center">
-            <Text Class="me-2">
-                @item.UserName
-            </Text>
+            <UserProfileLink User=@item.User Style="width: 150px"/>
 
             <Select DataSource=@Roles
-                    @bind-Value=@item.RoleId
+                    TItem="RoleDto"
+                    TItemValue="Guid"
+                    DefaultValue=@item.RoleId
+                    OnSelectedItemChanged=@(async (role) => await UpdateMemberAsync(role.Id, item.User.Id))
                     ItemLabel=@(c => c.Name)
                     ItemValue=@(c => c.Id) />
 
-            <Button OnClick=@(() => DeleteMember(item.UserId))
-                    Class="btn btn-danger btn-sm m-1">
-                Remove
-            </Button>
+            <Popconfirm Title="Are you sure to delete this member?"
+                        OnConfirm=@(async () => await DeleteMemberAsync(item.User.Id))>
+                <Button Class="btn btn-danger btn-sm m-1">
+                    Remove
+                </Button>
+            </Popconfirm>
         </ListItem>
     </ChildContent>
 </AntList>
