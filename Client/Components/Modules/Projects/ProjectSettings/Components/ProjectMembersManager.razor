@@ -1,8 +1,12 @@
 ﻿<h5>Members</h5>
 
-<ProjectMemberForm Roles=@Roles
-                   ProjectId=@ProjectId
-                   OnMemberAdded=@LoadMembersAsync />
+<RoleAuthorizeView AllowedRoles=@([Domain.Constants.Roles.Admin])>
+    <Allowed>
+        <ProjectMemberForm Roles=@Roles
+                           ProjectId=@ProjectId
+                           OnMemberAdded=@LoadMembersAsync />
+    </Allowed>
+</RoleAuthorizeView>
 
 <Divider />
 

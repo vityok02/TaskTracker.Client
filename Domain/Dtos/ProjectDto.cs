@@ -15,4 +15,6 @@ public class ProjectDto : AuditableDto
     public DateTime? EndDate { get; set; }
 
     public List<StateDto> States { get; set; } = [];
+
+    public RoleDto Role { get; set; } = default!;
 }

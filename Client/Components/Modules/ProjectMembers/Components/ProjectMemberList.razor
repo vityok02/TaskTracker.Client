@@ -1,22 +1,29 @@
 ﻿<AntList DataSource=@Members>
-    <ChildContent Context="item">
+    <ChildContent Context="member">
         <ListItem Class="d-flex justify-content-between align-items-center">
-            <UserProfileLink User=@item.User Style="width: 150px"/>
+            <UserProfileLink User=@member.User Style="width: 150px" />
 
-            <Select DataSource=@Roles
-                    TItem="RoleDto"
-                    TItemValue="Guid"
-                    DefaultValue=@item.RoleId
-                    OnSelectedItemChanged=@(async (role) => await UpdateMemberAsync(role.Id, item.User.Id))
-                    ItemLabel=@(c => c.Name)
-                    ItemValue=@(c => c.Id) />
+            <RoleAuthorizeView AllowedRoles=@([Domain.Constants.Roles.Admin])>
+                <Allowed>
+                    <Select DataSource=@Roles
+                            TItem="RoleDto"
+                            TItemValue="Guid"
+                            DefaultValue=@member.Role.Id
+                            OnSelectedItemChanged=@(async (role) => await UpdateMemberAsync(role.Id, member.User.Id))
+                            ItemLabel=@(c => c.Name)
+                            ItemValue=@(c => c.Id) />
 
-            <Popconfirm Title="Are you sure to delete this member?"
-                        OnConfirm=@(async () => await DeleteMemberAsync(item.User.Id))>
-                <Button Class="btn btn-danger btn-sm m-1">
-                    Remove
-                </Button>
-            </Popconfirm>
+                    <Popconfirm Title="Are you sure to delete this member?"
+                                OnConfirm=@(async () => await DeleteMemberAsync(member.User.Id))>
+                        <Button Class="btn btn-danger btn-sm m-1">
+                            Remove
+                        </Button>
+                    </Popconfirm>
+                </Allowed>
+                <NotAllowed>
+                    <p>@member.Role.Name</p>
+                </NotAllowed>
+            </RoleAuthorizeView>
         </ListItem>
     </ChildContent>
 </AntList>

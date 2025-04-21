@@ -1,7 +1,5 @@
 ﻿@page "/projects"
 
-@attribute [Authorize]
-
 <PageTitle>Projects</PageTitle>
 
 <div class="container mt-4 pb-3">
@@ -28,7 +26,7 @@
                 @bind-Value=@_sortOptions.Column
                 OnSelectedItemChanged=@((string sortColumn) => SortProjectsByColumnAsync(sortColumn))
                 Class="form-select-sm"
-                Style="min-width: 150px"/>
+                Style="min-width: 150px" />
 
         <Button @onclick=@ChangeSortOrderAsync class="btn btn-outline-secondary">
             <i class=@OrderButtonIconClass></i>
@@ -53,10 +51,14 @@
                                     @project.Name
                                 </NavLink>
 
-                                <a class="text-danger"
-                                   @onclick=@(() => ShowDeleteModal(project.Id, project.Name))>
-                                    <i class="bi bi-trash-fill" />
-                                </a>
+                                @if (project.Role?.Name == Roles.Admin)
+                                {
+                                    <a class="text-danger"
+                                       @onclick=@(() => ShowDeleteModal(project.Id, project.Name))>
+                                        <i class="bi bi-trash-fill" />
+                                    </a>
+                                }
+
                             </h5>
 
                             <p class="card-text text-muted">

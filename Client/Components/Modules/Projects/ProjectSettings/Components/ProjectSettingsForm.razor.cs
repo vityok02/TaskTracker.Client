@@ -11,6 +11,9 @@ public partial class ProjectSettingsForm
     [Parameter, EditorRequired]
     public EventCallback OnSubmitSuccess { get; set; }
 
+    [Parameter]
+    public string? Role { get; set; }
+
     private async Task UpdateAsync()
     {
         await OnSubmitSuccess.InvokeAsync();

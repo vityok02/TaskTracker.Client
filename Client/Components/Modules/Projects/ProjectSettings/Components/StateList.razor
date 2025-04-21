@@ -5,46 +5,61 @@
                   Handle=".drag-handle"
                   Items=@States
                   OnUpdate=@ReorderAsync
-                  Context="item"
+                  Context="state"
                   Class="w-100">
         <SortableItemTemplate>
             <div class="card card-body d-flex flex-row justify-content-between align-items-center py-3 my-1">
                 <div class="d-flex align-items-center">
-                    <i class="bi bi-grip-vertical drag-handle"
-                       style="cursor: grab"></i>
+                    <RoleAuthorizeView AllowedRoles=@([Roles.Admin, Roles.Contributor])>
+                        <Allowed>
+                            <i class="bi bi-grip-vertical drag-handle"
+                               style="cursor: grab"></i>
+                        </Allowed>
+                    </RoleAuthorizeView>
 
                     <span class="rounded-5 px-3 py-1 mx-2 small"
-                          style="@GetStateTitleStyle(item.Color)">
-                        @item.Name
+                          style="@GetStateTitleStyle(state.Color)">
+                        @state.Name
                     </span>
                 </div>
 
-                <div class="d-flex gap-3">
-                    <a @onclick=@(() => ShowUpdateForm(item.Id))>
-                        <i class="bi bi-pencil-square"></i>
-                    </a>
+                <RoleAuthorizeView AllowedRoles=@([Roles.Admin, Roles.Contributor])>
+                    <Allowed>
+                        <div class="d-flex gap-3">
+                            <a @onclick=@(() => ShowUpdateForm(state.Id))>
+                                <i class="bi bi-pencil-square"></i>
+                            </a>
 
-                    <a @onclick="async () => await ShowDeleteConfirmationAsync(item.Id)"
-                       class="text-danger mr-4"
-                       style="cursor: pointer;">
-                        <i class="bi bi-trash-fill is-size-5"></i>
-                    </a>
-                </div>
+                            <a @onclick="async () => await ShowDeleteConfirmationAsync(state.Id)"
+                               class="text-danger mr-4"
+                               style="cursor: pointer;">
+                                <i class="bi bi-trash-fill is-size-5"></i>
+                            </a>
+                        </div>
+                    </Allowed>
+                </RoleAuthorizeView>
             </div>
         </SortableItemTemplate>
     </SortableList>
 
-    <Form Model=@StateModel
-          OnFinish=@CreateStateAsync
-          Class="d-flex flex-row gap-2 mt-3">
-        <FluentValidationValidator />
+    <RoleAuthorizeView AllowedRoles=@([Roles.Admin, Roles.Contributor])>
+        <Allowed>
+            <Form Model=@StateModel
+                  OnFinish=@CreateStateAsync
+                  Class="d-flex flex-row gap-2 mt-3">
+                <FluentValidationValidator />
 
-        <Input @bind-Value=@StateModel.Name
-               Placeholder="Add state..."
-               Class="form-control" />
+                <Input @bind-Value=@StateModel.Name
+                       Placeholder="Add state..."
+                       Class="form-control" />
 
-        <Button HtmlType="submit" Class="btn btn-primary btn-sm">Add</Button>
-    </Form>
+                <Button HtmlType="submit"
+                        Class="btn btn-primary btn-sm">
+                    Add
+                </Button>
+            </Form>
+        </Allowed>
+    </RoleAuthorizeView>
 </div>
 
 <StateForm @bind-Visible=@StateFormVisible
