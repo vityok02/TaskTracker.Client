@@ -1,6 +1,7 @@
 ﻿using AntDesign;
 using Client.Extensions;
 using Client.Services;
+using Domain.Constants;
 using Domain.Dtos;
 using Domain.Models;
 using Microsoft.AspNetCore.Components;
@@ -27,7 +28,7 @@ public partial class TasksColumn
     public required ApplicationState AppState { get; init; }
 
     [Parameter]
-    public Guid ProjectId { get; set; }
+    public Guid ProjectId { get; set; } = new();
 
     [Parameter]
     public TaskModel TaskModel { get; set; } = new();
@@ -52,6 +53,9 @@ public partial class TasksColumn
 
     [Parameter]
     public EventCallback<(bool isEdit, Guid id)> OnOpenUpdateStateForm { get; set; }
+
+    [Parameter]
+    public string? Role { get; set; }
 
     protected override void OnInitialized()
     {
@@ -112,12 +116,12 @@ public partial class TasksColumn
         OnOpenUpdateStateForm.InvokeAsync((true, State.Id));
     }
 
-    private async Task ShowInput(Guid stateId)
+    private async Task ShowInputAsync(Guid stateId)
     {
         await OnShowInput.InvokeAsync(stateId);
     }
 
-    private async Task OpenDetials(Guid taskId)
+    private async Task OpenDetailsAsync(Guid taskId)
     {
          await OnOpenDetails.InvokeAsync(taskId);
     }
@@ -150,7 +154,7 @@ public partial class TasksColumn
         await OnChange.InvokeAsync();
     }
 
-    private async Task ShowTaskDeleteConfirm(Guid taskId)
+    private async Task ShowTaskDeleteConfirmAsync(Guid taskId)
     {
         await ModalService.ConfirmAsync(new ConfirmOptions()
         {
@@ -168,7 +172,14 @@ public partial class TasksColumn
         });
     }
 
-    private async Task ShowStateDeleteConfirm(Guid stateId)
+    private bool AllowsDrag()
+    {
+        return Role
+            is Roles.Admin
+            or Roles.Contributor;
+    }
+
+    private async Task ShowStateDeleteConfirmAsync(Guid stateId)
     {
         await DeleteConfirmationService
             .ShowStateDeleteConfirmAsync(stateId, DeleteState);

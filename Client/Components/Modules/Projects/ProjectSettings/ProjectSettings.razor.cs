@@ -25,6 +25,8 @@ public sealed partial class ProjectSettings
 
     public ProjectDto Project { get; set; } = new();
 
+    public string? Role { get; set; }
+
     protected override async Task OnParametersSetAsync()
     {
         if (ProjectId == Guid.Empty)
@@ -50,6 +52,8 @@ public sealed partial class ProjectSettings
             StartDate = Project.StartDate,
             EndDate = Project.EndDate,
         };
+
+        Role = Project.Role.Name;
     }
 
     private async Task UpdateProject()

@@ -10,39 +10,47 @@
 
     <div class="d-flex flex-column" style="height: 100%; min-height: 0;">
         <div class="mb-3">
-            @if (IsNameInput)
-            {
-                <Form Model=@TaskModel
-                      OnFinish=@Update
-                      Class="w-100 d-flex align-items-center gap-2"
-                      ValidateOnChange>
-                    <FluentValidationValidator />
+            <RoleAuthorizeView AllowedRoles=@([Roles.Admin, Roles.Contributor])>
+                <Allowed>
+                    @if (IsNameInput)
+                    {
+                        <Form Model=@TaskModel
+                              OnFinish=@Update
+                              Class="w-100 d-flex align-items-center gap-2"
+                              ValidateOnChange>
+                            <FluentValidationValidator />
 
-                    <Input @bind-Value=@TaskModel.Name
-                           Class="form-control" />
+                            <Input @bind-Value=@TaskModel.Name
+                                   Class="form-control" />
 
-                    <Button HtmlType="button"
-                            OnClick=@HideNameInput
-                            Class="btn btn-secondary btn-sm">
-                        Cancel
-                    </Button>
+                            <Button HtmlType="button"
+                                    OnClick=@HideNameInput
+                                    Class="btn btn-secondary btn-sm">
+                                Cancel
+                            </Button>
 
-                    <Button HtmlType="submit"
-                            Class="btn btn-primary btn-sm">
-                        Save
-                    </Button>
-                </Form>
-            }
-            else
-            {
-                <div class="d-flex justify-content-between align-items-center">
+                            <Button HtmlType="submit"
+                                    Class="btn btn-primary btn-sm">
+                                Save
+                            </Button>
+                        </Form>
+                    }
+                    else
+                    {
+                        <div class="d-flex justify-content-between align-items-center">
+                            <h3 class="m-0">@Task.Name</h3>
+                            <Button OnClick=@ShowNameInput
+                                    Class="btn btn-primary btn-sm">
+                                Edit
+                            </Button>
+                        </div>
+                    }
+                </Allowed>
+
+                <NotAllowed>
                     <h3 class="m-0">@Task.Name</h3>
-                    <Button OnClick=@ShowNameInput
-                            Class="btn btn-primary btn-sm">
-                        Edit
-                    </Button>
-                </div>
-            }
+                </NotAllowed>
+            </RoleAuthorizeView>
         </div>
 
         <Divider Class="my-0" />
@@ -56,40 +64,67 @@
 
             <div class="w-50 ps-2" style="overflow: hidden;">
                 <div class="mb-3">
-                    <Form Model=@TaskModel
-                          OnFinish=@Update
-                          OnFieldChanged=@CheckForChanges
-                          ValidateOnChange>
-                        <FluentValidationValidator />
+                    <RoleAuthorizeView AllowedRoles=@([Roles.Admin, Roles.Contributor])>
+                        <Allowed>
 
-                        <FormItem>
-                            <TextArea @bind-Value=@TaskModel.Description
-                                      Class="form-control mb-2"
-                                      Rows="3" />
-                        </FormItem>
+                            <Form Model=@TaskModel
+                                  OnFinish=@Update
+                                  OnFieldChanged=@CheckForChanges
+                                  ValidateOnChange>
+                                <FluentValidationValidator />
 
-                        <div class="d-flex flex-column mt-3">
-                            <FormItem Label="Start date" LabelStyle="width:80px">
-                                <DatePicker @bind-Value=@TaskModel.StartDate Placeholder=@("Set start date...") />
-                            </FormItem>
+                                <FormItem>
+                                    <TextArea @bind-Value=@TaskModel.Description
+                                              Class="form-control mb-2"
+                                              Rows="3" />
+                                </FormItem>
 
-                            <FormItem Label="End date" LabelStyle="width:80px">
-                                <DatePicker @bind-Value=@TaskModel.EndDate Placeholder=@("Set end date...") />
-                            </FormItem>
-                        </div>
+                                <div class="d-flex flex-column mt-3">
+                                    <FormItem Label="Start date" LabelStyle="width:80px">
+                                        <DatePicker @bind-Value=@TaskModel.StartDate Placeholder=@("Set start date...") />
+                                    </FormItem>
 
-                        <Button Disabled=@(!HasChanges)
-                                Class="btn btn-secondary btn-sm"
-                                @onclick=@ResetChanges>
-                            Cancel
-                        </Button>
+                                    <FormItem Label="End date" LabelStyle="width:80px">
+                                        <DatePicker @bind-Value=@TaskModel.EndDate Placeholder=@("Set end date...") />
+                                    </FormItem>
+                                </div>
 
-                        <Button HtmlType="submit"
-                                Disabled=@(!HasChanges)
-                                Class="btn btn-primary btn-sm">
-                            Save
-                        </Button>
-                    </Form>
+                                <Button Disabled=@(!HasChanges)
+                                        Class="btn btn-secondary btn-sm"
+                                        @onclick=@ResetChanges>
+                                    Cancel
+                                </Button>
+
+                                <Button HtmlType="submit"
+                                        Disabled=@(!HasChanges)
+                                        Class="btn btn-primary btn-sm">
+                                    Save
+                                </Button>
+                            </Form>
+                        </Allowed>
+                        <NotAllowed>
+                            <div class="mb-2">
+                                <label>Description</label>
+                                <TextArea Value=@TaskModel.Description
+                                          Class="form-control mb-2"
+                                          Rows="3"
+                                          ReadOnly />
+                            </div>
+
+                            <div class="d-flex flex-column mt-3">
+                                <div class="mb-2 d-flex align-items-center">
+                                    <label class="me-2" style="width:80px;">Start date</label>
+                                    <DatePicker Value="@TaskModel.StartDate" Disabled=@true />
+                                </div>
+
+                                <div class="d-flex align-items-center">
+                                    <label class="me-2" style="width:80px;">End date</label>
+                                    <DatePicker Value="@TaskModel.EndDate" Disabled=@true />
+                                </div>
+                            </div>
+
+                        </NotAllowed>
+                    </RoleAuthorizeView>
                 </div>
 
                 <div class="border p-3 bg-white rounded">

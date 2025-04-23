@@ -21,6 +21,9 @@ public partial class StateList
     [Parameter, EditorRequired]
     public required Guid ProjectId { get; init; }
 
+    //[Parameter]
+    //public required string? Role { get; init; }
+
     public List<StateDto> States { get; set; } = [];
 
     private StateModel StateModel { get; set; } = new();

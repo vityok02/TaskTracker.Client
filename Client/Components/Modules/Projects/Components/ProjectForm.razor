@@ -20,7 +20,7 @@
             <FormItem Label="Name"
                       Class="mb-3">
                 <Input @bind-Value=@ProjectModel.Name
-                       Class="form-control" autofocus/>
+                       Class="form-control" />
             </FormItem>
 
             <FormItem Label="Description"
@@ -31,7 +31,9 @@
             </FormItem>
 
             <FormItem Label="Start date">
-                <DatePicker DefaultValue=DateTime.Now.ToLocalTime() @bind-Value=@ProjectModel.StartDate />
+                <DatePicker AllowClear
+                            DefaultValue=DateTime.Now.ToLocalTime()
+                            @bind-Value=@ProjectModel.StartDate />
             </FormItem>
 
             <div class="d-flex justify-content-end gap-2">

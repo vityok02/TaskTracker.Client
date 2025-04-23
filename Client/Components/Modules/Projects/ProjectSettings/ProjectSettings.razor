@@ -5,33 +5,43 @@
 <PageTitle>@Project.Name</PageTitle>
 
 <div class="container mt-4 pb-3">
-    <div class="d-flex align-items-center mb-4">
-        <NavLink href=@($"projects/{ProjectId}/tasks")
-                 class="text-dark me-3">
-            <i class="bi bi-arrow-left fs-4" />
-        </NavLink>
+    <CascadingValue Value=@Role>
+        <div class="d-flex align-items-center mb-4">
+            <NavLink href=@($"projects/{ProjectId}/tasks")
+                     class="text-dark me-3">
+                <i class="bi bi-arrow-left fs-4" />
+            </NavLink>
 
-        <h4 class="mb-0">
-            @Project.Name - settings
-        </h4>
-    </div>
-
-    <div class="card shadow-sm">
-        <div class="card-body">
-            <ProjectSettingsForm ProjectModel=@ProjectModel
-                                 OnSubmitSuccess=@UpdateProject />
+            <h4 class="mb-0">
+                @Project.Name - settings
+            </h4>
         </div>
-    </div>
 
-    <div class="card shadow-sm mt-3">
-        <div class="card-body d-flex user-select-none">
-            <StateList ProjectId=@ProjectId />
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <RoleAuthorizeView AllowedRoles=@([Roles.Admin, Roles.Contributor])>
+                    <Allowed>
+                        <ProjectSettingsForm ProjectModel=@ProjectModel
+                                             OnSubmitSuccess=@UpdateProject
+                                             Role=@Role />
+                    </Allowed>
+                    <NotAllowed>
+                        <ProjectDetails Project=@Project />
+                    </NotAllowed>
+                </RoleAuthorizeView>
+            </div>
         </div>
-    </div>
 
-    <div class="card shadow-sm mt-3">
-        <div class="card-body">
-            <ProjectMembersManager ProjectId=@ProjectId />
+        <div class="card shadow-sm mt-3">
+            <div class="card-body d-flex user-select-none">
+                <StateList ProjectId=@ProjectId />
+            </div>
         </div>
-    </div>
+
+        <div class="card shadow-sm mt-3">
+            <div class="card-body">
+                <ProjectMembersManager ProjectId=@ProjectId />
+            </div>
+        </div>
+    </CascadingValue>
 </div>

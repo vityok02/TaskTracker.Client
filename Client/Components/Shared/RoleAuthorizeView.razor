@@ -1,0 +1,19 @@
+﻿@if (IsAuthorized == null)
+{
+    <p>Loading...</p>
+}
+else if (IsAuthorized == true)
+{
+    if (Allowed is not null)
+    {
+        @Allowed
+    }
+    else
+    {
+        @ChildContent
+    }
+}
+else
+{
+    @NotAllowed
+}

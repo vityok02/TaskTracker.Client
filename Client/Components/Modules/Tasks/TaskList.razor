@@ -21,10 +21,12 @@
         </NavLink>
     </div>
 
-    <Button OnClick=@OpenCreateStateForm
-            Class="btn btn-outline-secondary">
-        Add state
-    </Button>
+    <RoleAuthorizeView AllowedRoles=@([Roles.Admin, Roles.Contributor])>
+        <Button OnClick=@OpenCreateStateForm
+                Class="btn btn-outline-secondary">
+            Add state
+        </Button>
+    </RoleAuthorizeView>
 </div>
 
 <div class="mb-3">
@@ -41,14 +43,17 @@
          style="min-width: 100%; height: calc(100vh - 250px);">
         @foreach (var state in Project.States)
         {
-            <TasksColumn Tasks=@Tasks.Where(t => t.StateId == state.Id).OrderBy(t => t.SortOrder).ToList()
-                         TaskModel=@TaskModel
-                         State=@state
-                         ProjectId=@ProjectId
-                         OnShowInput=@ShowInput
-                         OnOpenDetails=@OpenDetails
-                         OnChange=@LoadDataAsync
-                         OnOpenUpdateStateForm=@(() => OpenUpdateStateForm(state.Id)) />
+            <CascadingValue Value=@Project.Role.Name>
+                <TasksColumn Tasks=@Tasks.Where(t => t.StateId == state.Id).OrderBy(t => t.SortOrder).ToList()
+                             TaskModel=@TaskModel
+                             State=@state
+                             ProjectId=@ProjectId
+                             Role=@Project.Role.Name
+                             OnShowInput=@ShowInput
+                             OnOpenDetails=@OpenDetails
+                             OnChange=@LoadDataAsync
+                             OnOpenUpdateStateForm=@(() => OpenUpdateStateForm(state.Id)) />
+            </CascadingValue>
         }
     </div>
 </div>
