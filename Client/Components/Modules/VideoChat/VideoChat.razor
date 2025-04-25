@@ -1,0 +1,17 @@
+﻿@page "/projects/{projectId:guid}/videochat"
+
+<div class="row h-100 pt-5">
+    <div class="col-3">
+        <div class="jumbotron p-4">
+            <Cameras ActiveCamera=@_activeCamera CameraChanged="OnCameraChanged" />
+            <Microphones MicrophoneChanged="OnMicrophoneChanged" />
+        </div>
+    </div>
+    <div class="col-9">
+        <div id="participants" class="participants-grid">
+            <div class="embed-responsive embed-responsive-16by9">
+                <div id="camera" class="embed-responsive-item"></div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -11,7 +11,7 @@
             <i class="bi bi-arrow-left fs-4" />
         </NavLink>
 
-        <NavLink href="@($"/projects/{ProjectId}/settings")"
+        <NavLink href=@($"/projects/{ProjectId}/settings")
                  class="text-decoration-none text-dark d-flex justify-content-between align-items-center">
             <h4 class="mb-0">
                 @Title
@@ -21,12 +21,19 @@
         </NavLink>
     </div>
 
-    <RoleAuthorizeView AllowedRoles=@([Roles.Admin, Roles.Contributor])>
-        <Button OnClick=@OpenCreateStateForm
-                Class="btn btn-outline-secondary">
-            Add state
-        </Button>
-    </RoleAuthorizeView>
+    <CascadingValue Value=@Project?.Role?.Name>
+        <RoleAuthorizeView AllowedRoles=@([Roles.Admin, Roles.Contributor])>
+            <Allowed>
+                <a href=@($"/projects/{ProjectId}/lobby")>
+                    Start call
+                </a>
+                <Button OnClick=@OpenCreateStateForm
+                        Class="btn btn-outline-secondary">
+                    Add state
+                </Button>
+            </Allowed>
+        </RoleAuthorizeView>
+    </CascadingValue>
 </div>
 
 <div class="mb-3">
@@ -41,7 +48,7 @@
      style="width: 100%;">
     <div class="row g-4 flex-nowrap cards"
          style="min-width: 100%; height: calc(100vh - 250px);">
-        @foreach (var state in Project.States)
+        @foreach (var state in Project!.States)
         {
             <CascadingValue Value=@Project.Role.Name>
                 <TasksColumn Tasks=@Tasks.Where(t => t.StateId == state.Id).OrderBy(t => t.SortOrder).ToList()

@@ -14,6 +14,10 @@ builder.Services.AddScoped<CommentsHubService>();
 
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents()
+    .AddCircuitOptions(options =>
+    {
+        options.DetailedErrors = true;
+    })
     .AddInteractiveWebAssemblyComponents();
 
 builder.Services.AddServerSideBlazor();
