@@ -1,0 +1,38 @@
+﻿<div class="dropdown">
+    <button class="btn btn-dark dropdown-toggle d-flex align-items-center gap-2"
+    type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        <i class="fas fa-microphone"></i>
+        @if (IsLoading)
+        {
+            <span class="spinner-border spinner-border-sm ms-2" role="status" aria-hidden="true"></span>
+        }
+        else
+        {
+            if (DeviceType == Models.DeviceType.Camera)
+            {
+                <i class="bi bi-camera-video"></i>
+            }
+            else if (DeviceType == Models.DeviceType.Microphone)
+            {
+                <i class="bi bi-mic"></i>
+            }
+        }
+    </button>
+    <div class="dropdown-menu">
+        @if (HasDevices)
+        {
+            @foreach (var device in Devices!)
+            {
+                <a href="#" class="dropdown-item @(ActiveDevice == device.DeviceId ? "active" : "")"
+                   @onclick="() => SelectDevice(device.DeviceId)"
+                   @onclick:preventDefault="true">
+                    <i class="fas fa-microphone me-2"></i> @device.Label
+                </a>
+            }
+        }
+        else if (!IsLoading)
+        {
+            <span class="dropdown-item text-muted">No devices found</span>
+        }
+    </div>
+</div>

@@ -18,7 +18,8 @@ builder.Services.AddRazorComponents()
     {
         options.DetailedErrors = true;
     })
-    .AddInteractiveWebAssemblyComponents();
+    .AddInteractiveWebAssemblyComponents()
+    ;
 
 builder.Services.AddServerSideBlazor();
 
@@ -41,7 +42,13 @@ app.UseAuthorization();
 
 app.UseAntiforgery();
 
-app.UseStaticFiles();
+//app.UseStaticFiles(new StaticFileOptions
+//{
+//    FileProvider = new PhysicalFileProvider(
+//        Path.Combine(Directory.GetCurrentDirectory(), "wwwroot"))
+//});
+
+//app.UseBlazorFrameworkFiles();
 
 //app.UseStatusCodePages();
 app.UseStatusCodePagesWithRedirects("/Error/{0}");
@@ -49,7 +56,8 @@ app.UseStatusCodePagesWithRedirects("/Error/{0}");
 app.MapStaticAssets();
 app.MapRazorComponents<App>()
     .AddInteractiveServerRenderMode()
-    .AddInteractiveWebAssemblyRenderMode();
+    .AddInteractiveWebAssemblyRenderMode()
+    ;
 
 //app.MapRazorPages();
 

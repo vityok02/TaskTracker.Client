@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="@Assets["lib/bootstrap/dist/css/bootstrap.min.css"]" />
     <link rel="stylesheet" href="@Assets["app.css"]" />
     <link rel="stylesheet" href="@Assets["dragdrop.css"]" />
+    <link rel="stylesheet" href="@Assets["twilio.css"]" />
     <link rel="stylesheet" href="@Assets["Client.styles.css"]" />
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
     <link href="/_content/PSC.Blazor.Components.MarkdownEditor/css/markdowneditor.css" rel="stylesheet" />
@@ -26,7 +27,7 @@
 <body class="bg-light">
     <Routes @rendermode="InteractiveServer" />
     <AntContainer @rendermode="RenderMode.InteractiveWebAssembly" />
-    <script src="_framework/blazor.web.js"></script>
+    <script src="_framework/blazor.server.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.13.0/Sortable.min.js"></script>
     <script src="/_content/PSC.Blazor.Components.MarkdownEditor/js/easymde.min.js"></script>
     <script src="/_content/PSC.Blazor.Components.MarkdownEditor/js/markdownEditor.js"></script>

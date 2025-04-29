@@ -1,16 +1,18 @@
 ﻿using Client.Constants;
 using Client.Intertop;
-using Domain.Dtos.Twilio;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage;
-using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.SignalR.Client;
 using Microsoft.JSInterop;
+using Services.ExternalApi;
 
 namespace Client.Components.Modules.VideoChat;
 
 public partial class VideoChat : IAsyncDisposable
 {
+    [CascadingParameter]
+    public required ApplicationState AppState { get; set; }
+
     [Inject]
     protected IJSRuntime? JavaScript { get; set; }
 
@@ -21,25 +23,24 @@ public partial class VideoChat : IAsyncDisposable
     protected NavigationManager NavigationManager { get; set; } = null!;
 
     [Inject]
-    protected HttpClient Http { get; set; } = null!;
+    public required IVideoChatApi VideoChatApi { get; set; }
 
     [Parameter]
     public Guid ProjectId { get; set; }
 
-    private List<RoomDetails> _rooms = [];
+    private string? ActiveCamera { get; set; }
 
-    private string? _roomName;
-    private string? _activeCamera;
-    private string? _activeRoom;
-    private string? _activeMicrophone;
+    private string? ActiveMicrophone { get; set; }
+
     private HubConnection _hubConnection = default!;
     private const string baseUrl = "https://localhost:5001";
+    private bool _isRendered = false;
 
     protected override async Task OnInitializedAsync()
     {
-        //_rooms = await Http
-        //    .GetFromJsonAsync<List<RoomDetails>>($"{baseUrl}/api/twilio/rooms")
-        //    ?? [];
+        var url = Environment
+            .GetEnvironmentVariable(EnvironmentKeys.VideoChatApiUrl)
+            ?? $"{baseUrl}{HubEndpoints.NotificationHub}";
 
         _hubConnection = new HubConnectionBuilder()
             .AddMessagePackProtocol()
@@ -47,111 +48,68 @@ public partial class VideoChat : IAsyncDisposable
             .WithAutomaticReconnect()
             .Build();
 
-        _hubConnection.On<string>(HubEndpoints.RoomsUpdated, OnRoomAdded);
 
         await _hubConnection.StartAsync();
-
-        //await TryJoinRoom(ProjectId.ToString());
     }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (firstRender)
         {
-            await TryJoinRoom(ProjectId.ToString());
+            _isRendered = true;
 
-            _activeCamera = (await LocalStorage.GetAsync<string>("CameraId")).Value;
-            _activeMicrophone = (await LocalStorage.GetAsync<string>("MicrophoneId")).Value;
+            ActiveCamera = (await LocalStorage.GetAsync<string>("CameraId")).Value;
+            ActiveMicrophone = (await LocalStorage.GetAsync<string>("MicrophoneId")).Value;
+
+            var joined = await TryJoinRoomAsync(ProjectId.ToString());
+
+            if (!joined)
+            {
+                NavigationManager.NavigateTo($"/projects/{ProjectId}/lobby");
+            }
 
             StateHasChanged();
         }
     }
 
-    async ValueTask OnLeaveRoom()
+    protected async Task<bool> TryJoinRoomAsync(string? roomName)
     {
-        await JavaScript
-            .LeaveRoomAsync();
-
-        await _hubConnection
-            .InvokeAsync(HubEndpoints.RoomsUpdated, _activeRoom = null);
-
-        if (!string.IsNullOrWhiteSpace(_activeCamera))
-        {
-            await JavaScript
-                .StartVideoAsync(_activeCamera, "#camera");
-        }
-    }
-
-    async Task OnCameraChanged(string activeCamera) =>
-        await InvokeAsync(() => _activeCamera = activeCamera);
-
-    async Task OnMicrophoneChanged(string activeMicrophone) =>
-        await InvokeAsync(() => _activeMicrophone = activeMicrophone);
-
-    async Task OnRoomAdded(string roomName) =>
-        await Task.CompletedTask;
-    //await InvokeAsync(async () =>
-    //{
-    //    _rooms = await Http
-    //        .GetFromJsonAsync<List<RoomDetails>>("https://localhost:5001/api/twilio/rooms") ?? [];
-    //    StateHasChanged();
-    //});
-
-    //protected async ValueTask TryAddRoom(object args)
-    //{
-    //    if (_roomName is null || _roomName is { Length: 0 })
-    //    {
-    //        return;
-    //    }
-
-    //    var takeAction = args switch
-    //    {
-    //        KeyboardEventArgs keyboard when keyboard.Key == "Enter" => true,
-    //        MouseEventArgs _ => true,
-    //        _ => false
-    //    };
-
-    //    if (takeAction)
-    //    {
-    //        var addedOrJoined = await TryJoinRoom(_roomName);
-    //        if (addedOrJoined)
-    //        {
-    //            _roomName = null;
-    //        }
-    //    }
-    //}
-
-    protected async ValueTask<bool> TryJoinRoom(string? roomName)
-    {
-        if (roomName is null || roomName is { Length: 0 })
-        {
+        if (string.IsNullOrWhiteSpace(roomName))
             return false;
-        }
 
-        var jwt = await Http
-            .GetFromJsonAsync<TwilioJwt>("https://localhost:5001/api/twilio/token");
+        var jwtResult = await VideoChatApi
+            .GetTokenAsync(ProjectId);
 
-        if (jwt?.Token is null)
-        {
+        var token = jwtResult.Content?.Token;
+
+        if (token is null)
             return false;
-        }
 
         var joined = await JavaScript
-            .CreateOrJoinRoomAsync(roomName, jwt.Token);
-
-        if (joined)
-        {
-            _activeRoom = roomName;
-            await _hubConnection
-                .InvokeAsync(HubEndpoints.RoomsUpdated, _activeRoom);
-        }
+            .CreateOrJoinRoomAsync(roomName, token);
 
         return joined;
     }
 
+    async Task OnLeaveRoomAsync()
+    {
+        if (_isRendered)
+        {
+            try
+            {
+                await JavaScript.LeaveRoomAsync();
+            }
+            catch (JSDisconnectedException)
+            {
+
+            }
+        }
+    }
+
     public async ValueTask DisposeAsync()
     {
-        await _hubConnection
-            .DisposeAsync();
+        await OnLeaveRoomAsync();
+
+        await _hubConnection.DisposeAsync();
     }
 }

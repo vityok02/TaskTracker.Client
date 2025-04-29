@@ -1,4 +1,4 @@
-﻿namespace Client;
+﻿namespace Client.Configuration;
 
 public class CommentsHubOptions
 {

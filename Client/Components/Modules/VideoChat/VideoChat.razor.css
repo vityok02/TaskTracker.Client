@@ -96,3 +96,36 @@ app {
 .validation-message {
     color: red;
 }
+
+/* Додаткові стилі для відео плиток */
+.participant-tile {
+    border: 2px solid #ddd;
+    border-radius: 10px;
+    background-color: #f8f9fa;
+    padding: 10px;
+    position: relative;
+}
+
+    .participant-tile .embed-responsive-item {
+        border-radius: 8px;
+        width: 100%;
+        height: 100%;
+    }
+
+/* Стиль для кнопок налаштувань */
+.card-header {
+    font-weight: bold;
+}
+
+/* Картки для учасників */
+.card-body p {
+    font-size: 1.2rem;
+    color: #333;
+}
+
+/* Покращення відображення на мобільних пристроях */
+@media (max-width: 768px) {
+    .participant-tile {
+        margin-bottom: 10px;
+    }
+}

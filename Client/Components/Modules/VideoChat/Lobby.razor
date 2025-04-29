@@ -9,19 +9,17 @@
         </h2>
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <Cameras CameraChanged=@OnCameraChanged />
-            <Microphones MicrophoneChanged=@OnMicrophoneChanged />
+            <CameraSelector />
+            <MicrophoneSelector />
         </div>
     </div>
 
-    <div class="bg-white shadow-xl rounded-2xl overflow-hidden">
-        <div class="aspect-video">
-            <div id="camera" class="w-full h-full bg-black"></div>
-        </div>
+    <div class="embed-responsive embed-responsive-16by9 mx-auto" style="max-width: 500px;">
+        <div id="camera" class="embed-responsive-item"></div>
     </div>
 
     <div class="flex justify-end">
-        <Button @onclick="@(async () => await TryJoinRoom(ProjectId.ToString()))">
+        <Button @onclick=@JoinRoom>
             Join
         </Button>
     </div>

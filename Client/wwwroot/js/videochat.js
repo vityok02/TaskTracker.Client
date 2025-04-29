@@ -79,6 +79,11 @@ async function startVideo(deviceId, selector) {
 
         _videoTrack = await Twilio.Video.createLocalVideoTrack({ deviceId });
         const videoEl = _videoTrack.attach();
+
+        videoEl.style.width = '100%';
+        videoEl.style.height = '100%';
+        videoEl.style.objectFit = 'cover';
+
         cameraContainer.append(videoEl);
     } catch (error) {
         console.log(error);
@@ -119,9 +124,6 @@ async function createOrJoinRoom(roomName, token) {
 
 function initialize(participants) {
     _participants = participants;
-    if (!Array.isArray(_participants)) {
-        return;
-    }
     if (_participants) {
         _participants.forEach(participant => registerParticipantEvents(participant));
     }
@@ -136,6 +138,11 @@ function add(participant) {
 
 function remove(participant) {
     if (_participants && _participants.has(participant.sid)) {
+        participant.tracks.forEach(publication => {
+            if (publication.track) {
+                detachTrack(publication.track);
+            }
+        });
         _participants.delete(participant.sid);
     }
 }
@@ -170,23 +177,17 @@ function attachTrack(track) {
         audioOrVideo.id = track.sid;
 
         if ('video' === audioOrVideo.tagName.toLowerCase()) {
-            const responsiveDiv = document.createElement('div');
-            responsiveDiv.id = track.sid;
-            responsiveDiv.classList.add('embed-responsive');
-            responsiveDiv.classList.add('embed-responsive-16by9');
+            const container = document.createElement('div');
+            container.classList.add('ratio', 'ratio-16x9');
+            container.id = track.sid;
 
-            const responsiveItem = document.createElement('div');
-            responsiveItem.classList.add('embed-responsive-item');
+            // Нормально стилізуємо відео
+            audioOrVideo.style.width = '100%';
+            audioOrVideo.style.height = '100%';
+            audioOrVideo.style.objectFit = 'cover';
 
-            // Similar to.
-            // <div class="embed-responsive embed-responsive-16by9">
-            //   <div id="camera" class="embed-responsive-item">
-            //     <video></video>
-            //   </div>
-            // </div>
-            responsiveItem.appendChild(audioOrVideo);
-            responsiveDiv.appendChild(responsiveItem);
-            document.getElementById('participants').appendChild(responsiveDiv);
+            container.appendChild(audioOrVideo);
+            document.getElementById('participants').appendChild(container);
         } else {
             document.getElementById('participants')
                 .appendChild(audioOrVideo);
@@ -232,6 +233,12 @@ async function leaveRoom() {
         console.error(error);
     }
 }
+
+window.addEventListener('beforeunload', function (event) {
+    if (window.videoInterop && window.videoInterop.leaveRoom) {
+        window.videoInterop.leaveRoom();
+    }
+});
 
 window.videoInterop = {
     getAudioDevices,
