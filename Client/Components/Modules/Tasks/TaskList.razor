@@ -21,12 +21,13 @@
         </NavLink>
     </div>
 
+    <a target="_blank" href=@($"/projects/{ProjectId}/lobby")>
+        Start call
+    </a>
+
     <CascadingValue Value=@Project?.Role?.Name>
         <RoleAuthorizeView AllowedRoles=@([Roles.Admin, Roles.Contributor])>
             <Allowed>
-                <a target="_blank" href=@($"/projects/{ProjectId}/lobby")>
-                    Start call
-                </a>
                 <Button OnClick=@OpenCreateStateForm
                         Class="btn btn-outline-secondary">
                     Add state

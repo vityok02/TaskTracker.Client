@@ -25,7 +25,6 @@ async function createOrJoinRoom(roomName, token) {
         }
 
         if (window.activeRoom) {
-            audio.play();
             initialize(window.activeRoom.participants);
             window.activeRoom
                 .on('disconnected',

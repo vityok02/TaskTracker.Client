@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Client;
+namespace Client.Configuration;
 
 public sealed class TaskTrackerSettings
 {

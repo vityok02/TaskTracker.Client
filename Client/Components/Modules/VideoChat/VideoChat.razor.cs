@@ -1,29 +1,27 @@
-﻿using Client.Constants;
-using Client.Extensions;
+﻿using Client.Extensions;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage;
-using Microsoft.AspNetCore.SignalR.Client;
 using Microsoft.JSInterop;
-using Services.ExternalApi;
+using Services.Interfaces.ApiServices;
 
 namespace Client.Components.Modules.VideoChat;
 
 public partial class VideoChat : IAsyncDisposable
 {
     [CascadingParameter]
-    public required ApplicationState AppState { get; set; }
+    public required ApplicationState AppState { get; init; }
 
     [Inject]
-    protected IJSRuntime? JavaScript { get; set; }
+    public required IJSRuntime JavaScript { get; init; }
 
     [Inject]
     public required ProtectedLocalStorage LocalStorage { get; init; }
 
     [Inject]
-    protected NavigationManager NavigationManager { get; set; } = null!;
+    public required NavigationManager NavigationManager { get; init; } = null!;
 
     [Inject]
-    public required IVideoChatApi VideoChatApi { get; set; }
+    public required IVideoChatService VideoChatService { get; init; }
 
     [Parameter]
     public Guid ProjectId { get; set; }
@@ -32,24 +30,7 @@ public partial class VideoChat : IAsyncDisposable
 
     private string? ActiveMicrophone { get; set; }
 
-    private HubConnection _hubConnection = default!;
-    private const string baseUrl = "https://localhost:5001";
     private bool _isRendered = false;
-
-    protected override async Task OnInitializedAsync()
-    {
-        var url = Environment
-            .GetEnvironmentVariable(EnvironmentKeys.VideoChatApiUrl)
-            ?? $"{baseUrl}{HubEndpoints.NotificationHub}";
-
-        _hubConnection = new HubConnectionBuilder()
-            .AddMessagePackProtocol()
-            .WithUrl(NavigationManager.ToAbsoluteUri($"{baseUrl}{HubEndpoints.NotificationHub}"))
-            .WithAutomaticReconnect()
-            .Build();
-
-        await _hubConnection.StartAsync();
-    }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
@@ -71,15 +52,20 @@ public partial class VideoChat : IAsyncDisposable
         }
     }
 
-    protected async Task<bool> TryJoinRoomAsync(string? roomName)
+    private async Task<bool> TryJoinRoomAsync(string? roomName)
     {
         if (string.IsNullOrWhiteSpace(roomName))
             return false;
 
-        var jwtResult = await VideoChatApi
+        var jwtResult = await VideoChatService
             .GetTokenAsync(ProjectId);
 
-        var token = jwtResult.Content?.Token;
+        if (jwtResult.IsFailure)
+        {
+            AppState.ErrorMessage = jwtResult.Error!.Message;
+        }
+
+        var token = jwtResult.Value.Token;
 
         if (token is null)
             return false;
@@ -90,7 +76,7 @@ public partial class VideoChat : IAsyncDisposable
         return joined;
     }
 
-    async Task OnLeaveRoomAsync()
+    private async Task LeaveRoomAsync()
     {
         if (_isRendered)
         {
@@ -110,16 +96,6 @@ public partial class VideoChat : IAsyncDisposable
 
     public async ValueTask DisposeAsync()
     {
-        await OnLeaveRoomAsync();
-
-        if (_hubConnection is not null && _hubConnection.State != HubConnectionState.Disconnected)
-        {
-            await _hubConnection.StopAsync();
-        }
-
-        if (_hubConnection is not null)
-        {
-            await _hubConnection.DisposeAsync();
-        }
+        await LeaveRoomAsync();
     }
 }

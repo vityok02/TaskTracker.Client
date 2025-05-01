@@ -42,15 +42,6 @@ app.UseAuthorization();
 
 app.UseAntiforgery();
 
-//app.UseStaticFiles(new StaticFileOptions
-//{
-//    FileProvider = new PhysicalFileProvider(
-//        Path.Combine(Directory.GetCurrentDirectory(), "wwwroot"))
-//});
-
-//app.UseBlazorFrameworkFiles();
-
-//app.UseStatusCodePages();
 app.UseStatusCodePagesWithRedirects("/Error/{0}");
 
 app.MapStaticAssets();
@@ -58,9 +49,5 @@ app.MapRazorComponents<App>()
     .AddInteractiveServerRenderMode()
     .AddInteractiveWebAssemblyRenderMode()
     ;
-
-//app.MapRazorPages();
-
-//app.MapFallbackToPage("/_Host");
 
 await app.RunAsync();
