@@ -1,7 +1,6 @@
 ﻿using Client.Models;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage;
-using Microsoft.JSInterop;
 
 namespace Client.Components.Modules.VideoChat.Components;
 
@@ -9,9 +8,6 @@ public partial class DeviceSelector
 {
     [Inject]
     public required ProtectedLocalStorage LocalStorage { get; set; } = default!;
-
-    [Inject]
-    public required IJSRuntime JS { get; set; }
 
     [Parameter]
     public required DeviceType DeviceType { get; set; }
@@ -26,15 +22,24 @@ public partial class DeviceSelector
     public required string StorageKey { get; set; }
 
     [Parameter]
-    public EventCallback<string> DeviceChanged { get; set; }
+    public EventCallback<string?> OnToggleDevice { get; set; }
 
-    private Device[]? Devices;
-    private string? ActiveDevice;
-    private bool IsLoading = true;
+    private bool IsDeviceEnabled { get; set; } = true;
+
+    private Device[]? Devices { get; set; }
+
+    private string? ActiveDevice { get; set; }
+
+    private bool IsLoading { get; set; } = true;
 
     private bool HasDevices => Devices != null && Devices.Length > 0;
 
-    private string? SelectedDeviceLabel => Devices?.FirstOrDefault(d => d.DeviceId == ActiveDevice)?.Label;
+    private bool IsDropdownOpen { get; set; } = false;
+
+    private void ToggleDropdown()
+    {
+        IsDropdownOpen = !IsDropdownOpen;
+    }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
@@ -55,19 +60,33 @@ public partial class DeviceSelector
 
     private async Task<string?> LoadSavedDevice()
     {
-        var result = await LocalStorage.GetAsync<string>(StorageKey);
-        return result.Success ? result.Value : null;
+        var result = await LocalStorage
+            .GetAsync<string>(StorageKey);
+
+        return result.Success
+            ? result.Value
+            : null;
     }
 
     private async Task SelectDevice(string deviceId)
     {
         ActiveDevice = deviceId;
-        await SetDevice(deviceId);
-        await LocalStorage.SetAsync(StorageKey, deviceId);
 
-        if (DeviceChanged.HasDelegate)
-            await DeviceChanged.InvokeAsync(deviceId);
+        await SetDevice(deviceId);
+        await LocalStorage
+            .SetAsync(StorageKey, deviceId);
 
         StateHasChanged();
+    }
+
+    private async Task ToggleDevice()
+    {
+        var task = OnToggleDevice.HasDelegate
+            ? OnToggleDevice.InvokeAsync(ActiveDevice)
+            : OnToggleDevice.InvokeAsync();
+
+        await task;
+
+        IsDeviceEnabled = !IsDeviceEnabled;
     }
 }

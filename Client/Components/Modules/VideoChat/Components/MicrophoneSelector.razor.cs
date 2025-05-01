@@ -1,4 +1,4 @@
-﻿using Client.Intertop;
+﻿using Client.Extensions;
 using Client.Models;
 using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
@@ -7,7 +7,8 @@ namespace Client.Components.Modules.VideoChat.Components;
 
 public partial class MicrophoneSelector
 {
-    [Inject] private IJSRuntime JavaScript { get; set; } = default!;
+    [Inject]
+    public required IJSRuntime JavaScript { get; set; }
 
     private async Task<Device[]> GetAudioDevices()
         => await JavaScript.GetAudioDevicesAsync();
@@ -15,9 +16,8 @@ public partial class MicrophoneSelector
     private async Task StartAudio(string deviceId)
         => await JavaScript.SetMicrophoneAsync(deviceId);
 
-    private Task OnMicrophoneChanged(string deviceId)
+    private async Task ToggleDevice()
     {
-        Console.WriteLine($"Microphone switched to: {deviceId}");
-        return Task.CompletedTask;
+        await JavaScript.ToggleMicrophoneAsync();
     }
 }

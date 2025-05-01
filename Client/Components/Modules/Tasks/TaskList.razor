@@ -24,7 +24,7 @@
     <CascadingValue Value=@Project?.Role?.Name>
         <RoleAuthorizeView AllowedRoles=@([Roles.Admin, Roles.Contributor])>
             <Allowed>
-                <a href=@($"/projects/{ProjectId}/lobby")>
+                <a target="_blank" href=@($"/projects/{ProjectId}/lobby")>
                     Start call
                 </a>
                 <Button OnClick=@OpenCreateStateForm

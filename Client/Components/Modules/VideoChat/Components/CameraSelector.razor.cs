@@ -1,4 +1,4 @@
-﻿using Client.Intertop;
+﻿using Client.Extensions;
 using Client.Models;
 using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
@@ -7,17 +7,21 @@ namespace Client.Components.Modules.VideoChat.Components;
 
 public partial class CameraSelector
 {
-    [Inject] private IJSRuntime JavaScript { get; set; } = default!;
+    [Inject]
+    public required IJSRuntime JavaScript { get; set; }
 
     private async Task<Device[]> GetVideoDevices()
-        => await JavaScript.GetVideoDevicesAsync();
+    {
+        return await JavaScript.GetVideoDevicesAsync();
+    }
 
     private async Task StartVideo(string deviceId)
-        => await JavaScript.StartVideoAsync(deviceId, "#camera");
-
-    private Task OnCameraChanged(string deviceId)
     {
-        Console.WriteLine($"Camera switched to: {deviceId}");
-        return Task.CompletedTask;
+        await JavaScript.StartVideoAsync(deviceId, "#camera");
+    }
+
+    private async Task ToggleDevice(string deviceId)
+    {
+        await JavaScript.ToggleCameraAsync(deviceId);
     }
 }

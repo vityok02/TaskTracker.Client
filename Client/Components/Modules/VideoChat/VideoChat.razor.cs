@@ -1,5 +1,5 @@
 ﻿using Client.Constants;
-using Client.Intertop;
+using Client.Extensions;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage;
 using Microsoft.AspNetCore.SignalR.Client;
@@ -47,7 +47,6 @@ public partial class VideoChat : IAsyncDisposable
             .WithUrl(NavigationManager.ToAbsoluteUri($"{baseUrl}{HubEndpoints.NotificationHub}"))
             .WithAutomaticReconnect()
             .Build();
-
 
         await _hubConnection.StartAsync();
     }
@@ -101,7 +100,10 @@ public partial class VideoChat : IAsyncDisposable
             }
             catch (JSDisconnectedException)
             {
-
+            }
+            finally
+            {
+                NavigationManager.NavigateTo($"/projects/{ProjectId}/lobby", true);
             }
         }
     }
@@ -110,6 +112,14 @@ public partial class VideoChat : IAsyncDisposable
     {
         await OnLeaveRoomAsync();
 
-        await _hubConnection.DisposeAsync();
+        if (_hubConnection is not null && _hubConnection.State != HubConnectionState.Disconnected)
+        {
+            await _hubConnection.StopAsync();
+        }
+
+        if (_hubConnection is not null)
+        {
+            await _hubConnection.DisposeAsync();
+        }
     }
 }

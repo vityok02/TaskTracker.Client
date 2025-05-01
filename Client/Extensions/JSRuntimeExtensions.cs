@@ -1,26 +1,37 @@
 ﻿using Client.Models;
 using Microsoft.JSInterop;
 
-namespace Client.Intertop;
+namespace Client.Extensions;
 
-public static class VideoJS
+public static class JSRuntimeExtensions
 {
-    public static async Task<Device[]> GetAudioDevicesAsync(
-        this IJSRuntime jsRuntime)
-    {
-        return await jsRuntime
-            .InvokeAsync<Device[]>("videoInterop.getAudioDevices");
-    }
+    public static async Task ToggleCameraAsync(
+        this IJSRuntime jsRuntime,
+        string deviceId) =>
+        await jsRuntime.InvokeVoidAsync(
+            "videoInterop.toggleCamera",
+            deviceId);
 
-    public static async Task SetMicrophoneAsync(this IJSRuntime jsRuntime, string deviceId)
-    {
+    public static async Task ToggleMicrophoneAsync(
+        this IJSRuntime jsRuntime) =>
+        await jsRuntime.InvokeVoidAsync(
+            "videoInterop.toggleMicrophone");
+
+    public static async Task<Device[]> GetAudioDevicesAsync(
+        this IJSRuntime jsRuntime) =>
+        await jsRuntime.InvokeAsync<Device[]>(
+            "videoInterop.getAudioDevices");
+
+    public static async Task SetMicrophoneAsync(
+        this IJSRuntime jsRuntime,
+        string deviceId) =>
         await jsRuntime
-            .InvokeVoidAsync("videoInterop.setMicrophone", deviceId);
-    }
+            .InvokeVoidAsync(
+            "videoInterop.setMicrophone", deviceId);
 
     public static ValueTask<Device[]> GetVideoDevicesAsync(
-          this IJSRuntime? jsRuntime) =>
-          jsRuntime?.InvokeAsync<Device[]>(
+        this IJSRuntime? jsRuntime) =>
+        jsRuntime?.InvokeAsync<Device[]>(
               "videoInterop.getVideoDevices") ?? new ValueTask<Device[]>();
 
     public static ValueTask StartVideoAsync(

@@ -1,38 +1,44 @@
-﻿<div class="dropdown">
-    <button class="btn btn-dark dropdown-toggle d-flex align-items-center gap-2"
-    type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-        <i class="fas fa-microphone"></i>
-        @if (IsLoading)
+﻿<div class="btn-group">
+    <button class="btn btn-dark d-flex align-items-center gap-2"
+            @onclick=@ToggleDevice>
+        @if (DeviceType == Models.DeviceType.Camera)
         {
-            <span class="spinner-border spinner-border-sm ms-2" role="status" aria-hidden="true"></span>
+            <i class="bi @(IsDeviceEnabled ? "bi-camera-video" : "bi-camera-video-off")"></i>
         }
-        else
+        else if (DeviceType == Models.DeviceType.Microphone)
         {
-            if (DeviceType == Models.DeviceType.Camera)
-            {
-                <i class="bi bi-camera-video"></i>
-            }
-            else if (DeviceType == Models.DeviceType.Microphone)
-            {
-                <i class="bi bi-mic"></i>
-            }
+            <i class="bi @(IsDeviceEnabled ? "bi-mic" : "bi-mic-mute")"></i>
         }
     </button>
-    <div class="dropdown-menu">
-        @if (HasDevices)
-        {
-            @foreach (var device in Devices!)
-            {
-                <a href="#" class="dropdown-item @(ActiveDevice == device.DeviceId ? "active" : "")"
-                   @onclick="() => SelectDevice(device.DeviceId)"
-                   @onclick:preventDefault="true">
-                    <i class="fas fa-microphone me-2"></i> @device.Label
-                </a>
-            }
-        }
-        else if (!IsLoading)
-        {
-            <span class="dropdown-item text-muted">No devices found</span>
-        }
-    </div>
+
+    <Dropdown Trigger=@(new Trigger[] { Trigger.Click })
+              VisibleChanged=@ToggleDropdown
+              Class="btn-group"
+              Placement="Placement.TopRight">
+        <Overlay>
+            <Menu Class="bg-dark">
+                @if (HasDevices)
+                {
+                    @foreach (var device in Devices!)
+                    {
+                        <MenuItem @onclick="() => SelectDevice(device.DeviceId)"
+                                  Class=@($"dropdown-item {(ActiveDevice == device.DeviceId ? "active" : string.Empty)}")>
+                            @Regex.Replace(device.Label, @"\s*\(\w{4}:\w{4}\)", "")
+                        </MenuItem>
+                    }
+                }
+                else
+                {
+                    <MenuItem Disabled="true">
+                        No devices found
+                    </MenuItem>
+                }
+            </Menu>
+        </Overlay>
+        <ChildContent>
+            <button class="btn btn-dark">
+                <i class="bi @(IsDropdownOpen ? "bi-caret-down" : "bi-caret-up")"></i>
+            </button>
+        </ChildContent>
+    </Dropdown>
 </div>
