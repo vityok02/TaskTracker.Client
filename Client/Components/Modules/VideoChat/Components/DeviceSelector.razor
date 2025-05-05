@@ -1,0 +1,44 @@
+﻿<div class="btn-group">
+    <button class="btn btn-dark d-flex align-items-center gap-2"
+            @onclick=@ToggleDevice>
+        @if (DeviceType == Models.DeviceType.Camera)
+        {
+            <i class="bi @(IsDeviceEnabled ? "bi-camera-video" : "bi-camera-video-off")"></i>
+        }
+        else if (DeviceType == Models.DeviceType.Microphone)
+        {
+            <i class="bi @(IsDeviceEnabled ? "bi-mic" : "bi-mic-mute")"></i>
+        }
+    </button>
+
+    <Dropdown Trigger=@(new Trigger[] { Trigger.Click })
+              VisibleChanged=@ToggleDropdown
+              Class="btn-group"
+              Placement="Placement.TopRight">
+        <Overlay>
+            <Menu Class="bg-dark">
+                @if (HasDevices)
+                {
+                    @foreach (var device in Devices!)
+                    {
+                        <MenuItem @onclick="() => SelectDevice(device.DeviceId)"
+                                  Class=@($"dropdown-item {(ActiveDevice == device.DeviceId ? "active" : string.Empty)}")>
+                            @Regex.Replace(device.Label, @"\s*\(\w{4}:\w{4}\)", "")
+                        </MenuItem>
+                    }
+                }
+                else
+                {
+                    <MenuItem Disabled="true">
+                        No devices found
+                    </MenuItem>
+                }
+            </Menu>
+        </Overlay>
+        <ChildContent>
+            <button class="btn btn-dark">
+                <i class="bi @(IsDropdownOpen ? "bi-caret-down" : "bi-caret-up")"></i>
+            </button>
+        </ChildContent>
+    </Dropdown>
+</div>

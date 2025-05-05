@@ -14,7 +14,12 @@ builder.Services.AddScoped<CommentsHubService>();
 
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents()
-    .AddInteractiveWebAssemblyComponents();
+    .AddCircuitOptions(options =>
+    {
+        options.DetailedErrors = true;
+    })
+    .AddInteractiveWebAssemblyComponents()
+    ;
 
 builder.Services.AddServerSideBlazor();
 
@@ -37,18 +42,12 @@ app.UseAuthorization();
 
 app.UseAntiforgery();
 
-app.UseStaticFiles();
-
-//app.UseStatusCodePages();
 app.UseStatusCodePagesWithRedirects("/Error/{0}");
 
 app.MapStaticAssets();
 app.MapRazorComponents<App>()
     .AddInteractiveServerRenderMode()
-    .AddInteractiveWebAssemblyRenderMode();
-
-//app.MapRazorPages();
-
-//app.MapFallbackToPage("/_Host");
+    .AddInteractiveWebAssemblyRenderMode()
+    ;
 
 await app.RunAsync();

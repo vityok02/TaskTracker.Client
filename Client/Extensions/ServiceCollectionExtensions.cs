@@ -1,6 +1,7 @@
 ﻿using AntDesign;
 using Blazored.LocalStorage;
 using Client.Authentication;
+using Client.Configuration;
 using Client.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Components.Authorization;
@@ -30,7 +31,6 @@ public static class ServiceCollectionExtensions
         services.AddBlazoredLocalStorage();
         services.AddScoped<DeleteStateConfirmationService>();
         services.AddSignalR();
-        //services.AddRazorPages();
 
         services.Configure<CommentsHubOptions>(configuration
             .GetSection("CommentsHub"));

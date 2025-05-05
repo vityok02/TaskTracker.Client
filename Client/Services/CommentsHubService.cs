@@ -1,4 +1,5 @@
-﻿using Client.Constants;
+﻿using Client.Configuration;
+using Client.Constants;
 using Domain.Dtos;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.SignalR.Client;
