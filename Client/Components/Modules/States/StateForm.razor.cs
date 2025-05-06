@@ -1,4 +1,5 @@
-﻿using Domain.Abstract;
+﻿using AntDesign;
+using Domain.Abstract;
 using Domain.Dtos;
 using Domain.Models;
 using Microsoft.AspNetCore.Components;
@@ -10,6 +11,9 @@ public partial class StateForm
 {
     [Inject]
     public required IStateService StateService { get; init; }
+
+    [Inject]
+    public required INotificationService NotificationService { get; init; }
 
     [CascadingParameter]
     public required ApplicationState AppState { get; init; }
@@ -78,9 +82,15 @@ public partial class StateForm
         }
 
         _stateModel = new();
+
         await OnSubmit.InvokeAsync(result.Value);
 
         await Close();
+
+        await NotificationService.Success(new NotificationConfig()
+        {
+            Message = "State updated successfully"
+        });
     }
 
     private async Task Close()

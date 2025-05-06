@@ -4,7 +4,7 @@
 
 <PageTitle>@Project.Name</PageTitle>
 
-<div class="container mt-4 pb-3">
+<div class="container pb-3">
     <CascadingValue Value=@Role>
         <div class="d-flex align-items-center mb-4">
             <NavLink href=@($"projects/{ProjectId}/tasks")
@@ -21,8 +21,8 @@
             <div class="card-body">
                 <RoleAuthorizeView AllowedRoles=@([Roles.Admin, Roles.Contributor])>
                     <Allowed>
-                        <ProjectSettingsForm ProjectModel=@ProjectModel
-                                             OnSubmitSuccess=@UpdateProject
+                        <ProjectSettingsForm ProjectDto=@Project
+                                             OnUpdated=@UpdateProject
                                              Role=@Role />
                     </Allowed>
                     <NotAllowed>

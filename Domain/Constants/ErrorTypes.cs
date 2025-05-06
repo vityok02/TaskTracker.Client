@@ -9,4 +9,5 @@ public class ErrorTypes
     public const string InvalidCredentials = "InvalidCredentials";
     public const string Conflict = "AlreadyExists";
     public const string InvalidToken = "InvalidToken";
+    public const string InvalidOperation = "InvalidOperation";
 }

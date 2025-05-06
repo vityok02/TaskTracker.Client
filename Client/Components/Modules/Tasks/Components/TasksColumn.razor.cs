@@ -137,7 +137,8 @@ public partial class TasksColumn
             return;
         }
 
-        await OnChange.InvokeAsync();
+        Tasks.RemoveAll(t => t.Id == taskId);
+        //await OnChange.InvokeAsync();
     }
 
     private async Task DeleteState(Guid stateId)
@@ -151,7 +152,9 @@ public partial class TasksColumn
             return;
         }
 
-        await OnChange.InvokeAsync();
+        //OnStateDeleted.InvokeAsync(stateId);
+
+        //await OnChange.InvokeAsync();
     }
 
     private async Task ShowTaskDeleteConfirmAsync(Guid taskId)

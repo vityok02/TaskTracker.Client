@@ -112,11 +112,16 @@ public static class IApiResponseExtensions
                 => new Error(
                     errorType,
                     "Resource already exists"),
-    
+
             ErrorTypes.Forbidden
                 => new Error(
                     errorType,
                     "You don't have permission to perform this action"),
+
+            ErrorTypes.InvalidOperation
+                => new Error(
+                    errorType,
+                    "You cannot do this action"),
 
             _ => _defaultError
         };
