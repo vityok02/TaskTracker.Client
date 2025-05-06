@@ -12,7 +12,8 @@ public class TaskModelValidator
         RuleLevelCascadeMode = CascadeMode.Stop;
 
         RuleFor(x => x.Name)
-            .ApplyNameRules();
+            .NotEmpty()
+            .MaximumLength(100);
 
         When(x => x.Description is not null, () =>
         {

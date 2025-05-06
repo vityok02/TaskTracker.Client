@@ -2,6 +2,7 @@
 using Blazored.LocalStorage;
 using Client.Authentication;
 using Client.Configuration;
+using Client.Constants;
 using Client.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Components.Authorization;
@@ -104,7 +105,8 @@ public static class ServiceCollectionExtensions
         {
             services.AddRefitClient(type)
                 .ConfigureHttpClient(httpClient =>
-                    httpClient.BaseAddress = new Uri(settings!.BaseAddress))
+                    httpClient.BaseAddress = new Uri(Environment
+                        .GetEnvironmentVariable(EnvironmentKeys.ApiUrl) ?? settings!.BaseAddress))
                 .AddHttpMessageHandler<AuthHttpClientHandler>();
         }
 

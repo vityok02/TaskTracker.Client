@@ -29,7 +29,7 @@
 
             <label class="mb-3 mx-auto">
                 <span class="btn btn-outline-secondary">
-                    Upload avatar
+                    @(string.IsNullOrEmpty(User.AvatarUrl) ? "Upload avatar" : "Change avatart")
                 </span>
 
                 <InputFile OnChange=@UploadFileAsync

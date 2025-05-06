@@ -4,7 +4,7 @@
 
 <PageTitle>@Title</PageTitle>
 
-<div class="d-flex justify-content-between align-items-center m-4">
+<div class="d-flex justify-content-between align-items-center">
     <div class="d-flex align-items-center">
         <NavLink href=@(PageRoutes.ProjectsPage)
                  class="text-dark me-3">
@@ -21,23 +21,26 @@
         </NavLink>
     </div>
 
-    <a target="_blank" href=@($"/projects/{ProjectId}/lobby")>
-        Start call
-    </a>
-
-    <CascadingValue Value=@Project?.Role?.Name>
-        <RoleAuthorizeView AllowedRoles=@([Roles.Admin, Roles.Contributor])>
-            <Allowed>
-                <Button OnClick=@OpenCreateStateForm
-                        Class="btn btn-outline-secondary">
-                    Add state
-                </Button>
-            </Allowed>
-        </RoleAuthorizeView>
-    </CascadingValue>
+    <div>
+        <a target="_blank"
+           href=@($"/projects/{ProjectId}/lobby")
+           class="btn">
+            <i class="bi bi-telephone"></i>
+        </a>
+        <CascadingValue Value=@Project?.Role?.Name>
+            <RoleAuthorizeView AllowedRoles=@([Roles.Admin, Roles.Contributor])>
+                <Allowed>
+                    <Button OnClick=@OpenCreateStateForm
+                            Class="btn btn-primary">
+                        Add state
+                    </Button>
+                </Allowed>
+            </RoleAuthorizeView>
+        </CascadingValue>
+    </div>
 </div>
 
-<div class="mb-3">
+<div class="mb-3 mt-3">
     <Search OnSearch=@SearchTasksByNameAsync
             Placeholder="Search by task name"
             AllowClear
