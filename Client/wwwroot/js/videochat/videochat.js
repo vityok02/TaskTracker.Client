@@ -73,11 +73,6 @@ function loudest(participant) {
 function registerParticipantEvents(participant) {
     if (participant) {
         participant.tracks.forEach(publication => subscribe(publication));
-        participant.tracks.forEach(publication => {
-            if (publication.isSubscribed) {
-                handleTrackDisabled(publication.track);
-            }
-        });
         participant.on('trackPublished', publication => subscribe(publication));
         participant.on('trackUnpublished',
             publication => {
@@ -92,7 +87,6 @@ function subscribe(publication) {
     if (isMemberDefined(publication, 'on')) {
         publication.on('subscribed', track => {
             attachTrack(track);
-            handleTrackDisabled(track);
         });
         publication.on('unsubscribed', track => detachTrack(track));
     }
@@ -119,19 +113,6 @@ window.addEventListener('beforeunload', function (event) {
         window.videoInterop.leaveRoom();
     }
 });
-
-function handleTrackDisabled(track) {
-    track.on('disabled', () => {
-        const videoElement = document.querySelector(`#camera video`);
-        if (videoElement) {
-            videoElement.style.display = 'none';
-            const avatarElement = document.querySelector('#avatar');
-            if (avatarElement) {
-                avatarElement.style.display = 'block';
-            }
-        }
-    });
-}
 
 window.videoInterop = {
     getAudioDevices,

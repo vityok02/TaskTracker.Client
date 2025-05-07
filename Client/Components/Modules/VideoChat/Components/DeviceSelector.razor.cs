@@ -1,6 +1,7 @@
 ﻿using Client.Models;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage;
+using System.Security.Cryptography;
 
 namespace Client.Components.Modules.VideoChat.Components;
 
@@ -60,12 +61,16 @@ public partial class DeviceSelector
 
     private async Task<string?> LoadSavedDevice()
     {
-        var result = await LocalStorage
-            .GetAsync<string>(StorageKey);
-
-        return result.Success
-            ? result.Value
-            : null;
+        try
+        {
+            var result = await LocalStorage.GetAsync<string>(StorageKey);
+            return result.Success ? result.Value : null;
+        }
+        catch (CryptographicException ex)
+        {
+            Console.Error.WriteLine("Failed to load saved device: " + ex.Message);
+            return null;
+        }
     }
 
     private async Task SelectDevice(string deviceId)

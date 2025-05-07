@@ -35,22 +35,16 @@ export function toggleMicrophone() {
     if (window.activeRoom && window.activeRoom.localParticipant) {
         window.activeRoom.localParticipant.audioTracks.forEach(publication => {
             const track = publication.track;
-            if (!track) return;
-
             let audioPath = null;
-
-            if (track.kind === 'audio') {
-                if (track.isEnabled) {
-                    track.disable();
-                    audioPath = 'sounds/mute.mp3';
-                } else {
-                    track.enable();
-                    audioPath = 'sounds/unmute.mp3';
-                }
-            var audio = new Audio(audioPath);
-                    audio.play();
-                }
+            if (track.isEnabled) {
+                track.disable();
+                audioPath = 'sounds/mute.mp3';
+            } else {
+                track.enable();
+                audioPath = 'sounds/unmute.mp3';
             }
+            var audio = new Audio(audioPath);
+            audio.play();
         });
     }
 }
