@@ -2,13 +2,18 @@
 
 using Microsoft.AspNetCore.Components;
 
-public partial class LoginRedirect : ComponentBase
+public partial class LoginRedirect
 {
     [Inject]
     public required NavigationManager NavManager { get; init; }
 
     protected override void OnInitialized()
     {
-        NavManager.NavigateTo("/login");
+        var currentUri = NavManager.ToBaseRelativePath(NavManager.Uri);
+
+        if (!currentUri.StartsWith("login", StringComparison.OrdinalIgnoreCase))
+        {
+            NavManager.NavigateTo("/login", true);
+        }
     }
 }
