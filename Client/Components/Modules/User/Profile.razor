@@ -27,14 +27,17 @@
                 @User.Username.FirstOrDefault()
             </Avatar>
 
-            <label class="mb-3 mx-auto">
-                <span class="btn btn-outline-secondary">
-                    @(string.IsNullOrEmpty(User.AvatarUrl) ? "Upload avatar" : "Change avatart")
-                </span>
+            @if (IsAuthorized)
+            {
+                <label class="mb-3 mx-auto">
+                    <span class="btn btn-outline-secondary">
+                        @(string.IsNullOrEmpty(User.AvatarUrl) ? "Upload avatar" : "Change avatart")
+                    </span>
 
-                <InputFile OnChange=@UploadFileAsync
-                           hidden />
-            </label>
+                    <InputFile OnChange=@UploadFileAsync
+                               hidden />
+                </label>
+            }
 
             <div class="d-flex flex-column align-items-start">
                 <div class="card shadow-sm p-3 mb-3 w-100">
@@ -60,7 +63,7 @@
 
             @if (IsAuthorized)
             {
-                <div class="d-flex justify-content-center mt-4">
+                <div class="d-flex justify-content-center mt-2">
                     <NavLink Match=@NavLinkMatch.All
                              href="/change-password"
                              class="btn btn-primary px-4 py-2">

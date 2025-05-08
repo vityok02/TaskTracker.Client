@@ -48,13 +48,13 @@
             Class="w-100" />
 </div>
 
-<div class="overflow-auto"
-     style="width: 100%;">
-    <div class="row g-4 flex-nowrap cards"
-         style="min-width: 100%; height: calc(100vh - 250px);">
-        @foreach (var state in Project!.States)
-        {
-            <CascadingValue Value=@Project.Role.Name>
+<CascadingValue Value=@Project?.Role?.Name>
+    <div class="overflow-auto"
+         style="width: 100%;">
+        <div class="row g-4 flex-nowrap cards"
+             style="min-width: 100%; height: calc(100vh - 250px);">
+            @foreach (var state in Project!.States)
+            {
                 <TasksColumn Tasks=@Tasks.Where(t => t.StateId == state.Id).OrderBy(t => t.SortOrder).ToList()
                              TaskModel=@TaskModel
                              State=@state
@@ -64,42 +64,42 @@
                              OnOpenDetails=@OpenDetails
                              OnChange=@LoadDataAsync
                              OnOpenUpdateStateForm=@(() => OpenUpdateStateForm(state.Id)) />
-            </CascadingValue>
-        }
-    </div>
-</div>
-
-<div class="mt-2"
-     hidden=@HideInput>
-    <Form Model=@TaskModel
-          OnFinish=@Submit
-          Layout=@FormLayout.Horizontal>
-        <FluentValidationValidator />
-
-        <div class="d-flex align-items-stretch"
-             style="height: 38px">
-            <Button HtmlType="submit"
-                    Class="btn btn-outline-secondary me-1 h-100">
-                +
-            </Button>
-
-            <FormItem class="flex-grow-1">
-                <Input Size=@InputSize.Large
-                       @ref=@Input
-                       @onfocusout=@(() => HideInput = true )
-                       @bind-Value=@TaskModel.Name
-                       Placeholder="Task name" />
-            </FormItem>
+            }
         </div>
-    </Form>
-</div>
+    </div>
 
-<StateForm @bind-Visible=@_stateFormVisible
-           ProjectId=@ProjectId
-           @bind-StateId=@_selectedStateId
-           StateModel=@Project.States.FirstOrDefault(s => s.Id == _selectedStateId)?.ToStateModel()
-           OnSubmit=@LoadDataAsync />
+    <div class="mt-2"
+         hidden=@HideInput>
+        <Form Model=@TaskModel
+              OnFinish=@Submit
+              Layout=@FormLayout.Horizontal>
+            <FluentValidationValidator />
 
-<TaskDetails TaskId=@_selectedTaskId
-             ProjectId=@ProjectId
-             @bind-Visible="@_detailsVisible" />
+            <div class="d-flex align-items-stretch"
+                 style="height: 38px">
+                <Button HtmlType="submit"
+                        Class="btn btn-outline-secondary me-1 h-100">
+                    +
+                </Button>
+
+                <FormItem class="flex-grow-1">
+                    <Input Size=@InputSize.Large
+                           @ref=@Input
+                           @onfocusout=@(() => HideInput = true )
+                           @bind-Value=@TaskModel.Name
+                           Placeholder="Task name" />
+                </FormItem>
+            </div>
+        </Form>
+    </div>
+
+    <StateForm @bind-Visible=@_stateFormVisible
+               ProjectId=@ProjectId
+               @bind-StateId=@_selectedStateId
+               StateModel=@Project.States.FirstOrDefault(s => s.Id == _selectedStateId)?.ToStateModel()
+               OnSubmit=@LoadDataAsync />
+
+    <TaskDetails TaskId=@_selectedTaskId
+                 ProjectId=@ProjectId
+                 @bind-Visible="@_detailsVisible" />
+</CascadingValue>
