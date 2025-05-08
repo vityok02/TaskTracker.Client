@@ -23,14 +23,13 @@ jobs:
           dotnet restore
           dotnet publish -c Release -o ./publish
 
-      - name: Set up Azure CLI
-        uses: azure/azure-cli-action@v1
-
       - name: Login to Azure
         uses: azure/login@v1
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
 
       - name: Deploy to Azure WebApp
-        run: |
-          az webapp deploy --resource-group TaskTrackerGroup --name tasktracker-client --src-path ./publish
+        uses: azure/CLI@v1
+        with:
+          inlineScript: |
+            az webapp deploy --resource-group TaskTrackerGroup --name tasktracker-client --src-path ./publish
