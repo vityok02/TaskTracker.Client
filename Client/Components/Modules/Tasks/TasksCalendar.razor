@@ -1,0 +1,26 @@
+﻿@page "/projects/{projectId:guid}/calendar"
+
+<PageTitle>TasksCalendar</PageTitle>
+
+<Calendar DateCellRender=@DateCellRender />
+
+@code {
+    private RenderFragment DateCellRender(DateTime value)
+    {
+        var listData = GetListData(value);
+        return @<Template>
+        <ul>
+            @foreach (var task in listData)
+            {
+                var state = States.FirstOrDefault(s => s.Id == task.StateId);
+                var color = StateColors.GetDarkerColor(state!.Color);
+
+                <li style=@($"color: {color};")>
+                    <span style="color: black">@task.Name</span>
+                    (@task.StateName)
+                </li>
+            }
+        </ul>
+    </Template>;
+    }
+}
