@@ -27,7 +27,7 @@ public partial class TaskDetails
     public EventCallback<bool> VisibleChanged { get; set; }
 
     [Inject]
-    public required NotificationService Notification { get; init; }
+    public required INotificationService Notification { get; init; }
 
     private TaskModel TaskModel { get; set; } = new();
 

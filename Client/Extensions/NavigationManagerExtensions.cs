@@ -15,6 +15,6 @@ public static class NavigationManagerExtensions
     public static void NavigateToHomePage(this NavigationManager navigationManager)
     {
         navigationManager
-            .NavigateTo("/projects");
+            .NavigateTo("/projects", true);
     }
 }

@@ -58,5 +58,10 @@ public partial class ProjectMemberList
         }
 
         await OnMemberChanged.InvokeAsync();
+
+        await NotificationService.Success(new NotificationConfig()
+        {
+            Message = "Member deleted successfully"
+        });
     }
 }

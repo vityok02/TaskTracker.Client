@@ -51,7 +51,7 @@ public class TaskService : ITaskService
 
     public async Task<Result<IEnumerable<TaskDto>>> GetAllAsync(
         Guid projectId,
-        string? searchTerm)
+        string? searchTerm = null)
     {
         var response = await _taskApi
             .GetAllAsync(projectId, searchTerm);

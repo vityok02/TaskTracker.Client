@@ -23,6 +23,20 @@ builder.Services.AddRazorComponents()
 
 builder.Services.AddServerSideBlazor();
 
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowClient", policy =>
+    {
+        var clientUrl = Environment.GetEnvironmentVariable("CLIENT_URL")
+            ?? "https://localhost:7001";
+
+        policy.WithOrigins(clientUrl)
+            .AllowAnyMethod()
+            .AllowAnyHeader()
+            .AllowCredentials();
+    });
+});
+
 var app = builder.Build();
 
 app.UseMiddleware<CookieMiddleware>();
@@ -35,14 +49,17 @@ if (!app.Environment.IsDevelopment())
     app.UseHsts();
 }
 
+app.UseCors("AllowClient");
+
 app.UseHttpsRedirection();
 
-app.UseAuthentication();
-app.UseAuthorization();
-
+app.UseRouting();
 app.UseAntiforgery();
 
 app.UseStatusCodePagesWithRedirects("/Error/{0}");
+
+app.UseAuthentication();
+app.UseAuthorization();
 
 app.MapStaticAssets();
 app.MapRazorComponents<App>()

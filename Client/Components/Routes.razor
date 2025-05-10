@@ -2,11 +2,6 @@
     <Router AppAssembly="@typeof(Program).Assembly">
         <Found Context="routeData">
             <CascadingValue Value="@ApplicationState">
-                <AuthorizeView>
-                    <NotAuthorized>
-                        <LoginRedirect />
-                    </NotAuthorized>
-                </AuthorizeView>
                 <AuthorizeRouteView RouteData="routeData" DefaultLayout="@typeof(Layout.MainLayout)">
                     <NotAuthorized>
                         <LoginRedirect />

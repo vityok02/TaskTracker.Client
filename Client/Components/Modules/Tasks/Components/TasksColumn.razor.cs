@@ -22,6 +22,9 @@ public partial class TasksColumn
     public required ModalService ModalService { get; init; }
 
     [Inject]
+    public required INotificationService NotificationService { get; init; }
+
+    [Inject]
     public required DeleteStateConfirmationService DeleteConfirmationService { get; set; }
 
     [CascadingParameter]
@@ -34,7 +37,7 @@ public partial class TasksColumn
     public TaskModel TaskModel { get; set; } = new();
 
     [Parameter]
-    public EventCallback OnChange { get; set; }
+    public EventCallback<Guid> OnStateDeleted { get; set; }
 
     [Parameter]
     public EventCallback<Guid> OnShowInput { get; set; }
@@ -96,8 +99,15 @@ public partial class TasksColumn
             BeforeTaskId = beforeTaskId
         };
 
-        return await TaskService
+        var result = await TaskService
             .UpdateStateAsync(ProjectId, task.Id, updateStateModel);
+
+        if (result.IsFailure)
+        {
+            AppState.ErrorMessage = result.Error!.Message;
+        }
+
+        return result;
     }
 
     private async Task<Result> ReorderTasksAsync(TaskDto task, Guid? beforeTaskId)
@@ -123,10 +133,10 @@ public partial class TasksColumn
 
     private async Task OpenDetailsAsync(Guid taskId)
     {
-         await OnOpenDetails.InvokeAsync(taskId);
+        await OnOpenDetails.InvokeAsync(taskId);
     }
 
-    private async Task DeleteTask(Guid taskId)
+    private async Task DeleteTaskAsync(Guid taskId)
     {
         var result = await TaskService
             .DeleteAsync(ProjectId, taskId);
@@ -138,7 +148,14 @@ public partial class TasksColumn
         }
 
         Tasks.RemoveAll(t => t.Id == taskId);
-        //await OnChange.InvokeAsync();
+
+        await ModalService.DestroyAllConfirmAsync();
+
+        await NotificationService
+            .Success(new NotificationConfig()
+            {
+                Message = "Task deleted successfully"
+            });
     }
 
     private async Task DeleteState(Guid stateId)
@@ -152,9 +169,14 @@ public partial class TasksColumn
             return;
         }
 
-        //OnStateDeleted.InvokeAsync(stateId);
+        await OnStateDeleted.InvokeAsync(stateId);
 
-        //await OnChange.InvokeAsync();
+        await ModalService.DestroyAllConfirmAsync();
+
+        await NotificationService.Success(new NotificationConfig()
+        {
+            Message = "State deleted successfully"
+        });
     }
 
     private async Task ShowTaskDeleteConfirmAsync(Guid taskId)
@@ -164,7 +186,7 @@ public partial class TasksColumn
             Title = "Delete task?",
             Content = "Are you sure you want to delete this item from this project?",
             Icon = RenderFragments.DeleteIcon,
-            OnOk = (e) => DeleteTask(taskId),
+            OnOk = async (e) => await DeleteTaskAsync(taskId),
             OnCancel = (e) => Task.CompletedTask,
             OkText = "Delete",
             CancelText = "Cancel",

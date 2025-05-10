@@ -1,7 +1,5 @@
 ﻿@page "/users/{userId:guid}"
 
-@attribute [Authorize]
-
 <PageTitle>@(User?.Username ?? "Not found")</PageTitle>
 
 <div class="container mt-5">
@@ -31,7 +29,7 @@
             {
                 <label class="mb-3 mx-auto">
                     <span class="btn btn-outline-secondary">
-                        @(string.IsNullOrEmpty(User.AvatarUrl) ? "Upload avatar" : "Change avatart")
+                        @(string.IsNullOrEmpty(User.AvatarUrl) ? "Upload avatar" : "Change avatar")
                     </span>
 
                     <InputFile OnChange=@UploadFileAsync

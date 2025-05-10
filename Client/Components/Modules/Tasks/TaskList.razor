@@ -1,7 +1,5 @@
 ﻿@page "/projects/{projectId:guid}/tasks"
 
-@attribute [Authorize]
-
 <PageTitle>@Title</PageTitle>
 
 <div class="d-flex justify-content-between align-items-center">
@@ -22,8 +20,7 @@
     </div>
 
     <div>
-        <a target="_blank"
-           href=@($"/projects/{ProjectId}/lobby")
+        <a href=@($"/projects/{ProjectId}/lobby")
            class="btn">
             <i class="bi bi-telephone"></i>
         </a>
@@ -37,8 +34,24 @@
                 </Allowed>
             </RoleAuthorizeView>
         </CascadingValue>
+        <NavLink href=@($"/projects/{ProjectId}/calendar")
+            class="text-black">
+            <i class="bi bi-calendar2-check"></i>
+        </NavLink>
     </div>
 </div>
+
+@if (Project is null)
+{
+    <Spin Size=@SpinSize.Large />
+    return;
+}
+
+@if (!Project!.States.Any())
+{
+    <Empty Description=@("You have not added any states yet") />
+    return;
+}
 
 <div class="mb-3 mt-3">
     <Search OnSearch=@SearchTasksByNameAsync
@@ -49,10 +62,8 @@
 </div>
 
 <CascadingValue Value=@Project?.Role?.Name>
-    <div class="overflow-auto"
-         style="width: 100%;">
-        <div class="row g-4 flex-nowrap cards"
-             style="min-width: 100%; height: calc(100vh - 250px);">
+    <div class="overflow-auto" style="width: 100%;">
+        <div class="row g-4 flex-nowrap cards" style="min-width: 100%; height: calc(100vh - 250px);">
             @foreach (var state in Project!.States)
             {
                 <TasksColumn Tasks=@Tasks.Where(t => t.StateId == state.Id).OrderBy(t => t.SortOrder).ToList()
@@ -62,44 +73,43 @@
                              Role=@Project.Role.Name
                              OnShowInput=@ShowInput
                              OnOpenDetails=@OpenDetails
-                             OnChange=@LoadDataAsync
+                             OnStateDeleted=@DeleteStateFromList
                              OnOpenUpdateStateForm=@(() => OpenUpdateStateForm(state.Id)) />
             }
         </div>
     </div>
 
-    <div class="mt-2"
-         hidden=@HideInput>
-        <Form Model=@TaskModel
-              OnFinish=@Submit
-              Layout=@FormLayout.Horizontal>
-            <FluentValidationValidator />
-
-            <div class="d-flex align-items-stretch"
-                 style="height: 38px">
-                <Button HtmlType="submit"
-                        Class="btn btn-outline-secondary me-1 h-100">
-                    +
-                </Button>
-
-                <FormItem class="flex-grow-1">
-                    <Input Size=@InputSize.Large
-                           @ref=@Input
-                           @onfocusout=@(() => HideInput = true )
-                           @bind-Value=@TaskModel.Name
-                           Placeholder="Task name" />
-                </FormItem>
-            </div>
-        </Form>
-    </div>
+    @if (!HideInput)
+    {
+        <div class="mt-2">
+            <Form Model=@TaskModel
+                  OnFinish=@Submit
+                  Layout=@FormLayout.Horizontal>
+                <FluentValidationValidator />
+                <div class="d-flex align-items-stretch"
+                     style="height: 38px">
+                    <Button HtmlType="submit"
+                            Class="btn btn-outline-secondary me-1 h-100">
+                        +
+                    </Button>
+                    <FormItem class="flex-grow-1">
+                        <Input Size=@InputSize.Large
+                               @ref=@Input
+                               @bind-Value=@TaskModel.Name
+                               Placeholder="Task name" />
+                    </FormItem>
+                </div>
+            </Form>
+        </div>
+    }
 
     <StateForm @bind-Visible=@_stateFormVisible
                ProjectId=@ProjectId
                @bind-StateId=@_selectedStateId
-               StateModel=@Project.States.FirstOrDefault(s => s.Id == _selectedStateId)?.ToStateModel()
+               StateModel=@Project?.States?.FirstOrDefault(s => s.Id == _selectedStateId)?.ToStateModel()
                OnSubmit=@LoadDataAsync />
 
     <TaskDetails TaskId=@_selectedTaskId
                  ProjectId=@ProjectId
-                 @bind-Visible="@_detailsVisible" />
+                 @bind-Visible=@_detailsVisible />
 </CascadingValue>

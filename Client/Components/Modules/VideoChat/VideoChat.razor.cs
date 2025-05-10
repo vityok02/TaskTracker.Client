@@ -62,7 +62,9 @@ public partial class VideoChat : IAsyncDisposable
 
         if (jwtResult.IsFailure)
         {
-            AppState.ErrorMessage = jwtResult.Error!.Message;
+            AppState.ErrorMessage = jwtResult.Error?.Message
+                ?? "Unkrown error occurred!";
+            return false;
         }
 
         var token = jwtResult.Value.Token;

@@ -17,11 +17,11 @@
 
     <ImportMap />
     <link rel="icon" type="image/png" href="images/logo.png" />
-    <HeadOutlet @rendermode="InteractiveServer" />
+    <HeadOutlet @rendermode="new InteractiveServerRenderMode(prerender: false)" />
 </head>
 
 <body class="bg-light">
-    <Routes @rendermode="InteractiveServer" />
+    <Routes @rendermode="new InteractiveServerRenderMode(prerender: false)" />
     <AntContainer @rendermode="RenderMode.InteractiveWebAssembly" />
 
     <script src="_framework/blazor.server.js"></script>
