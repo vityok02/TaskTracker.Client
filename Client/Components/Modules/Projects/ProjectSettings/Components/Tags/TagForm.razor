@@ -12,39 +12,33 @@
        DestroyOnClose=@true>
 
     <h4>
-        @Title
+        Edit tag
     </h4>
 
     <div class="modal-content p-4">
-        <Form Model=@_stateModel
+        <Form Model=@_tagModel
               OnFinish=@SubmitAsync
               Layout=@FormLayout.Vertical
+              Context="tag"
               Autocomplete="off">
 
             <FluentValidationValidator />
 
             <FormItem Label="Name"
                       Class="mb-3">
-                <InputText @bind-Value=@context.Name
+                <InputText @bind-Value=@tag.Name
                            Class="form-control" />
             </FormItem>
 
-            <FormItem Label="Description"
-                      Class="mb-3">
-                <TextArea @bind-Value=@context.Description
-                          Class="form-control"
-                          Rows="4" />
-            </FormItem>
-
             <FormItem Label="Color">
-                <RadioGroup @bind-Value=@_stateModel.Color Class="d-flex gap-1 justify-content-center">
+                <RadioGroup @bind-Value=@_tagModel.Color Class="d-flex gap-1 justify-content-center">
                     @foreach (var color in Colors.Values)
                     {
                         <Radio RadioButton Value=@color.Value
                                Class="d-flex align-items-center justify-content-center"
-                               Style=@GetRadioButtonStyle(color.Value, context.Color)
-                               Checked=@(color.Value == context.Color)>
-                            @if (color.Value == context.Color)
+                               Style=@GetRadioButtonStyle(color.Value, tag.Color)
+                               Checked=@(color.Value == tag.Color)>
+                            @if (color.Value == tag.Color)
                             {
                                 <i class="bi bi-check-lg text-dark"></i>
                             }
@@ -63,7 +57,7 @@
                 <Button Type=@ButtonType.Primary
                         HtmlType="submit"
                         Class="btn btn-primary">
-                    @SubmitButtonText
+                    Save
                 </Button>
             </div>
         </Form>

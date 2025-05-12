@@ -15,7 +15,7 @@ public interface ITaskApi : IApi
     Task<IApiResponse<TaskDto>> GetAsync(Guid projectId, Guid taskId);
 
     [Post("/projects/{projectId}/tasks")]
-    Task<IApiResponse<TaskDto>> CreateAsync([Body] TaskModel model, Guid projectId);
+    Task<IApiResponse<TaskDto>> CreateAsync(Guid projectId, [Body] TaskModel model);
 
     [Put("/projects/{projectId}/tasks/{taskId}")]
     Task<IApiResponse> UpdateAsync(Guid projectId, Guid taskId, [Body] TaskModel model);

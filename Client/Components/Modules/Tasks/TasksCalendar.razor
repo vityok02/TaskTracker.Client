@@ -25,7 +25,7 @@
             @foreach (var task in listData)
             {
                 var state = States.FirstOrDefault(s => s.Id == task.StateId);
-                var color = StateColors.GetDarkerColor(state!.Color);
+                var color = Colors.GetDarkerColor(state!.Color);
 
                 <li style=@($"color: {color};")>
                     <span style="color: black">@task.Name</span>

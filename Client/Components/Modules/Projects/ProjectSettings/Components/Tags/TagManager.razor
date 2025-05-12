@@ -1,0 +1,69 @@
+﻿<div class="d-flex flex-column flex-grow-1">
+    <h5>Tags</h5>
+
+    <SortableList Id="sortable-tags"
+                  Handle=".drag-handle"
+                  Items=@Tags
+                  OnUpdate=@ReorderAsync
+                  Context="tag"
+                  Class="w-100">
+        <SortableItemTemplate>
+            <div class="card card-body d-flex flex-row justify-content-between align-items-center py-3 my-1">
+                <div class="d-flex align-items-center">
+                    <RoleAuthorizeView AllowedRoles=@([Roles.Admin, Roles.Contributor])>
+                        <Allowed>
+                            <i class="bi bi-grip-vertical drag-handle"
+                               style="cursor: grab"></i>
+                        </Allowed>
+                    </RoleAuthorizeView>
+
+                    <span class="rounded-5 px-3 py-1 mx-2 small"
+                          style="@GetTagTitleStyle(tag.Color)">
+                        @tag.Name
+                    </span>
+                </div>
+
+                <RoleAuthorizeView AllowedRoles=@([Roles.Admin, Roles.Contributor])>
+                    <Allowed>
+                        <div class="d-flex gap-3">
+                            <a @onclick=@(() => ShowUpdateForm(tag.Id))>
+                                <i class="bi bi-pencil-square"></i>
+                            </a>
+
+                            <a @onclick="async () => await DeleteAsync(tag.Id)"
+                               class="text-danger mr-4"
+                               style="cursor: pointer;">
+                                <i class="bi bi-trash-fill is-size-5"></i>
+                            </a>
+                        </div>
+                    </Allowed>
+                </RoleAuthorizeView>
+            </div>
+        </SortableItemTemplate>
+    </SortableList>
+
+    <RoleAuthorizeView AllowedRoles=@([Roles.Admin, Roles.Contributor])>
+        <Allowed>
+            <Form Model=@TagModel
+                  OnFinish=@CreateTagAsync
+                  Class="d-flex flex-row gap-2 mt-3">
+                <FluentValidationValidator />
+
+                <Input @bind-Value=@TagModel.Name
+                       Placeholder="Add tag..."
+                       Class="form-control" />
+
+                <Button HtmlType="submit"
+                        Class="btn btn-primary btn-sm px-3">
+                    Add
+                </Button>
+            </Form>
+        </Allowed>
+    </RoleAuthorizeView>
+</div>
+
+<TagForm @bind-Visible=@FormVisible
+         @bind-TagId=@SelectedTagId
+         ProjectId=@ProjectId
+         OnSubmit=@UpdateTag
+         TagDto=@Tags.FirstOrDefault(t => t.Id == SelectedTagId) />

@@ -21,7 +21,7 @@ public class TaskService : ITaskService
         Guid projectId)
     {
         var response = await _taskApi
-            .CreateAsync(model, projectId);
+            .CreateAsync(projectId, model);
 
         return response
             .HandleResponse();
