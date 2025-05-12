@@ -11,7 +11,8 @@ public partial class LoginRedirect
     {
         var currentUri = NavManager.ToBaseRelativePath(NavManager.Uri);
 
-        if (!currentUri.StartsWith("login", StringComparison.OrdinalIgnoreCase))
+        if (!currentUri.StartsWith("login", StringComparison.OrdinalIgnoreCase) &&
+            !currentUri.StartsWith("reset-password", StringComparison.OrdinalIgnoreCase))
         {
             NavManager.NavigateTo("/login", true);
         }

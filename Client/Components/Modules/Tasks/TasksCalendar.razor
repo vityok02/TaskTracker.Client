@@ -2,7 +2,19 @@
 
 <PageTitle>TasksCalendar</PageTitle>
 
-<Calendar DateCellRender=@DateCellRender />
+<Breadcrumb Class="mb-3">
+    <BreadcrumbItem Href="/projects">
+        <i class="bi bi-briefcase"></i> Projects
+    </BreadcrumbItem>
+    <BreadcrumbItem Href="@($"/projects/{ProjectId}/tasks")">
+        <i class="bi bi-kanban"></i> @Project?.Name
+    </BreadcrumbItem>
+    <BreadcrumbItem>
+        <i class="bi bi-calendar"></i> Calendar
+    </BreadcrumbItem>
+</Breadcrumb>
+
+<Calendar DateCellRender=@DateCellRender Class="shadow-lg rounded-3" />
 
 @code {
     private RenderFragment DateCellRender(DateTime value)

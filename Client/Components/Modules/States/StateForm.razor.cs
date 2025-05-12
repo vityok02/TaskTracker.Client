@@ -116,7 +116,7 @@ public partial class StateForm
     {
         return $@"
             background: {(color + "50")};
-            border: 3px solid {color};
+            border: 2px solid {color};
             border-radius: 20px; 
             height: 41px;
             width: 41px";

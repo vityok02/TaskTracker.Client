@@ -5,18 +5,19 @@
             <Avatar Size=@("45px")
                     Src=@(string.IsNullOrWhiteSpace(AvatarUrl)
                     ? null
-                    : $"{AvatarUrl}?t={DateTime.UtcNow.Ticks}")>
+                    : $"{AvatarUrl}?t={DateTime.UtcNow.Ticks}")
+                    class="border border-primary rounded-circle shadow-sm">
                 @UserName.FirstOrDefault()
             </Avatar>
 
-            <span class="ms-2">
+            <span class="ms-2 fs-5 text-dark">
                 @UserName
             </span>
         </NavLink>
 
         <NavLink href=@(PageRoutes.ProjectsPage)
-                 class="text-dark text-decoration-none">
-            Projects
+                 class="text-dark text-decoration-none fs-5">
+            <i class="bi bi-briefcase me-2"></i> Projects
         </NavLink>
     </div>
 
@@ -24,18 +25,14 @@
         <AuthorizeView>
             <Authorized>
                 <NavLink href="/logout"
-                         class="text-danger text-decoration-none ms-3">
-                    Log out
+                         class="btn btn-danger text-decoration-none text-white ms-3">
+                    <i class="bi bi-box-arrow-right me-2"></i> Log out
                 </NavLink>
             </Authorized>
 
             <NotAuthorized>
-                <NavLink href="/login"
-                         class="text-primary text-decoration-none ms-3">
-                    Sign in
-                </NavLink>
+                <LoginRedirect />
             </NotAuthorized>
         </AuthorizeView>
     </div>
 </div>
-

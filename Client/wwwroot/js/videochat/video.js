@@ -148,3 +148,23 @@ function styleVideo(el) {
     const aspectRatio = 16 / 9;
     el.style.aspectRatio = aspectRatio.toString();
 }
+
+export async function disposeCamera() {
+    if (window.videoTrack) {
+        // Зупиняємо сам трек
+        window.videoTrack.stop();
+
+        // Від'єднуємо та видаляємо елементи DOM
+        window.videoTrack.detach().forEach(element => element.remove());
+
+        // Якщо підключено до кімнати — відписуємось
+        if (window.activeRoom && window.activeRoom.localParticipant) {
+            window.activeRoom.localParticipant.unpublishTrack(window.videoTrack);
+        }
+
+        // Скидаємо глобальну змінну
+        window.videoTrack = null;
+
+        console.log('Camera disposed');
+    }
+}

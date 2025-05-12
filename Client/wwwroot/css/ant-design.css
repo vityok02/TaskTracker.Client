@@ -1,0 +1,7 @@
+﻿.ant-breadcrumb {
+    font-size: 24px;
+}
+
+.ant-breadcrumb a {
+    text-decoration: none !important;
+}

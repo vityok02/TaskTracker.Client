@@ -2,42 +2,58 @@
 
 <PageTitle>@Title</PageTitle>
 
-<div class="d-flex justify-content-between align-items-center">
+
+<StateForm @bind-Visible=@_stateFormVisible
+           ProjectId=@ProjectId
+           @bind-StateId=@_selectedStateId
+           StateModel=@Project?.States?.FirstOrDefault(s => s.Id == _selectedStateId)?.ToStateModel()
+           OnSubmit=@LoadDataAsync />
+
+<div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
     <div class="d-flex align-items-center">
-        <NavLink href=@(PageRoutes.ProjectsPage)
-                 class="text-dark me-3">
-            <i class="bi bi-arrow-left fs-4" />
-        </NavLink>
-
-        <NavLink href=@($"/projects/{ProjectId}/settings")
-                 class="text-decoration-none text-dark d-flex justify-content-between align-items-center">
-            <h4 class="mb-0">
-                @Title
-            </h4>
-
-            <i class="bi bi-gear-fill ms-2" />
-        </NavLink>
+        <Breadcrumb>
+            <BreadcrumbItem Href="/projects">
+                <i class="bi bi-briefcase"></i> Projects
+            </BreadcrumbItem>
+            <BreadcrumbItem Href="@($"/projects/{ProjectId}/tasks")">
+                <i class="bi bi-kanban"></i> @Project?.Name
+            </BreadcrumbItem>
+        </Breadcrumb>
     </div>
 
-    <div>
-        <a href=@($"/projects/{ProjectId}/lobby")
-           class="btn">
-            <i class="bi bi-telephone"></i>
-        </a>
-        <CascadingValue Value=@Project?.Role?.Name>
-            <RoleAuthorizeView AllowedRoles=@([Roles.Admin, Roles.Contributor])>
+    <div class="d-flex align-items-center gap-3">
+        <div class="d-flex gap-2 bg-white rounded-pill shadow-sm px-3 py-2">
+            <NavLink href="@($"/projects/{ProjectId}/lobby")"
+                     title="Videocall"
+                     class="btn btn-light rounded-circle d-flex align-items-center justify-content-center"
+                     style="width: 38px; height: 38px;">
+                <i class="bi bi-telephone"></i>
+            </NavLink>
+
+            <NavLink href="@($"/projects/{ProjectId}/calendar")"
+                     title="Calendar"
+                     class="btn btn-light rounded-circle d-flex align-items-center justify-content-center"
+                     style="width: 38px; height: 38px;">
+                <i class="bi bi-calendar2-check"></i>
+            </NavLink>
+
+            <NavLink href="@($"/projects/{ProjectId}/settings")"
+                     title="settings"
+                     class="btn btn-light rounded-circle d-flex align-items-center justify-content-center"
+                     style="width: 38px; height: 38px;">
+                <i class="bi bi-gear-fill"></i>
+            </NavLink>
+        </div>
+
+        <CascadingValue Value="@Project?.Role?.Name">
+            <RoleAuthorizeView AllowedRoles="@([Roles.Admin, Roles.Contributor])">
                 <Allowed>
-                    <Button OnClick=@OpenCreateStateForm
-                            Class="btn btn-primary">
-                        Add state
+                    <Button OnClick="@OpenCreateStateForm" Class="btn btn-primary">
+                        <i class="bi bi-plus-lg me-1"></i> Add state
                     </Button>
                 </Allowed>
             </RoleAuthorizeView>
         </CascadingValue>
-        <NavLink href=@($"/projects/{ProjectId}/calendar")
-            class="text-black">
-            <i class="bi bi-calendar2-check"></i>
-        </NavLink>
     </div>
 </div>
 
@@ -53,7 +69,7 @@
     return;
 }
 
-<div class="mb-3 mt-3">
+<div class="mb-3">
     <Search OnSearch=@SearchTasksByNameAsync
             Placeholder="Search by task name"
             AllowClear
@@ -102,12 +118,6 @@
             </Form>
         </div>
     }
-
-    <StateForm @bind-Visible=@_stateFormVisible
-               ProjectId=@ProjectId
-               @bind-StateId=@_selectedStateId
-               StateModel=@Project?.States?.FirstOrDefault(s => s.Id == _selectedStateId)?.ToStateModel()
-               OnSubmit=@LoadDataAsync />
 
     <TaskDetails TaskId=@_selectedTaskId
                  ProjectId=@ProjectId
