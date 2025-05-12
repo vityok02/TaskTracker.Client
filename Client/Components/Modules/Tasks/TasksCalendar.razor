@@ -1,0 +1,38 @@
+﻿@page "/projects/{projectId:guid}/calendar"
+
+<PageTitle>TasksCalendar</PageTitle>
+
+<Breadcrumb Class="mb-3">
+    <BreadcrumbItem Href="/projects">
+        <i class="bi bi-briefcase"></i> Projects
+    </BreadcrumbItem>
+    <BreadcrumbItem Href="@($"/projects/{ProjectId}/tasks")">
+        <i class="bi bi-kanban"></i> @Project?.Name
+    </BreadcrumbItem>
+    <BreadcrumbItem>
+        <i class="bi bi-calendar"></i> Calendar
+    </BreadcrumbItem>
+</Breadcrumb>
+
+<Calendar DateCellRender=@DateCellRender Class="shadow-lg rounded-3" />
+
+@code {
+    private RenderFragment DateCellRender(DateTime value)
+    {
+        var listData = GetListData(value);
+        return @<Template>
+        <ul>
+            @foreach (var task in listData)
+            {
+                var state = States.FirstOrDefault(s => s.Id == task.StateId);
+                var color = StateColors.GetDarkerColor(state!.Color);
+
+                <li style=@($"color: {color};")>
+                    <span style="color: black">@task.Name</span>
+                    (@task.StateName)
+                </li>
+            }
+        </ul>
+    </Template>;
+    }
+}

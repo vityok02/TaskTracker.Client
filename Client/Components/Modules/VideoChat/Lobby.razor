@@ -2,8 +2,6 @@
 
 @layout VideoChatLayout
 
-@attribute [Authorize]
-
 <PageTitle>Lobby</PageTitle>
 
 <HeadContent>
@@ -27,10 +25,14 @@
             <MicrophoneSelector />
         </div>
 
-        <div class="d-flex justify-content-center mt-2">
+        <div class="d-flex flex-column align-items-center mt-2 gap-2">
             <Button Class="btn btn-primary btn-lg w-50"
                     @onclick=@JoinRoom>
                 Join Room
+            </Button>
+            <Button @onclick=@RedirectToProject
+                Class="btn btn-primary btn-lg w-50">
+                Back to project
             </Button>
         </div>
     </div>

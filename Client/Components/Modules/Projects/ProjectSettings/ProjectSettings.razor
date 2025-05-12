@@ -1,20 +1,21 @@
 ﻿@page "/projects/{projectId:guid}/settings"
 
-@attribute [Authorize]
-
 <PageTitle>@Project.Name</PageTitle>
 
 <div class="container pb-3">
     <CascadingValue Value=@Role>
-        <div class="d-flex align-items-center mb-4">
-            <NavLink href=@($"projects/{ProjectId}/tasks")
-                     class="text-dark me-3">
-                <i class="bi bi-arrow-left fs-4" />
-            </NavLink>
-
-            <h4 class="mb-0">
-                @Project.Name - settings
-            </h4>
+        <div class="d-flex align-items-center mb-3">
+            <Breadcrumb>
+                <BreadcrumbItem Href="/projects">
+                    <i class="bi bi-briefcase"></i> Projects
+                </BreadcrumbItem>
+                <BreadcrumbItem Href="@($"/projects/{ProjectId}/tasks")">
+                    <i class="bi bi-kanban"></i> @Project?.Name
+                </BreadcrumbItem>
+                <BreadcrumbItem>
+                    <i class="bi bi-gear"></i> Settings
+                </BreadcrumbItem>
+            </Breadcrumb>
         </div>
 
         <div class="card shadow-sm">

@@ -1,38 +1,55 @@
 ﻿@page "/projects/{projectId:guid}/tasks"
 
-@attribute [Authorize]
-
 <PageTitle>@Title</PageTitle>
 
-<div class="d-flex justify-content-between align-items-center">
+
+<StateForm @bind-Visible=@_stateFormVisible
+           ProjectId=@ProjectId
+           @bind-StateId=@_selectedStateId
+           StateModel=@Project?.States?.FirstOrDefault(s => s.Id == _selectedStateId)?.ToStateModel()
+           OnSubmit=@LoadDataAsync />
+
+<div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
     <div class="d-flex align-items-center">
-        <NavLink href=@(PageRoutes.ProjectsPage)
-                 class="text-dark me-3">
-            <i class="bi bi-arrow-left fs-4" />
-        </NavLink>
-
-        <NavLink href=@($"/projects/{ProjectId}/settings")
-                 class="text-decoration-none text-dark d-flex justify-content-between align-items-center">
-            <h4 class="mb-0">
-                @Title
-            </h4>
-
-            <i class="bi bi-gear-fill ms-2" />
-        </NavLink>
+        <Breadcrumb>
+            <BreadcrumbItem Href="/projects">
+                <i class="bi bi-briefcase"></i> Projects
+            </BreadcrumbItem>
+            <BreadcrumbItem Href="@($"/projects/{ProjectId}/tasks")">
+                <i class="bi bi-kanban"></i> @Project?.Name
+            </BreadcrumbItem>
+        </Breadcrumb>
     </div>
 
-    <div>
-        <a target="_blank"
-           href=@($"/projects/{ProjectId}/lobby")
-           class="btn">
-            <i class="bi bi-telephone"></i>
-        </a>
-        <CascadingValue Value=@Project?.Role?.Name>
-            <RoleAuthorizeView AllowedRoles=@([Roles.Admin, Roles.Contributor])>
+    <div class="d-flex align-items-center gap-3">
+        <div class="d-flex gap-2 bg-white rounded-pill shadow-sm px-3 py-2">
+            <NavLink href="@($"/projects/{ProjectId}/lobby")"
+                     title="Videocall"
+                     class="btn btn-light rounded-circle d-flex align-items-center justify-content-center"
+                     style="width: 38px; height: 38px;">
+                <i class="bi bi-telephone"></i>
+            </NavLink>
+
+            <NavLink href="@($"/projects/{ProjectId}/calendar")"
+                     title="Calendar"
+                     class="btn btn-light rounded-circle d-flex align-items-center justify-content-center"
+                     style="width: 38px; height: 38px;">
+                <i class="bi bi-calendar2-check"></i>
+            </NavLink>
+
+            <NavLink href="@($"/projects/{ProjectId}/settings")"
+                     title="settings"
+                     class="btn btn-light rounded-circle d-flex align-items-center justify-content-center"
+                     style="width: 38px; height: 38px;">
+                <i class="bi bi-gear-fill"></i>
+            </NavLink>
+        </div>
+
+        <CascadingValue Value="@Project?.Role?.Name">
+            <RoleAuthorizeView AllowedRoles="@([Roles.Admin, Roles.Contributor])">
                 <Allowed>
-                    <Button OnClick=@OpenCreateStateForm
-                            Class="btn btn-primary">
-                        Add state
+                    <Button OnClick="@OpenCreateStateForm" Class="btn btn-primary">
+                        <i class="bi bi-plus-lg me-1"></i> Add state
                     </Button>
                 </Allowed>
             </RoleAuthorizeView>
@@ -40,7 +57,19 @@
     </div>
 </div>
 
-<div class="mb-3 mt-3">
+@if (Project is null)
+{
+    <Spin Size=@SpinSize.Large />
+    return;
+}
+
+@if (!Project!.States.Any())
+{
+    <Empty Description=@("You have not added any states yet") />
+    return;
+}
+
+<div class="mb-3">
     <Search OnSearch=@SearchTasksByNameAsync
             Placeholder="Search by task name"
             AllowClear
@@ -49,10 +78,8 @@
 </div>
 
 <CascadingValue Value=@Project?.Role?.Name>
-    <div class="overflow-auto"
-         style="width: 100%;">
-        <div class="row g-4 flex-nowrap cards"
-             style="min-width: 100%; height: calc(100vh - 250px);">
+    <div class="overflow-auto" style="width: 100%;">
+        <div class="row g-4 flex-nowrap cards" style="min-width: 100%; height: calc(100vh - 250px);">
             @foreach (var state in Project!.States)
             {
                 <TasksColumn Tasks=@Tasks.Where(t => t.StateId == state.Id).OrderBy(t => t.SortOrder).ToList()
@@ -62,44 +89,37 @@
                              Role=@Project.Role.Name
                              OnShowInput=@ShowInput
                              OnOpenDetails=@OpenDetails
-                             OnChange=@LoadDataAsync
+                             OnStateDeleted=@DeleteStateFromList
                              OnOpenUpdateStateForm=@(() => OpenUpdateStateForm(state.Id)) />
             }
         </div>
     </div>
 
-    <div class="mt-2"
-         hidden=@HideInput>
-        <Form Model=@TaskModel
-              OnFinish=@Submit
-              Layout=@FormLayout.Horizontal>
-            <FluentValidationValidator />
-
-            <div class="d-flex align-items-stretch"
-                 style="height: 38px">
-                <Button HtmlType="submit"
-                        Class="btn btn-outline-secondary me-1 h-100">
-                    +
-                </Button>
-
-                <FormItem class="flex-grow-1">
-                    <Input Size=@InputSize.Large
-                           @ref=@Input
-                           @onfocusout=@(() => HideInput = true )
-                           @bind-Value=@TaskModel.Name
-                           Placeholder="Task name" />
-                </FormItem>
-            </div>
-        </Form>
-    </div>
-
-    <StateForm @bind-Visible=@_stateFormVisible
-               ProjectId=@ProjectId
-               @bind-StateId=@_selectedStateId
-               StateModel=@Project.States.FirstOrDefault(s => s.Id == _selectedStateId)?.ToStateModel()
-               OnSubmit=@LoadDataAsync />
+    @if (!HideInput)
+    {
+        <div class="mt-2">
+            <Form Model=@TaskModel
+                  OnFinish=@Submit
+                  Layout=@FormLayout.Horizontal>
+                <FluentValidationValidator />
+                <div class="d-flex align-items-stretch"
+                     style="height: 38px">
+                    <Button HtmlType="submit"
+                            Class="btn btn-outline-secondary me-1 h-100">
+                        +
+                    </Button>
+                    <FormItem class="flex-grow-1">
+                        <Input Size=@InputSize.Large
+                               @ref=@Input
+                               @bind-Value=@TaskModel.Name
+                               Placeholder="Task name" />
+                    </FormItem>
+                </div>
+            </Form>
+        </div>
+    }
 
     <TaskDetails TaskId=@_selectedTaskId
                  ProjectId=@ProjectId
-                 @bind-Visible="@_detailsVisible" />
+                 @bind-Visible=@_detailsVisible />
 </CascadingValue>

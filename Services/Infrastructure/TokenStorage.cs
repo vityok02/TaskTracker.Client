@@ -24,7 +24,6 @@ public class TokenStorage : ITokenStorage
     {
         return await Task
             .FromResult(_cookieManager.Get(Key));
-
     }
 
     public async Task RemoveToken()

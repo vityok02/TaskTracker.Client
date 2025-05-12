@@ -4,9 +4,11 @@
 
 <div class="container pb-3">
     <div class="d-flex justify-content-between align-items-center mb-3">
-        <h4 class="mb-0">
-            Projects
-        </h4>
+        <Breadcrumb>
+            <BreadcrumbItem>
+                <i class="bi bi-briefcase"></i> Projects
+            </BreadcrumbItem>
+        </Breadcrumb>
 
         <Button Type=@ButtonType.Primary
                 OnClick=@(() => ShowCreateForm())
@@ -99,4 +101,3 @@
                     OnChange=@OnPageChanged />
     </div>
 </div>
-

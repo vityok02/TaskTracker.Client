@@ -14,6 +14,9 @@ public partial class TaskList
     [Inject]
     public required IProjectService ProjectService { get; init; }
 
+    [Inject]
+    public required INotificationService NotificationService { get; init; }
+
     [CascadingParameter]
     public required ApplicationState AppState { get; init; }
 
@@ -22,9 +25,9 @@ public partial class TaskList
 
     private bool HideInput { get; set; } = true;
 
-    private IEnumerable<TaskDto> Tasks { get; set; } = [];
+    private List<TaskDto> Tasks { get; set; } = [];
 
-    private ProjectDto Project { get; set; } = new();
+    private ProjectDto? Project { get; set; } = null;
 
     private TaskModel TaskModel { get; set; } = new();
 
@@ -57,7 +60,6 @@ public partial class TaskList
     {
         _stateFormVisible = true;
     }
-
     private async Task Submit()
     {
         var result = await TaskService
@@ -69,11 +71,19 @@ public partial class TaskList
             return;
         }
 
+        Tasks.Add(result.Value);
+
         HideInput = true;
 
         TaskModel = new();
 
-        await LoadDataAsync();
+        StateHasChanged();
+
+        await NotificationService
+            .Success(new NotificationConfig
+            {
+                Message = "Task created successfully",
+            });
     }
 
     private async Task ShowInput(Guid stateId)
@@ -128,6 +138,12 @@ public partial class TaskList
         await LoadTasksAsync();
     }
 
+    private void DeleteStateFromList(Guid stateId)
+    {
+        Project.States
+            .RemoveAll(x => x.Id == stateId);
+    }
+
     private async Task LoadTasksAsync()
     {
         var result = await TaskService
@@ -139,6 +155,6 @@ public partial class TaskList
             return;
         }
 
-        Tasks = result.Value.OrderBy(t => t.SortOrder);
+        Tasks = result.Value.OrderBy(t => t.SortOrder).ToList();
     }
 }

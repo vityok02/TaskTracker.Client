@@ -1,4 +1,4 @@
-﻿import { getVideoDevices, startVideo, toggleCamera, attachTrack, detachTrack } from "./video.js";
+﻿import { getVideoDevices, startVideo, toggleCamera, attachTrack, detachTrack, disposeCamera } from "./video.js";
 import { getAudioDevices, setMicrophone, toggleMicrophone } from "./audio.js";
 import { isMemberDefined } from "./isMemberDefined.js";
 
@@ -123,4 +123,5 @@ window.videoInterop = {
     getVideoDevices,
     startVideo,
     toggleCamera,
+    disposeCamera,
 };

@@ -34,7 +34,7 @@ public partial class StateForm
     public EventCallback<Guid?> StateIdChanged { get; set; }
 
     [Parameter]
-    public StateModel StateModel { get; set; } = new();
+    public StateModel? StateModel { get; set; } = new();
 
     [Parameter]
     public EventCallback<StateDto> OnSubmit { get; set; }
@@ -53,6 +53,12 @@ public partial class StateForm
 
     protected override void OnParametersSet()
     {
+        if (StateModel is null)
+        {
+            _stateModel = new StateModel();
+            return;
+        }
+
         if (IsEdit)
         {
             _stateModel = new StateModel
@@ -85,12 +91,14 @@ public partial class StateForm
 
         await OnSubmit.InvokeAsync(result.Value);
 
-        await Close();
-
-        await NotificationService.Success(new NotificationConfig()
+        var task1 = NotificationService.Success(new NotificationConfig()
         {
-            Message = "State updated successfully"
+            Message = $"State {(IsEdit ? "updated" : "created")} successfully"
         });
+
+        var task2 = Close();
+
+        await Task.WhenAll(task1, task2);
     }
 
     private async Task Close()
@@ -108,7 +116,7 @@ public partial class StateForm
     {
         return $@"
             background: {(color + "50")};
-            border: 3px solid {color};
+            border: 2px solid {color};
             border-radius: 20px; 
             height: 41px;
             width: 41px";

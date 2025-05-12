@@ -4,15 +4,12 @@ using Client.Authentication;
 using Client.Configuration;
 using Client.Constants;
 using Client.Services;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.Extensions.Caching.Memory;
-using Microsoft.IdentityModel.Tokens;
 using Plk.Blazor.DragDrop;
 using Refit;
 using Services.ExternalApi;
-using Services.Interfaces;
-using System.Text;
 
 namespace Client.Extensions;
 
@@ -48,35 +45,21 @@ public static class ServiceCollectionExtensions
     {
         services.AddTransient<AuthHttpClientHandler>();
 
-        services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(op =>
-        {
-            op.TokenValidationParameters = new TokenValidationParameters
+        services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+            .AddCookie(CookieAuthenticationDefaults.AuthenticationScheme, op =>
             {
-                ValidIssuer = configuration["Jwt:Issuer"],
-                ValidAudience = configuration["Jwt:Audience"],
-                IssuerSigningKey = new SymmetricSecurityKey
-                (Encoding.UTF8.GetBytes(configuration["Jwt:SecretKey"]!)),
-                ValidateIssuer = true,
-                ValidateAudience = true,
-                ValidateLifetime = false,
-                ValidateIssuerSigningKey = true
-            };
-            op.Events = new JwtBearerEvents
-            {
-                OnMessageReceived = context =>
-                {
-                    var cache = context.HttpContext.RequestServices
-                    .GetService<ITokenStorage>();
-
-                    context.Token = cache!.GetToken().Result
-                        ?? string.Empty;
-
-                    return Task.CompletedTask;
-                }
-            };
-        });
-
-        services.AddAuthorizationCore();
+                op.Cookie.Name = "jwtToken";
+                op.LoginPath = "/login";
+                op.LogoutPath = "/logout";
+                op.AccessDeniedPath = "/access-denied";
+                op.ReturnUrlParameter = "returnUrl";
+                op.SlidingExpiration = true;
+                op.ExpireTimeSpan = TimeSpan.FromDays(1);
+                op.Cookie.SecurePolicy = CookieSecurePolicy.Always; // Для Azure повинно бути на Secure
+                op.Cookie.SameSite = SameSiteMode.Strict; // Як потрібно
+            });
+                
+        services.AddAuthorization();
 
         services.AddCascadingAuthenticationState();
 
