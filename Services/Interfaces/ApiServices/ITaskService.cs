@@ -1,7 +1,6 @@
 ﻿using Domain.Abstract;
 using Domain.Dtos;
 using Domain.Models;
-using Microsoft.AspNetCore.JsonPatch;
 
 namespace Services.Interfaces.ApiServices;
 
@@ -27,6 +26,16 @@ public interface ITaskService
         Guid projectId,
         Guid taskId,
         TaskModel model);
+
+    Task<Result> AddTagAsync(
+        Guid projectId,
+        Guid taskId,
+        Guid tagId);
+
+    Task<Result> RemoveTagAsync(
+        Guid projectId,
+        Guid taskId,
+        Guid tagId);
 
     Task<Result> DeleteAsync(Guid projectId, Guid taskId);
 }

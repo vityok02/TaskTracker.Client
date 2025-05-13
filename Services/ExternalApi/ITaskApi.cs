@@ -20,8 +20,14 @@ public interface ITaskApi : IApi
     [Put("/projects/{projectId}/tasks/{taskId}")]
     Task<IApiResponse> UpdateAsync(Guid projectId, Guid taskId, [Body] TaskModel model);
 
+    [Put("/projects/{projectId}/tasks/{taskId}/tags/{tagId}")]
+    Task<IApiResponse> AddTagAsync(Guid projectId, Guid taskId, Guid tagId);
+
+    [Delete("/projects/{projectId}/tasks/{taskId}/tags/{tagId}")]
+    Task<IApiResponse> RemoveTagAsync(Guid projectId, Guid taskId, Guid tagId);
+
     [Patch("/projects/{projectId}/tasks/{taskId}/state")]
-    Task<IApiResponse> UpdateStateAsync(Guid projectId, Guid taskId, UpdateTaskStateModel model);
+    Task<IApiResponse> UpdateStateAsync(Guid projectId, Guid taskId, [Body] UpdateTaskStateModel model);
 
     [Patch("/projects/{projectId}/tasks/{taskId}/order")]
     Task<IApiResponse> ReorderAsync(Guid projectId, Guid taskId, [Body] ReorderTasksModel model);

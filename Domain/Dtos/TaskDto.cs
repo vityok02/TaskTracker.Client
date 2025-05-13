@@ -15,6 +15,8 @@ public class TaskDto : AuditableDto
     public Guid StateId { get; set; }
     public string StateName { get; set; } = string.Empty;
 
+    public List<TagDto> Tags { get; set; } = [];
+
     public DateTime? StartDate { get; set; }
     public DateTime? EndDate { get; set; }
 }

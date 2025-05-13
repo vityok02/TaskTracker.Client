@@ -95,4 +95,22 @@ public class TaskService : ITaskService
         return response
             .HandleResponse();
     }
+
+    public async Task<Result> AddTagAsync(Guid projectId, Guid taskId, Guid tagId)
+    {
+        var response = await _taskApi
+            .AddTagAsync(projectId, taskId, tagId);
+
+        return response
+            .HandleResponse();
+    }
+
+    public async Task<Result> RemoveTagAsync(Guid projectId, Guid taskId, Guid tagId)
+    {
+        var response = await _taskApi
+            .RemoveTagAsync(projectId, taskId, tagId);
+
+        return response
+            .HandleResponse();
+    }
 }

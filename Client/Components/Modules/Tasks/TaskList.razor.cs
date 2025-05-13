@@ -144,6 +144,15 @@ public partial class TaskList
             .RemoveAll(x => x.Id == stateId);
     }
 
+    private void UpdateTask(TaskDto updatedTask)
+    {
+        var index = Tasks.FindIndex(t => t.Id == updatedTask.Id);
+        if (index != -1)
+        {
+            Tasks[index] = updatedTask;
+        }
+    }
+
     private async Task LoadTasksAsync()
     {
         var result = await TaskService
