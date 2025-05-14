@@ -151,6 +151,8 @@ public partial class TaskList
         {
             Tasks[index] = updatedTask;
         }
+
+        StateHasChanged();
     }
 
     private async Task LoadTasksAsync()

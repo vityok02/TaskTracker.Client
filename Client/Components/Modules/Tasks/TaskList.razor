@@ -79,7 +79,7 @@
 
 <CascadingValue Value=@Project?.Role?.Name>
     <div class="overflow-auto" style="width: 100%;">
-        <div class="row g-4 flex-nowrap cards" style="min-width: 100%; height: calc(100vh - 250px);">
+        <div class="row g-3 flex-nowrap cards" style="min-width: 100%; height: calc(100vh - 250px);">
             @foreach (var state in Project!.States)
             {
                 <TasksColumn Tasks=@Tasks.Where(t => t.StateId == state.Id).OrderBy(t => t.SortOrder).ToList()

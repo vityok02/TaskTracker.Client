@@ -1,11 +1,8 @@
 ﻿using AntDesign;
-using Domain.Abstract;
-using Domain.Constants;
 using Domain.Dtos;
 using Domain.Models;
 using Microsoft.AspNetCore.Components;
 using Services.Interfaces.ApiServices;
-using Result = Domain.Abstract.Result;
 
 namespace Client.Components.Modules.Tasks.Components;
 
@@ -183,8 +180,6 @@ public partial class TaskDetails
         if (Task.Tags.Any(t => t.Id == tag.Id))
         {
             await RemoveTagAsync(tag);
-
-            Task.Tags.RemoveAll(t => t.Id == tag.Id);
         }
         else
         {
@@ -219,6 +214,8 @@ public partial class TaskDetails
             AppState.ErrorMessage = result.Error!.Message;
             return;
         }
+
+        Task.Tags.RemoveAll(t => t.Id == tag.Id);
     }
 
     private void SearchTags()

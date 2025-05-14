@@ -12,7 +12,7 @@
 }
 
 <Drawer @bind-Visible=@Visible
-        Width="900px"
+        Width="850px"
         OnClose=@Close
         Style="height: 100%;">
 
@@ -137,7 +137,9 @@
                     </RoleAuthorizeView>
                 </div>
 
-                <div class="border p-3 bg-white rounded shadow-sm">
+                <Divider Class="my-2" />
+
+                <div>
                     <div class="mb-2">
                         <span class="fw-bold">State: </span>
                         <span class="rounded-5 px-2 py-1"
@@ -169,11 +171,14 @@
                         </div>
                     }
                 </div>
+
+                <Divider Class="my-2" />
+
                 <div class="d-flex flex-column mt-2">
-                    <label>
-                        Tags
-                    </label>
-                    <div class="d-flex justify-content-end">
+                    <div class="d-flex justify-content-between">
+                        <label>
+                            Tags:
+                        </label>
                         <Dropdown Trigger=@(new Trigger[] { Trigger.Click })
                                   Placement=@Placement.LeftTop
                                   ComplexAutoCloseAndVisible=@false

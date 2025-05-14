@@ -19,8 +19,8 @@ public static class StylesHelper
             border-radius: 8px;
             margin-block: 4px;
             padding: 6px 8px;
-            font-weight: {fontWeight};
-            transition: 0.2s;";
+            cursor: pointer;
+            font-weight: {fontWeight};";
     }
 
     public static string GetTagStyle(string color, bool isSelected = false)
@@ -36,5 +36,13 @@ public static class StylesHelper
             border-radius: 6px;
             padding: 2px 6px;
             font-size: 12px;";
+    }
+
+    public static string GetStateStyle(string color)
+    {
+        return $@"
+            border: 1px solid {Colors.GetDarkerColor(color)};
+            color: {Colors.GetDarkerColor(color)};
+            background: {color + "10"}";
     }
 }

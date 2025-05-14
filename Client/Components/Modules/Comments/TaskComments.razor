@@ -1,15 +1,16 @@
 ﻿<h5 class="mb-3">Comments</h5>
 
 <Form Model=@CommentModel
-      OnFinish=@CreateCommentAsync
-      Class="comment-form p-3 bg-white rounded shadow-sm">
+      OnFinish=@CreateCommentAsync>
     <FluentValidationValidator />
-    <MarkdownEditor @bind-Value="@CommentModel.Comment" MaxHeight="150px" />
+    <MarkdownEditor @bind-Value="@CommentModel.Comment"
+                    MaxHeight="100px"
+                    Placeholder="Use Markdown to format your comment" />
 
-    <div class="d-flex justify-content-end mt-2">
+    <div class="d-flex justify-content-end">
         <Button HtmlType="submit"
                 Class="btn btn-primary btn-sm">
-            Add Comment
+            Comment
         </Button>
     </div>
 </Form>
@@ -17,7 +18,7 @@
 <AntList DataSource=@Comments
          Context="comment"
          Class="list-group mt-3">
-    <ListItem Class="list-group-item border rounded px-3 py-2 shadow-sm bg-white mb-3">
+    <ListItem Class="comment list-group-item border rounded px-3 py-2 shadow-sm bg-white mb-3">
 
         <div class="d-flex justify-content-between align-items-center gap-2 pb-2">
             <UserProfileLink User=@comment.CreatedBy />
@@ -63,8 +64,7 @@
         {
             @((MarkupString)Markdown.ToHtml(comment.Comment))
 
-
-            <div class="d-flex gap-2">
+            <div class="d-flex gap-2 myClass">
                 <Button Type=@ButtonType.Text
                         OnClick=@(() => SetUpdateCommentId(comment.Id))
                         Class="btn btn-sm btn-link text-decoration-none text-primary">

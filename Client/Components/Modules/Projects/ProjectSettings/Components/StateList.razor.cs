@@ -130,12 +130,4 @@ public partial class StateList
 
         States.Add(result.Value);
     }
-
-    public static string GetStateTitleStyle(string color)
-    {
-        return $@"
-            border: 1px solid {Colors.GetDarkerColor(color)};
-            color: {Colors.GetDarkerColor(color)};
-            background: {color + "10"}";
-    }
 }
