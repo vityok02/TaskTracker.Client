@@ -70,11 +70,12 @@
 
             <Divider Type=@DividerType.Vertical Class="h-100" />
 
-            <div class="w-50 ps-2" style="overflow: hidden;">
-                <div class="mb-3">
+            <div class="ps-2" style="overflow: hidden; width: 300px;">
+                <div class="mb-2">
+                    <label>Description</label>
+
                     <RoleAuthorizeView AllowedRoles=@([Roles.Admin, Roles.Contributor])>
                         <Allowed>
-
                             <Form Model=@TaskModel
                                   OnFinish=@Update
                                   OnFieldChanged=@CheckForChanges
@@ -87,32 +88,33 @@
                                               Rows="3" />
                                 </FormItem>
 
-                                <div class="d-flex flex-column mt-3">
-                                    <FormItem Label="Start date" LabelStyle="width:80px">
+                                <div class="d-flex flex-column mt-2">
+                                    <FormItem Label="Start date" LabelStyle="width:80px" Class="mb-2">
                                         <DatePicker @bind-Value=@TaskModel.StartDate Placeholder=@("Set start date...") />
                                     </FormItem>
 
-                                    <FormItem Label="End date" LabelStyle="width:80px">
+                                    <FormItem Label="End date" LabelStyle="width:80px" Class="mb-2">
                                         <DatePicker @bind-Value=@TaskModel.EndDate Placeholder=@("Set end date...") />
                                     </FormItem>
                                 </div>
 
-                                <Button Disabled=@(!HasChanges)
-                                        Class="btn btn-secondary btn-sm"
-                                        @onclick=@ResetChanges>
-                                    Cancel
-                                </Button>
+                                <div class="d-flex gap-1 justify-content-end">
+                                    <Button Disabled=@(!HasChanges)
+                                            Class="btn btn-secondary btn-sm"
+                                            @onclick=@ResetChanges>
+                                        Cancel
+                                    </Button>
 
-                                <Button HtmlType="submit"
-                                        Disabled=@(!HasChanges)
-                                        Class="btn btn-primary btn-sm">
-                                    Save
-                                </Button>
+                                    <Button HtmlType="submit"
+                                            Disabled=@(!HasChanges)
+                                            Class="btn btn-primary btn-sm">
+                                        Save
+                                    </Button>
+                                </div>
                             </Form>
                         </Allowed>
                         <NotAllowed>
                             <div class="mb-2">
-                                <label>Description</label>
                                 <TextArea Value=@TaskModel.Description
                                           Class="form-control mb-2"
                                           Rows="3"
@@ -135,10 +137,13 @@
                     </RoleAuthorizeView>
                 </div>
 
-                <div class="border p-3 bg-white rounded">
+                <div class="border p-3 bg-white rounded shadow-sm">
                     <div class="mb-2">
                         <span class="fw-bold">State: </span>
-                        @Task!.StateName
+                        <span class="rounded-5 px-2 py-1"
+                              style="@StylesHelper.GetStateStyle(Task.StateColor)">
+                            @Task!.StateName
+                        </span>
                     </div>
 
                     <div class="mb-2">
@@ -148,7 +153,7 @@
 
                     <div class="mb-2">
                         <span class="fw-bold">Created at: </span>
-                        @Task.CreatedAt
+                        @Task.CreatedAt.ToShortDateString()
                     </div>
 
                     @if (Task.UpdatedBy is not null)
@@ -160,49 +165,57 @@
 
                         <div class="mb-2">
                             <span class="fw-bold">Updated at: </span>
-                            @Task.UpdatedAt
+                            @Task.UpdatedAt?.ToShortDateString()
                         </div>
                     }
                 </div>
-                <div class="d-flex flex-column">
-                    <Dropdown Trigger=@(new Trigger[] { Trigger.Click }) Placement=@Placement.LeftTop ComplexAutoCloseAndVisible=false>
-                        <Overlay>
-                            <Menu Class="p-3 rounded-3">
-                                <Search @bind-Value=@SearchTerm
-                                        AllowClear
-                                        OnClear=@ClearSearch
-                                        DebounceMilliseconds=0
-                                        Placeholder="Search tags..."
-                                        BindOnInput />
+                <div class="d-flex flex-column mt-2">
+                    <label>
+                        Tags
+                    </label>
+                    <div class="d-flex justify-content-end">
+                        <Dropdown Trigger=@(new Trigger[] { Trigger.Click })
+                                  Placement=@Placement.LeftTop
+                                  ComplexAutoCloseAndVisible=@false
+                                  OverlayStyle="max-width: 200px;">
+                            <Overlay>
+                                <Menu Class="px-2 py-3 rounded-3">
+                                    <Search @bind-Value=@SearchTerm
+                                            AllowClear
+                                            OnClear=@ClearSearch
+                                            DebounceMilliseconds=0
+                                            Placeholder="Search tags..."
+                                            BindOnInput />
 
-                                <Divider Class="my-2" />
+                                    <Divider Class="my-2" />
 
-                                <div style="max-height: 400px">
-                                    @foreach (var tag in FilteredTags)
-                                    {
-                                        var isSelected = Task.Tags.Any(t => t.Id == tag.Id);
+                                    <div style="max-height: 400px;">
+                                        @foreach (var tag in FilteredTags)
+                                        {
+                                            var isSelected = Task.Tags.Any(t => t.Id == tag.Id);
 
-                                        <div style=@StylesHelper.GetTagMenuElementStyle(tag.Color, isSelected)
+                                            <div class="user-select-none" style=@StylesHelper.GetTagMenuElementStyle(tag.Color, isSelected)
                                                  @onclick=@(async () => await HandleTagSelectionAsync(tag))>
-                                            @if (isSelected)
-                                            {
-                                                <i class="bi bi-check2"></i>
-                                            }
-                                            @tag.Name
+                                                @if (isSelected)
+                                                {
+                                                    <i class="bi bi-check2"></i>
+                                                }
+                                                @tag.Name
 
-                                        </div>
-                                    }
-                                </div>
-                            </Menu>
-                        </Overlay>
-                        <ChildContent>
-                            <Button>
-                                Select tags <Icon Type="@IconType.Outline.Down" />
-                            </Button>
-                        </ChildContent>
-                    </Dropdown>
+                                            </div>
+                                        }
+                                    </div>
+                                </Menu>
+                            </Overlay>
+                            <ChildContent>
+                                <Button>
+                                    Select tags <Icon Type="@IconType.Outline.Down" />
+                                </Button>
+                            </ChildContent>
+                        </Dropdown>
+                    </div>
 
-                    <div class="d-flex flex-row gap-1">
+                    <div class="d-flex flex-row gap-1 flex-wrap mt-2">
                         @foreach (var tag in Task.Tags)
                         {
                             <div class="tag"
