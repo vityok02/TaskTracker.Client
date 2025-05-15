@@ -14,7 +14,7 @@ public partial class StateList
     public required IStateService StateService { get; init; }
 
     [Inject]
-    public required DeleteStateConfirmationService DeleteStateConfirmationService { get; init; }
+    public required DeleteConfirmationService DeleteStateConfirmationService { get; init; }
 
     [CascadingParameter]
     public required ApplicationState AppState { get; init; }
@@ -74,7 +74,7 @@ public partial class StateList
     private async Task ShowDeleteConfirmationAsync(Guid stateId)
     {
         await DeleteStateConfirmationService
-            .ShowStateDeleteConfirmAsync(stateId, DeleteAsync);
+            .ShowStateDeleteConfirmAsync("State", stateId, DeleteAsync);
     }
 
     private async Task DeleteAsync(Guid stateId)

@@ -9,4 +9,6 @@ public class ProjectModel
     public DateTime? StartDate { get; set; }
 
     public DateTime? EndDate { get; set; }
+
+    public Guid TemplateId { get; set; }
 }

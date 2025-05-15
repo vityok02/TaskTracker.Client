@@ -1,12 +1,56 @@
 ﻿@rendermode InteractiveServer
 
+<HeadContent>
+    <style>
+        .template-radio {
+            width: 105px;
+            border: 2px solid transparent;
+            border-radius: 0.5rem;
+            transition: border-color 0.2s, box-shadow 0.2s;
+            cursor: pointer;
+        }
+
+            .template-radio.selected {
+                border-color: #0d6efd;
+                box-shadow: 0 0 10px rgba(13, 110, 253, 0.5);
+            }
+
+            .template-radio:hover {
+                border-color: #6ea8fe;
+            }
+
+        .ant-radio .ant-radio-inner {
+            display: none;
+        }
+
+        .ant-radio {
+            display: none;
+        }
+
+        .custom-radio-wrapper {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            align-self: stretch;
+        }
+
+        .radio-group-wrap {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            justify-content: space-between;
+        }
+    </style>
+</HeadContent>
+
 <Modal @bind-Visible=@Visible
        Closable=@false
        DestroyOnClose=@true
        Footer=@null>
 
     <h4>
-        @Title
+        Create project
     </h4>
 
     <div class="modal-content p-4">
@@ -27,8 +71,30 @@
                       Class="mb-3">
                 <TextArea @bind-Value=@ProjectModel.Description
                           Class="form-control"
-                          Rows="4" />
+                          Rows="3" />
             </FormItem>
+
+            <RadioGroup @bind-Value="ProjectModel.TemplateId" class="radio-group-wrap">
+                @foreach (var template in Templates)
+                {
+                    var isSelected = ProjectModel.TemplateId == template.Id;
+                    <Radio Value="@template.Id" class="custom-radio-wrapper">
+                        <div class="template-radio @(isSelected ? "selected" : "") d-flex flex-column align-items-center justify-content-center h-100">
+                            <i class="@($"bi {GetIcon(template.Name)} fs-1")"></i>
+                            <div class="mt-2 fw-semibold text-center">@template.Name</div>
+                        </div>
+                    </Radio>
+                }
+
+                <Radio Value="@Guid.Empty" class="custom-radio-wrapper">
+                    <div class="template-radio @(IsEmptySelected ? "selected" : "") d-flex flex-column align-items-center justify-content-center h-100">
+                        <i class="@($"bi {GetIcon(string.Empty)} fs-1")"></i>
+                        <div class="mt-2 fw-semibold text-center">Empty</div>
+                    </div>
+                </Radio>
+            </RadioGroup>
+
+
 
             <FormItem Label="Start date">
                 <DatePicker AllowClear
@@ -46,7 +112,7 @@
                 <Button Type=@ButtonType.Primary
                         HtmlType="submit"
                         Class="btn btn-primary">
-                    @ButtonText
+                    Create
                 </Button>
             </div>
         </Form>

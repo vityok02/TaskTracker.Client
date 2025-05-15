@@ -1,4 +1,6 @@
-﻿using Domain.Models;
+﻿using AntDesign;
+using Domain.Dtos;
+using Domain.Models;
 using Microsoft.AspNetCore.Components;
 using Services.Interfaces.ApiServices;
 
@@ -8,6 +10,15 @@ public sealed partial class ProjectForm
 {
     [Inject]
     public required IProjectService ProjectService { get; set; }
+
+    [Inject]
+    public required ITemplateService TemplateService { get; set; }
+
+    [Inject]
+    public required NavigationManager NavigationManager { get; set; }
+
+    [Inject]
+    public required INotificationService Notification { get; set; }
 
     [Parameter]
     public bool Visible { get; set; }
@@ -22,24 +33,30 @@ public sealed partial class ProjectForm
     public required ApplicationState ApplicationState { get; set; }
 
     [Parameter]
-    public bool IsEdit { get; set; }
-
-    [Parameter]
-    public Guid ProjectId { get; set; }
-
-    [Parameter]
     public ProjectModel ProjectModel { get; set; } = new ProjectModel();
 
-    private string Title => IsEdit ? "Edit project" : "Create project";
+    private List<TemplateDto> Templates { get; set; } = [];
 
-    private string ButtonText => IsEdit ? "Save" : "Create";
+    private bool IsEmptySelected => ProjectModel.TemplateId == Guid.Empty;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var result = await TemplateService
+            .GetAllAsync();
+
+        if (result.IsFailure)
+        {
+            ApplicationState.ErrorMessage = result.Error!.Message;
+            return;
+        }
+
+        Templates = result.Value
+            .ToList();
+    }
 
     private async Task Submit()
     {
-        var result = IsEdit
-            ? await ProjectService
-                .UpdateAsync(ProjectId, ProjectModel)
-            : await ProjectService
+        var result = await ProjectService
                 .CreateAsync(ProjectModel);
 
         if (result.IsFailure)
@@ -51,10 +68,27 @@ public sealed partial class ProjectForm
         await OnProjectSaved.InvokeAsync();
 
         await VisibleChanged.InvokeAsync(false);
+
+        _ = Notification.Success(new NotificationConfig()
+        {
+            Message = "Project successfully created!"
+        });
+
+        NavigationManager.NavigateTo($"/projects/{result.Value.Id}/tasks");
     }
 
     private void Cancel()
     {
         VisibleChanged.InvokeAsync(false);
+    }
+
+    private string GetIcon(string template)
+    {
+        return template switch
+        {
+            "Basic Kanban" => "bi-kanban",
+            "Software Development" => "bi-code-slash",
+            _ => "bi-box-seam"
+        };
     }
 }

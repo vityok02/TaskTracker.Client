@@ -1,5 +1,5 @@
 ﻿.ant-breadcrumb {
-    font-size: 24px;
+    font-size: 20px;
 }
 
 .ant-breadcrumb a {
@@ -12,4 +12,8 @@
 
 .ant-divider {
     border-top: 2px solid rgba(0, 0, 0, 0.08);
+}
+
+.ant-radio-button-wrapper:not(:first-child)::before {
+    display: none;
 }

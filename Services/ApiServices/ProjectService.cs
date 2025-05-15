@@ -35,7 +35,7 @@ public class ProjectService : IProjectService
             .HandleResponse();
     }
 
-    public async Task<Result> CreateAsync(
+    public async Task<Result<ProjectDto>> CreateAsync(
         ProjectModel project)
     {
         var response = await _projectApi

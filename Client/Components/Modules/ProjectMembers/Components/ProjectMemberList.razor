@@ -16,7 +16,7 @@
                     <Popconfirm Title="Are you sure to delete this member?"
                                 OnConfirm=@(async () => await DeleteMemberAsync(member.User.Id))>
                         <Button Class="btn btn-danger btn-sm m-1">
-                            Remove
+                            <i class="bi bi-trash-fill is-size-5"></i>
                         </Button>
                     </Popconfirm>
                 </Allowed>

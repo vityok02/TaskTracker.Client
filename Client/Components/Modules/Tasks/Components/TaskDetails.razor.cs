@@ -123,7 +123,7 @@ public partial class TaskDetails
 
         await Notification.Success(new NotificationConfig()
         {
-            Message = "Task successfully updated"
+            Message = "Task successfully updated!"
         });
     }
 

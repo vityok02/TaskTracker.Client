@@ -6,7 +6,7 @@ namespace Services.Interfaces.ApiServices;
 
 public interface IProjectService
 {
-    Task<Result> CreateAsync(ProjectModel project);
+    Task<Result<ProjectDto>> CreateAsync(ProjectModel project);
 
     Task<Result<ProjectDto>> GetAsync(Guid id);
 

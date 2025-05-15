@@ -50,13 +50,50 @@ public partial class TaskList
 
     private Guid _selectedTaskId;
 
+    private List<TagDto> FilteredTags { get; set; } = [];
+
     private string SearchTerm { get; set; } = string.Empty;
+
+    private string _searchTagTerm = string.Empty;
+
+    private string SearchTagTerm
+    {
+        get => _searchTagTerm;
+        set
+        {
+            if (_searchTagTerm == value) return;
+
+            _searchTagTerm = value;
+
+            FilteredTags = Tags
+                .Where(t => t.Name.Contains(SearchTagTerm, StringComparison.OrdinalIgnoreCase))
+                .ToList();
+        }
+    }
 
     protected override async Task OnInitializedAsync()
     {
         await LoadDataAsync();
 
+        if (Project is not null)
+        {
+            Project.States = Project.States
+                .Where(s => s is not null)
+                .ToList();
+        }
+
         FilteredTags = Tags;
+    }
+
+    public void HandleTagSelectionAsync(TagDto tag)
+    {
+        if (SelectedTagIds.Contains(tag.Id))
+        {
+            SelectedTagIds.Remove(tag.Id);
+            return;
+        }
+
+        SelectedTagIds.Add(tag.Id);
     }
 
     private void OpenUpdateStateForm(Guid stateId)
@@ -122,7 +159,7 @@ public partial class TaskList
 
     private async Task ClearSearchAsync()
     {
-        SearchTerm = null;
+        SearchTerm = null!;
 
         await LoadTasksAsync();
     }
@@ -158,6 +195,11 @@ public partial class TaskList
             .ToList();
 
         await LoadTasksAsync();
+    }
+
+    private void DeleteTaskFromList(Guid taskId)
+    {
+        Tasks.RemoveAll(x => x.Id == taskId);
     }
 
     private void DeleteStateFromList(Guid stateId)

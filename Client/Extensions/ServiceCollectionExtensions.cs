@@ -27,7 +27,7 @@ public static class ServiceCollectionExtensions
         services.AddAntDesign();
         services.AddBlazorDragDrop();
         services.AddBlazoredLocalStorage();
-        services.AddScoped<DeleteStateConfirmationService>();
+        services.AddScoped<DeleteConfirmationService>();
         services.AddSignalR();
 
         services.Configure<CommentsHubOptions>(configuration

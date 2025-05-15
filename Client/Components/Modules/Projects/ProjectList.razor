@@ -35,7 +35,11 @@
         </Button>
     </div>
 
-    @if (PagedProjects == null || PagedProjects.Items.Count() == 0)
+    @if (PagedProjects is null)
+    {
+        <Spin Size=@SpinSize.Large />
+    }
+    else if (!PagedProjects!.Items.Any())
     {
         <Empty Description=@("You have not added any projects yet") />
     }
@@ -84,7 +88,6 @@
                         @bind-Visible=@_deleteModalVisible />
 
     <ProjectForm @bind-Visible=@_formVisible
-                 IsEdit=@_isEdit
                  ProjectModel=@_selectedProjectModel
                  OnProjectSaved=@LoadDataAsync />
 
