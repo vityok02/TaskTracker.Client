@@ -1,9 +1,9 @@
 ﻿using Client.Helpers;
+using Client.Services;
 using Domain.Constants;
 using Domain.Dtos;
 using Domain.Models;
 using Microsoft.AspNetCore.Components;
-using Services.ApiServices;
 using Services.Interfaces.ApiServices;
 
 namespace Client.Components.Modules.Projects.ProjectSettings.Components.Tags;
@@ -12,6 +12,9 @@ public partial class TagManager
 {
     [Inject]
     public required ITagService TagService { get; init; }
+
+    [Inject]
+    public required DeleteConfirmationService DeleteStateConfirmationService { get; init; }
 
     [CascadingParameter]
     public required ApplicationState AppState { get; init; }
@@ -63,6 +66,12 @@ public partial class TagManager
             .FindIndex(s => s.Id == updatedTag.Id);
 
         Tags[index] = updatedTag;
+    }
+
+    private async Task ShowDeleteConfirmationAsync(Guid stateId)
+    {
+        await DeleteStateConfirmationService
+            .ShowStateDeleteConfirmAsync("Tag", stateId, DeleteAsync);
     }
 
     private async Task DeleteAsync(Guid tagId)

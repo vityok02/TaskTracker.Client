@@ -25,7 +25,7 @@ public partial class TasksColumn
     public required INotificationService NotificationService { get; init; }
 
     [Inject]
-    public required DeleteStateConfirmationService DeleteConfirmationService { get; set; }
+    public required DeleteConfirmationService DeleteConfirmationService { get; set; }
 
     [CascadingParameter]
     public required ApplicationState AppState { get; init; }
@@ -50,6 +50,9 @@ public partial class TasksColumn
 
     [Parameter]
     public EventCallback<List<TaskDto>> TasksChanged { get; set; }
+
+    [Parameter]
+    public EventCallback<Guid> OnTaskDeleted { get; set; }
 
     [Parameter]
     public StateDto State { get; set; } = new();
@@ -147,11 +150,13 @@ public partial class TasksColumn
             return;
         }
 
-        Tasks.RemoveAll(t => t.Id == taskId);
+        //Tasks.RemoveAll(t => t.Id == taskId);
+
+        await OnTaskDeleted.InvokeAsync(taskId);
 
         await ModalService.DestroyAllConfirmAsync();
 
-        await NotificationService
+        _ = NotificationService
             .Success(new NotificationConfig()
             {
                 Message = "Task deleted successfully"
@@ -207,6 +212,6 @@ public partial class TasksColumn
     private async Task ShowStateDeleteConfirmAsync(Guid stateId)
     {
         await DeleteConfirmationService
-            .ShowStateDeleteConfirmAsync(stateId, DeleteState);
+            .ShowStateDeleteConfirmAsync("State", stateId, DeleteState);
     }
 }

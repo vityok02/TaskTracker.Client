@@ -4,24 +4,25 @@ using Microsoft.AspNetCore.Components;
 
 namespace Client.Services;
 
-public class DeleteStateConfirmationService
+public class DeleteConfirmationService
 {
     private readonly ModalService _modalService;
 
-    public DeleteStateConfirmationService(
+    public DeleteConfirmationService(
         ModalService modalService)
     {
         _modalService = modalService;
     }
 
     public async Task ShowStateDeleteConfirmAsync(
+        string fieldName,
         Guid stateId,
         Func<Guid, Task> deleteAction)
     {
         await _modalService.ConfirmAsync(new ConfirmOptions()
         {
             Title = "Delete confirmation",
-            Content = GetContentFragment(),
+            Content = GetContentFragment(fieldName),
             Icon = RenderFragments.DeleteIcon,
             OnOk = async (e) => await deleteAction(stateId),
             OnCancel = (e) => Task.CompletedTask,
@@ -34,12 +35,12 @@ public class DeleteStateConfirmationService
         });
     }
 
-    private static RenderFragment GetContentFragment()
+    private static RenderFragment GetContentFragment(string fieldName)
     {
         return builder =>
         {
             builder.OpenElement(0, "div");
-            builder.AddContent(1, "This will permanently delete this option from the \"Status\" field.");
+            builder.AddContent(1, $"This will permanently delete this option from the \"{fieldName}\" field.");
 
             builder.OpenElement(2, "span");
             builder.AddAttribute(3, "class", "fw-bold");

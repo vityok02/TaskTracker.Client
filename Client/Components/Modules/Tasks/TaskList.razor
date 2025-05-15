@@ -2,7 +2,6 @@
 
 <PageTitle>@Title</PageTitle>
 
-
 <StateForm @bind-Visible=@_stateFormVisible
            ProjectId=@ProjectId
            @bind-StateId=@_selectedStateId
@@ -69,38 +68,6 @@
     return;
 }
 
-@code {
-    private string _searchTagTerm = string.Empty;
-
-    private string SearchTagTerm
-    {
-        get => _searchTagTerm;
-        set
-        {
-            if (_searchTagTerm == value) return;
-
-            _searchTagTerm = value;
-
-            FilteredTags = Tags
-                .Where(t => t.Name.Contains(SearchTagTerm, StringComparison.OrdinalIgnoreCase))
-                .ToList();
-        }
-    }
-
-    public void HandleTagSelectionAsync(TagDto tag)
-    {
-        if (SelectedTagIds.Contains(tag.Id))
-        {
-            SelectedTagIds.Remove(tag.Id);
-            return;
-        }
-
-        SelectedTagIds.Add(tag.Id);
-    }
-
-    private List<TagDto> FilteredTags { get; set; } = [];
-}
-
 <div class="mb-3 d-flex flex-row">
     <Search OnSearch=@SearchTasksAsync
             Placeholder="Search by task name"
@@ -162,6 +129,7 @@
                              Role=@Project.Role.Name
                              OnShowInput=@ShowInput
                              OnOpenDetails=@OpenDetails
+                             OnTaskDeleted=@DeleteTaskFromList
                              OnStateDeleted=@DeleteStateFromList
                              OnOpenUpdateStateForm=@(() => OpenUpdateStateForm(state.Id)) />
             }

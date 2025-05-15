@@ -26,6 +26,10 @@ internal sealed class RegisterModelValidator
             .ApplyPasswordRules();
 
         RuleFor(x => x.ConfirmedPassword)
+            .Equal(x => x.Password)
+            .WithMessage("Passwords must match");
+
+        RuleFor(x => x.ConfirmedPassword)
             .ApplyConfirmedPasswordRules(x => x.Password);
     }
 }

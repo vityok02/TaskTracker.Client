@@ -23,6 +23,7 @@ public static class ServiceCollectionExtensions
         services.AddScoped<ICommentService, CommentService>();
         services.AddScoped<IStateService, StateService>();
         services.AddScoped<ITagService, TagService>();
+        services.AddScoped<ITemplateService, TemplateService>();
         services.AddScoped<IVideoChatService, VideoChatService>();
         services.AddValidatorsFromAssembly(AssemblyReference.Assembly, includeInternalTypes: true);
 
