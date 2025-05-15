@@ -1,0 +1,42 @@
+﻿<HeadContent>
+    <style>
+        .tag-container {
+            display: flex;
+            flex-wrap: nowrap;
+            overflow: hidden;
+            max-width: 100%;
+            gap: 4px;
+        }
+
+        .tag-chip {
+            white-space: nowrap;
+            padding: 2px 6px;
+            border-radius: 6px;
+            font-size: 12px;
+            flex-shrink: 0;
+        }
+
+        .tag-more {
+            background-color: #eee;
+            color: #555;
+            cursor: default;
+        }
+
+    </style>
+</HeadContent>
+
+<div class="tag-container" id="tagContainer" @ref="TagContainerRef">
+    @foreach (var tag in VisibleTags)
+    {
+        <span class="tag-chip" style="@StylesHelper.GetTagStyle(tag.Color)">
+            @tag.Name
+        </span>
+    }
+
+    @if (HiddenTags.Count > 0)
+    {
+        <span class="tag-chip tag-more" title="@string.Join(", ", HiddenTags.Select(t => t.Name))">
+            +@HiddenTags.Count more
+        </span>
+    }
+</div>

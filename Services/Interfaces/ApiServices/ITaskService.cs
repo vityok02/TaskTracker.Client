@@ -1,13 +1,15 @@
 ﻿using Domain.Abstract;
 using Domain.Dtos;
 using Domain.Models;
-using Microsoft.AspNetCore.JsonPatch;
 
 namespace Services.Interfaces.ApiServices;
 
 public interface ITaskService
 {
-    Task<Result<IEnumerable<TaskDto>>> GetAllAsync(Guid projectId, string? searchTerm = null);
+    Task<Result<IEnumerable<TaskDto>>> GetAllAsync(
+        Guid projectId,
+        string? searchTerm = null,
+        Guid[]? tagIds = null);
 
     Task<Result<TaskDto>> GetAsync(Guid projectId, Guid taskId);
 
@@ -27,6 +29,16 @@ public interface ITaskService
         Guid projectId,
         Guid taskId,
         TaskModel model);
+
+    Task<Result> AddTagAsync(
+        Guid projectId,
+        Guid taskId,
+        Guid tagId);
+
+    Task<Result> RemoveTagAsync(
+        Guid projectId,
+        Guid taskId,
+        Guid tagId);
 
     Task<Result> DeleteAsync(Guid projectId, Guid taskId);
 }

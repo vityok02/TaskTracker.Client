@@ -21,7 +21,7 @@ public class TaskService : ITaskService
         Guid projectId)
     {
         var response = await _taskApi
-            .CreateAsync(model, projectId);
+            .CreateAsync(projectId, model);
 
         return response
             .HandleResponse();
@@ -51,10 +51,11 @@ public class TaskService : ITaskService
 
     public async Task<Result<IEnumerable<TaskDto>>> GetAllAsync(
         Guid projectId,
-        string? searchTerm = null)
+        string? searchTerm = null,
+        Guid[]? tagIds = null)
     {
         var response = await _taskApi
-            .GetAllAsync(projectId, searchTerm);
+            .GetAllAsync(projectId, searchTerm, tagIds);
 
         return response
             .HandleResponse();
@@ -91,6 +92,24 @@ public class TaskService : ITaskService
     {
         var response = await _taskApi
             .ReorderAsync(projectId, taskId, model);
+
+        return response
+            .HandleResponse();
+    }
+
+    public async Task<Result> AddTagAsync(Guid projectId, Guid taskId, Guid tagId)
+    {
+        var response = await _taskApi
+            .AddTagAsync(projectId, taskId, tagId);
+
+        return response
+            .HandleResponse();
+    }
+
+    public async Task<Result> RemoveTagAsync(Guid projectId, Guid taskId, Guid tagId)
+    {
+        var response = await _taskApi
+            .RemoveTagAsync(projectId, taskId, tagId);
 
         return response
             .HandleResponse();

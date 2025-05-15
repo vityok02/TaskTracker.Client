@@ -40,6 +40,11 @@ public partial class TaskComments : IAsyncDisposable
 
     protected override async Task OnParametersSetAsync()
     {
+        if (TaskId == Guid.Empty)
+        {
+            return;
+        }
+
         CommentHubService.OnCommentCreated += HandleCommentReceived;
         CommentHubService.OnCommentUpdated += HandleUpdatedComment;
         CommentHubService.OnCommentDeleted += HandleDeletedComment;

@@ -12,6 +12,9 @@ public partial class TaskList
     public required ITaskService TaskService { get; init; }
 
     [Inject]
+    public required ITagService TagService { get; init; }
+
+    [Inject]
     public required IProjectService ProjectService { get; init; }
 
     [Inject]
@@ -27,11 +30,15 @@ public partial class TaskList
 
     private List<TaskDto> Tasks { get; set; } = [];
 
+    private List<TagDto> Tags { get; set; } = [];
+
     private ProjectDto? Project { get; set; } = null;
 
     private TaskModel TaskModel { get; set; } = new();
 
     private string Title => Project?.Name ?? string.Empty;
+
+    private List<Guid> SelectedTagIds { get; set; } = [];
 
     public required Input<string> Input { get; set; }
 
@@ -43,11 +50,13 @@ public partial class TaskList
 
     private Guid _selectedTaskId;
 
-    private string? _searchTerm;
+    private string SearchTerm { get; set; } = string.Empty;
 
     protected override async Task OnInitializedAsync()
     {
         await LoadDataAsync();
+
+        FilteredTags = Tags;
     }
 
     private void OpenUpdateStateForm(Guid stateId)
@@ -104,16 +113,16 @@ public partial class TaskList
         _detailsVisible = true;
     }
 
-    private async Task SearchTasksByNameAsync(string searchTerm)
+    private async Task SearchTasksAsync(string searchTerm)
     {
-        _searchTerm = searchTerm;
+        SearchTerm = searchTerm;
 
         await LoadTasksAsync();
     }
 
     private async Task ClearSearchAsync()
     {
-        _searchTerm = null;
+        SearchTerm = null;
 
         await LoadTasksAsync();
     }
@@ -135,19 +144,43 @@ public partial class TaskList
             .OrderBy(x => x.SortOrder)
             .ToList();
 
+        var tagsResult = await TagService
+            .GetAllAsync(ProjectId);
+
+        if (tagsResult.IsFailure)
+        {
+            AppState.ErrorMessage = tagsResult.Error!.Message;
+            return;
+        }
+
+        Tags = tagsResult.Value
+            .OrderBy(x => x.SortOrder)
+            .ToList();
+
         await LoadTasksAsync();
     }
 
     private void DeleteStateFromList(Guid stateId)
     {
-        Project.States
+        Project!.States
             .RemoveAll(x => x.Id == stateId);
+    }
+
+    private void UpdateTask(TaskDto updatedTask)
+    {
+        var index = Tasks.FindIndex(t => t.Id == updatedTask.Id);
+        if (index != -1)
+        {
+            Tasks[index] = updatedTask;
+        }
+
+        StateHasChanged();
     }
 
     private async Task LoadTasksAsync()
     {
         var result = await TaskService
-            .GetAllAsync(ProjectId, _searchTerm);
+            .GetAllAsync(ProjectId, SearchTerm, SelectedTagIds.ToArray());
 
         if (result.IsFailure)
         {
@@ -155,6 +188,7 @@ public partial class TaskList
             return;
         }
 
-        Tasks = result.Value.OrderBy(t => t.SortOrder).ToList();
+        Tasks = result.Value.OrderBy(t => t.SortOrder)
+            .ToList();
     }
 }

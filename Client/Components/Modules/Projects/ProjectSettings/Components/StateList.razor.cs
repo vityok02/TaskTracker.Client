@@ -1,4 +1,5 @@
-﻿using Client.Services;
+﻿using Client.Helpers;
+using Client.Services;
 using Domain.Constants;
 using Domain.Dtos;
 using Domain.Models;
@@ -20,9 +21,6 @@ public partial class StateList
 
     [Parameter, EditorRequired]
     public required Guid ProjectId { get; init; }
-
-    //[Parameter]
-    //public required string? Role { get; init; }
 
     public List<StateDto> States { get; set; } = [];
 
@@ -54,20 +52,9 @@ public partial class StateList
 
         var items = States;
         var itemToMove = items[oldIndex];
-        items.RemoveAt(oldIndex);
 
-        if (newIndex < items.Count)
-        {
-            items.Insert(newIndex, itemToMove);
-        }
-        else
-        {
-            items.Add(itemToMove);
-        }
-
-        var belowItem = newIndex < items.Count - 1
-            ? items[newIndex + 1]
-            : null;
+        ReorderListHelper.Reorder(items, oldIndex, newIndex);
+        var belowItem = ReorderListHelper.GetBelow(items, newIndex);
 
         var reorderStateModel = new ReorderStateModel
         {
@@ -132,13 +119,5 @@ public partial class StateList
         StateModel = new();
 
         States.Add(result.Value);
-    }
-
-    public static string GetStateTitleStyle(string color)
-    {
-        return $@"
-            border: 1px solid {StateColors.GetDarkerColor(color)};
-            color: {StateColors.GetDarkerColor(color)};
-            background: {color + "10"}";
     }
 }

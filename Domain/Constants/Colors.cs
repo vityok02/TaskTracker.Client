@@ -1,8 +1,8 @@
 ﻿namespace Domain.Constants;
 
-public static class StateColors
+public static class Colors
 {
-    public static readonly Dictionary<string, string> Colors = new()
+    public static readonly Dictionary<string, string> Values = new()
     {
         { "Gray", "#6c757d" },
         { "Blue", "#0000FF" },

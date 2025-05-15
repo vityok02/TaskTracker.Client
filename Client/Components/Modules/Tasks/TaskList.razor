@@ -69,17 +69,90 @@
     return;
 }
 
-<div class="mb-3">
-    <Search OnSearch=@SearchTasksByNameAsync
+@code {
+    private string _searchTagTerm = string.Empty;
+
+    private string SearchTagTerm
+    {
+        get => _searchTagTerm;
+        set
+        {
+            if (_searchTagTerm == value) return;
+
+            _searchTagTerm = value;
+
+            FilteredTags = Tags
+                .Where(t => t.Name.Contains(SearchTagTerm, StringComparison.OrdinalIgnoreCase))
+                .ToList();
+        }
+    }
+
+    public void HandleTagSelectionAsync(TagDto tag)
+    {
+        if (SelectedTagIds.Contains(tag.Id))
+        {
+            SelectedTagIds.Remove(tag.Id);
+            return;
+        }
+
+        SelectedTagIds.Add(tag.Id);
+    }
+
+    private List<TagDto> FilteredTags { get; set; } = [];
+}
+
+<div class="mb-3 d-flex flex-row">
+    <Search OnSearch=@SearchTasksAsync
             Placeholder="Search by task name"
             AllowClear
             OnClear=@ClearSearchAsync
             Class="w-100" />
+
+    <Dropdown Trigger=@(new Trigger[] { Trigger.Click })
+              Placement=@Placement.LeftTop
+              ComplexAutoCloseAndVisible=@false
+              OverlayStyle="max-width: 200px;">
+        <Overlay>
+            <Menu Class="px-2 py-3 rounded-3">
+                <Search @bind-Value=@SearchTagTerm
+                        AllowClear
+                        OnClear=@(() => SearchTagTerm = null!)
+                        DebounceMilliseconds=0
+                        Placeholder="Search tags..."
+                        BindOnInput />
+
+                <Divider Class="my-2" />
+
+                <div style="max-height: 400px;">
+                    @foreach (var tag in FilteredTags)
+                    {
+                        var isSelected = SelectedTagIds.Contains(tag.Id);
+
+                        <div class="user-select-none" style=@StylesHelper.GetTagMenuElementStyle(tag.Color, isSelected)
+                             @onclick=@(() => HandleTagSelectionAsync(tag))>
+                            @if (isSelected)
+                            {
+                                <i class="bi bi-check2"></i>
+                            }
+                            @tag.Name
+
+                        </div>
+                    }
+                </div>
+            </Menu>
+        </Overlay>
+        <ChildContent>
+            <Button>
+                Filter by tags <Icon Type="@IconType.Outline.Down" />
+            </Button>
+        </ChildContent>
+    </Dropdown>
+
 </div>
 
 <CascadingValue Value=@Project?.Role?.Name>
     <div class="overflow-auto" style="width: 100%;">
-        <div class="row g-4 flex-nowrap cards" style="min-width: 100%; height: calc(100vh - 250px);">
+        <div class="row g-3 flex-nowrap cards" style="min-width: 100%; height: calc(100vh - 250px);">
             @foreach (var state in Project!.States)
             {
                 <TasksColumn Tasks=@Tasks.Where(t => t.StateId == state.Id).OrderBy(t => t.SortOrder).ToList()
@@ -121,5 +194,6 @@
 
     <TaskDetails TaskId=@_selectedTaskId
                  ProjectId=@ProjectId
+                 TaskUpdated=@UpdateTask
                  @bind-Visible=@_detailsVisible />
 </CascadingValue>
