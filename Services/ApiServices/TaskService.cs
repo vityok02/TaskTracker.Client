@@ -51,10 +51,11 @@ public class TaskService : ITaskService
 
     public async Task<Result<IEnumerable<TaskDto>>> GetAllAsync(
         Guid projectId,
-        string? searchTerm = null)
+        string? searchTerm = null,
+        Guid[]? tagIds = null)
     {
         var response = await _taskApi
-            .GetAllAsync(projectId, searchTerm);
+            .GetAllAsync(projectId, searchTerm, tagIds);
 
         return response
             .HandleResponse();

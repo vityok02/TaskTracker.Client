@@ -9,7 +9,8 @@ public interface ITaskApi : IApi
     [Get("/projects/{projectId}/tasks")]
     Task<IApiResponse<IEnumerable<TaskDto>>> GetAllAsync(
         Guid projectId,
-        [Query] string? searchTerm);
+        [Query] string? searchTerm,
+        [Query(CollectionFormat.Multi)] Guid[]? tagIds = null);
 
     [Get("/projects/{projectId}/tasks/{taskId}")]
     Task<IApiResponse<TaskDto>> GetAsync(Guid projectId, Guid taskId);

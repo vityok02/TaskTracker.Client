@@ -6,7 +6,10 @@ namespace Services.Interfaces.ApiServices;
 
 public interface ITaskService
 {
-    Task<Result<IEnumerable<TaskDto>>> GetAllAsync(Guid projectId, string? searchTerm = null);
+    Task<Result<IEnumerable<TaskDto>>> GetAllAsync(
+        Guid projectId,
+        string? searchTerm = null,
+        Guid[]? tagIds = null);
 
     Task<Result<TaskDto>> GetAsync(Guid projectId, Guid taskId);
 

@@ -47,10 +47,10 @@
                     {
                         <div class="d-flex justify-content-between align-items-center">
                             <h3 class="m-0">@Task.Name</h3>
-                            <Button OnClick=@ShowNameInput
-                                    Class="btn btn-primary btn-sm">
-                                Edit
-                            </Button>
+
+                            <a @onclick=@ShowNameInput>
+                                <i class="bi bi-pencil-square"></i>
+                            </a>
                         </div>
                     }
                 </Allowed>

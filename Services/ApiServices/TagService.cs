@@ -48,6 +48,14 @@ public class TagService : ITagService
         return response.HandleResponse();
     }
 
+    public async Task<Result> ReorderAsync(Guid projectId, Guid tagId, ReorderTagModel model)
+    {
+        var response = await _tagApi
+            .ReorderAsync(projectId, tagId, model);
+
+        return response.HandleResponse();
+    }
+
     public async Task<Result> DeleteAsync(Guid projectId, Guid tagId)
     {
         var response = await _tagApi

@@ -14,5 +14,7 @@ public interface ITagService
 
     Task<Result<TagDto>> UpdateAsync(Guid projectId, Guid tagId, TagModel model);
 
+    Task<Result> ReorderAsync(Guid projectId, Guid tagId, ReorderTagModel model);
+
     Task<Result> DeleteAsync(Guid projectId, Guid tagId);
 }

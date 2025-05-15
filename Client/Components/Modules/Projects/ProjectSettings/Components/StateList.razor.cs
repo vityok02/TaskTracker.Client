@@ -1,4 +1,5 @@
-﻿using Client.Services;
+﻿using Client.Helpers;
+using Client.Services;
 using Domain.Constants;
 using Domain.Dtos;
 using Domain.Models;
@@ -51,20 +52,9 @@ public partial class StateList
 
         var items = States;
         var itemToMove = items[oldIndex];
-        items.RemoveAt(oldIndex);
 
-        if (newIndex < items.Count)
-        {
-            items.Insert(newIndex, itemToMove);
-        }
-        else
-        {
-            items.Add(itemToMove);
-        }
-
-        var belowItem = newIndex < items.Count - 1
-            ? items[newIndex + 1]
-            : null;
+        ReorderListHelper.Reorder(items, oldIndex, newIndex);
+        var belowItem = ReorderListHelper.GetBelow(items, newIndex);
 
         var reorderStateModel = new ReorderStateModel
         {

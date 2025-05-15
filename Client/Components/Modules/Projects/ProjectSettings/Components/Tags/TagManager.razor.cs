@@ -1,7 +1,9 @@
-﻿using Domain.Constants;
+﻿using Client.Helpers;
+using Domain.Constants;
 using Domain.Dtos;
 using Domain.Models;
 using Microsoft.AspNetCore.Components;
+using Services.ApiServices;
 using Services.Interfaces.ApiServices;
 
 namespace Client.Components.Modules.Projects.ProjectSettings.Components.Tags;
@@ -95,6 +97,26 @@ public partial class TagManager
 
     private async Task ReorderAsync((int oldIndex, int lastIndex) indices)
     {
-        await Task.CompletedTask;
+        var (oldIndex, newIndex) = indices;
+
+        var items = Tags;
+        var itemToMove = items[oldIndex];
+
+        ReorderListHelper.Reorder(items, oldIndex, newIndex);
+        var belowItem = ReorderListHelper.GetBelow(items, newIndex);
+
+        var reorderTagModel = new ReorderTagModel
+        {
+            BeforeTagId = belowItem?.Id,
+        };
+
+        var result = await TagService
+            .ReorderAsync(ProjectId, itemToMove.Id, reorderTagModel);
+
+        if (result.IsFailure)
+        {
+            AppState.ErrorMessage = result.Error!.Message;
+            return;
+        }
     }
 }
